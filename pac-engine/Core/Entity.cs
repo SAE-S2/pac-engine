@@ -23,9 +23,9 @@ namespace pac_engine.Core
             {
                 return false;
             }
-            this.health -= damage;
+            this.Health -= damage;
 
-            if (this.health <= 0)
+            if (this.Health <= 0)
             {
                 this.Kill();
             }
