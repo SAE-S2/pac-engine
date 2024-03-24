@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace pac_engine.Graphics
+﻿namespace pac_engine.Utils
 {
 	public class Vector2
 	{
@@ -22,5 +20,16 @@ namespace pac_engine.Graphics
 
             return (float)Math.Sqrt(diffX * diffX + diffY * diffY);
         }
+
+		public Vector2 Lerp(Vector2 vector, float percent)
+		{
+			return new Vector2(this.x * (1 - percent) + vector.x * percent, this.y * (1 - percent) + vector.y * percent);
+		}
+
+		public void Add(Vector2 vector)
+		{
+			this.x += vector.x;
+			this.y += vector.y;
+		}
     }
 }
