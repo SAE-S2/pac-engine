@@ -9,17 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Audio\" />
-    <None Remove="Assets\" />
-    <None Remove="Graphics\" />
     <None Remove="Core\" />
     <None Remove="Utils\" />
     <None Remove="Core\entity\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Audio\" />
-    <Folder Include="Assets\" />
-    <Folder Include="Graphics\" />
     <Folder Include="Core\" />
     <Folder Include="Utils\" />
     <Folder Include="Core\entity\" />
