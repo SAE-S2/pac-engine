@@ -4,7 +4,6 @@
  	{
         public int money;
         public int bolts;
-        private Spell activeSpeel;
 
         public Player()
 		{
@@ -14,7 +13,6 @@
 	        this.damage = 0.0f;
 	        this.money = 100;
 	        this.bolts = 2;
-	        this.activeSpeel = new Spell();
 		}
 	}
 }
