@@ -25,8 +25,8 @@ namespace pac_engine
             Console.WriteLine("Déplacement du joueur:");
             Vector2 lastPos = new Vector2();
             Console.WriteLine($"Position de départ: x={pacbot.player.pos.x}, y={pacbot.player.pos.y}");
-            Vector2 test = new Vector2(5, 2);
-            pacbot.player.pos.Add(test);
+            Vector2 test = new Vector2(0, 0);
+            pacbot.player.pos += test;
             Console.WriteLine($"Position de fin: x={pacbot.player.pos.x}, y={pacbot.player.pos.y}");
             Console.WriteLine($"Distance: {pacbot.player.pos.Distance(lastPos)}");
             Console.WriteLine($"Pacbot récupère 3 pièces ({pacbot.player.money})");
@@ -51,7 +51,10 @@ namespace pac_engine
             float max = 9.9f;
             Vector2[] testCoin = new Vector2[100];
             testCoin[0] = new Vector2(pacbot.player.pos.x, pacbot.player.pos.y);
-            pacbot.player.Movement();
+            Map level1 = new Map(10);
+            pacbot.player.Movement(level1);
+            pacbot.player.pos = level1.spawn;
+            //level1.PrintMap();
             while (true)
             {
                 ConsoleKey input = Console.ReadKey().Key;
