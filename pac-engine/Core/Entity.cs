@@ -24,11 +24,11 @@ namespace pac_engine.Core
             {
                 return false;
             }
-            this.Health -= damage;
+            Health -= damage;
 
-            if (this.Health <= 0)
+            if (Health <= 0)
             {
-                this.Kill();
+                Kill();
             }
             return true;
         }
@@ -45,47 +45,46 @@ namespace pac_engine.Core
 
         public void Heal(float health)
         {
-            this.Health += health;
+            Health += health;
         }
 
         public async Task Movement(Map level)
         {
             await Task.Run(() =>
             {
-                while (this.Health > 0)
+                while (Health > 0)
                 {
-                    switch (this.angle)
+                    switch (angle)
                     {
-                        case 0: //Z
-                            if (level.GetWall(pos.x, pos.y - 1)) { break; }
-                            this.pos.y -= 1;
-                            break;
-                        case 1: //Q
-                            if (level.GetWall(pos.x + 1, pos.y)) { break; }
-                            this.pos.x += 1;
-                            break;
-                        case 2: //S
-                            if (level.GetWall(pos.x, pos.y + 1)) { break; }
-                            this.pos.y += 1;
-                            break;
-                        case 3: //D
+                        case 0: //Z (Haut)
                             if (level.GetWall(pos.x - 1, pos.y)) { break; }
-                            this.pos.x -= 1;
+                            pos.x -= 1;
+                            break;
+                        case 1: //Q (Gauche)
+                            if (level.GetWall(pos.x, pos.y + 1)) { break; }
+                            pos.y += 1;
+                            break;
+                        case 2: //S (Bas)
+                            if (level.GetWall(pos.x + 1, pos.y)) { break; }
+                            pos.x += 1;
+                            break;
+                        case 3: //D (Droite)
+                            if (level.GetWall(pos.x, pos.y - 1)) { break; }
+                            pos.y -= 1;
+                            break;
+                        case 4: //STOP
                             break;
                     }
-                    level.PrintMap(this.pos);
-                    //Console.WriteLine($"Position: x={this.pos.x}, y={this.pos.y}");
-                    Task.Delay(Globals.ENTITY_SPEED * (int)this.speed).Wait();
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine();
+                    //Console.WriteLine($"Position {this}: x={pos.x}, y={pos.y}");
+                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
+                    
                 }
             });
         }
         public void AngleChange(int angle)
         {
-            if (this.angle < 0 && this.angle > 3)
+            //0:Haut 1:Gauche 2:Bas 3:Droite
+            if (angle < 0 && angle > 3)
             {
                 return;
             }
@@ -93,4 +92,3 @@ namespace pac_engine.Core
         }
     }
 }
-
