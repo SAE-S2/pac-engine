@@ -1,5 +1,6 @@
 ﻿using pac_engine.Utils;
 using pac_engine.Core;
+using System.Reflection.Emit;
 
 namespace pac_engine
 {
@@ -52,9 +53,12 @@ namespace pac_engine
             Vector2[] testCoin = new Vector2[100];
             testCoin[0] = new Vector2(pacbot.player.pos.x, pacbot.player.pos.y);
             Map level1 = new Map(10);
-            pacbot.player.Movement(level1);
             pacbot.player.pos = level1.spawn;
-            //level1.PrintMap();
+            pacbot.player.Movement(level1);
+            Guard guard = new Guard();
+            guard.pos = new Vector2(4);
+            guard.angle = 4;
+            guard.Movement(level1);
             while (true)
             {
                 ConsoleKey input = Console.ReadKey().Key;
@@ -75,6 +79,11 @@ namespace pac_engine
                 {
                     pacbot.player.AngleChange(1);
                 }
+                if (input == ConsoleKey.Spacebar)
+                {
+                    pacbot.player.AngleChange(4);
+                }
+                level1.PrintMap(pacbot.player.pos,guard.pos) ;
             }
         }
     }

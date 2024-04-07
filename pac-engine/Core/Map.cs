@@ -92,16 +92,21 @@ namespace pac_engine.Core
             return map[x,y] == 1;
         }
 
-        public void PrintMap(Vector2 playerPos)
+        public void PrintMap(Vector2 pos, Vector2 ennemie)
         {
             for (int i = 0; i < maxX; i++)
             {
                 for (int j = 0; j < maxY; j++)
                 {
-                    if (playerPos.x == j && playerPos.y == i)
+                    if (pos.x == i && pos.y == j)
                     {
                         Console.Write("X");
-                    } else
+                    }
+                    else if (ennemie.x == i && ennemie.y == j)
+                    {
+                        Console.Write("Y");
+                    } 
+                    else
                     {
                         Console.Write(map[i, j]);
                     }
