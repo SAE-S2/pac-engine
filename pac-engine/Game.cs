@@ -1,5 +1,6 @@
 ﻿using pac_engine.Utils;
 using pac_engine.Core;
+using System.Reflection.Emit;
 
 namespace pac_engine
 {
@@ -9,12 +10,12 @@ namespace pac_engine
 		private Vector2 screenSize;
         private Player player;
 
-		public Game(string title, float x, float y)
+		public Game(string title, int x, int y)
 		{
 			this.title = title;
 			this.screenSize = new Vector2(x, y);
             Console.Title = this.title;
-            //Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
+            Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
             player = new Player();
         }
 
@@ -25,8 +26,8 @@ namespace pac_engine
             Console.WriteLine("Déplacement du joueur:");
             Vector2 lastPos = new Vector2();
             Console.WriteLine($"Position de départ: x={pacbot.player.pos.x}, y={pacbot.player.pos.y}");
-            Vector2 test = new Vector2(5.0f, 2.0f);
-            pacbot.player.pos.Add(test);
+            Vector2 test = new Vector2(0, 0);
+            pacbot.player.pos += test;
             Console.WriteLine($"Position de fin: x={pacbot.player.pos.x}, y={pacbot.player.pos.y}");
             Console.WriteLine($"Distance: {pacbot.player.pos.Distance(lastPos)}");
             Console.WriteLine($"Pacbot récupère 3 pièces ({pacbot.player.money})");
@@ -51,50 +52,38 @@ namespace pac_engine
             float max = 9.9f;
             Vector2[] testCoin = new Vector2[100];
             testCoin[0] = new Vector2(pacbot.player.pos.x, pacbot.player.pos.y);
+            Map level1 = new Map(10);
+            pacbot.player.pos = level1.spawn;
+            pacbot.player.Movement(level1);
+            Guard guard = new Guard();
+            guard.pos = new Vector2(4);
+            guard.angle = 4;
+            guard.Movement(level1);
             while (true)
             {
                 ConsoleKey input = Console.ReadKey().Key;
                  
                 if (input == ConsoleKey.Z)
                 {
-                    if (pacbot.player.pos.x <= max)
-                        pacbot.player.pos.Add(new Vector2(0.5f, 0.0f));
+                    pacbot.player.AngleChange(0);
                 }
                 if (input == ConsoleKey.Q)
                 {
-                    if (pacbot.player.pos.y <= max)
-                        pacbot.player.pos.Add(new Vector2(0.0f, 0.5f));
+                    pacbot.player.AngleChange(3);
                 }
                 if (input == ConsoleKey.S)
                 {
-                    if (pacbot.player.pos.x >= -max)
-                        pacbot.player.pos.Add(new Vector2(-0.5f, 0.0f));
+                    pacbot.player.AngleChange(2);
                 }
                 if (input == ConsoleKey.D)
                 {
-                    if (pacbot.player.pos.y >= -max)
-                        pacbot.player.pos.Add(new Vector2(0.0f, -0.5f));
+                    pacbot.player.AngleChange(1);
                 }
-                if ((pacbot.player.pos.x % 1 == 0) && (pacbot.player.pos.y % 1 == 0))
+                if (input == ConsoleKey.Spacebar)
                 {
-                    bool exist = false;
-                    int i = 0;
-                    for (i = 0; testCoin[i] != null && exist == false && i < 100; i++)
-                    {
-                        if (pacbot.player.pos.Equals(testCoin[i]))
-                        {
-                            exist = true;
-                        }
-                    }
-                    if (exist == false)
-                    {
-                        testCoin[i] = new Vector2(pacbot.player.pos.x, pacbot.player.pos.y);
-                        pacbot.player.money += 1;
-                        Console.WriteLine($"Récupération de 1 pièce: pièces={pacbot.player.money}");
-                    }
+                    pacbot.player.AngleChange(4);
                 }
-                Console.WriteLine($"Position: x={pacbot.player.pos.x}, y={pacbot.player.pos.y}");
-                Console.WriteLine($"Distance 0,0: {pacbot.player.pos.Distance(lastPos)}");
+                level1.PrintMap(pacbot.player.pos,guard.pos) ;
             }
         }
     }
