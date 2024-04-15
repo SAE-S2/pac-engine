@@ -15,8 +15,33 @@ namespace pac_engine
 			this.title = title;
 			this.screenSize = new Vector2(x, y);
             Console.Title = this.title;
-            Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
+            //Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
             player = new Player();
+        }
+
+        static int[,] TestMap()
+        {
+            int[,] map = {
+                {
+                    1, 1, 1, 1, 1, 1, 1, 1, 1
+                },
+                {
+                    1, 0, 0, 0, 0, 0, 5, 0, 1
+                },
+                {
+                    1, 0, 0, 1, 0, 1, 1, 0, 1
+                },
+                {
+                    1, 1, 0, 3, 0, 0, 0, 0, 1
+                },
+                {
+                    1, 0, 0, 1, 0, 1, 1, 0, 1
+                },
+                {
+                    1, 1, 1, 1, 2, 1, 1, 1, 1
+                }
+            };
+            return map;
         }
 
         static void Main()
@@ -49,16 +74,13 @@ namespace pac_engine
             Console.WriteLine($"Vie: {pacbot.player.Health}");
             Console.WriteLine("Appueyer sur entrer pour quitter");
             Console.WriteLine("Appueyer sur ZQSD pour ce déplacer");
-            float max = 9.9f;
-            Vector2[] testCoin = new Vector2[100];
-            testCoin[0] = new Vector2(pacbot.player.pos.x, pacbot.player.pos.y);
-            Map level1 = new Map(10);
+
+            int[,] map = TestMap();
+            Map level1 = new Map(map, ref pacbot.player);
             pacbot.player.pos = level1.spawn;
             pacbot.player.Movement(level1);
-            Guard guard = new Guard();
-            guard.pos = new Vector2(4);
-            guard.angle = 4;
-            guard.Movement(level1);
+            level1.Print();
+
             while (true)
             {
                 ConsoleKey input = Console.ReadKey().Key;
@@ -83,7 +105,6 @@ namespace pac_engine
                 {
                     pacbot.player.AngleChange(4);
                 }
-                level1.PrintMap(pacbot.player.pos,guard.pos) ;
             }
         }
     }
