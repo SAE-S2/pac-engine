@@ -12,8 +12,8 @@ namespace pac_engine.Core
 			this.Health = 2.5f;
 			this.speed = 1.0f;
 			this.damage = 0.0f;
-			this.money = 100;
-			this.bolts = 2;
+			this.money = 0;
+			this.bolts = 0;
 		}
 	}
 }
