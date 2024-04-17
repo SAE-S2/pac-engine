@@ -1,28 +1,23 @@
-﻿using System.Text;
-using pac_engine.Utils;
+﻿using pac_engine.Utils;
 
 namespace pac_engine.Core
 {
     public class Map
     {
         public Vector2 spawn;
-        public Player player;
         public int[,] map;
-        public int coinsNumber = 0;
-        public int coinsEarn = 0;
+        private int coinsNumber = 0;
+        private int coinsEarn = 0;
         public Vector2 door;
-        private int enemiesNum = 0;
-        public Entity[] enemies = new Entity[10];
 
-        public Map(int[,] mapToLoad, ref Player playerToLoad)
+        public Map(int[,] mapToLoad, Game game)
         {
             map = mapToLoad;
-            player = playerToLoad;
             Random random = new Random();
 
             for (int i = 0; i < map.GetLength(0); i++)
                 for (int j = 0; j < map.GetLength(1); j++)
-                    if (map[i, j] == 0)
+                    if (map[i, j] == 0 || map[i, j] == 5)
                     {
                         int isBolts = random.Next(1, 25);
                         if (isBolts == 5)
@@ -44,16 +39,6 @@ namespace pac_engine.Core
                     {
                         door = new Vector2(i, j);
                         map[i, j] = 4;
-                    }
-                    else if (map[i, j] == 5)
-                    {
-                        enemies[enemiesNum] = new Guard();
-                        enemies[enemiesNum].angle = 3;
-                        enemies[enemiesNum].pos = new Vector2(i, j);
-                        enemies[enemiesNum].Movement(this);
-                        enemiesNum++;
-                        coinsNumber++;
-                        map[i, j] = 2;
                     }
         }
 
@@ -90,71 +75,6 @@ namespace pac_engine.Core
         public bool GetWall(int x,int y)
         {
             return (map[x,y] == 1 || map[x, y] == 4);
-        }
-
-        public async Task Print()
-        {
-            await Task.Run(() =>
-            {
-                while (map != null)
-                {
-                    // Debug:
-                    Console.WriteLine(player.Health + " HP  /  " + player.bolts + " Bolts  /  " + player.money + " Coins");
-                    Console.WriteLine();
-                    //
-
-                    for (int i = 0; i < map.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < map.GetLength(1); j++)
-                        {
-                            if (i == player.pos.x && j == player.pos.y)
-                            {
-                                Console.OutputEncoding = Encoding.UTF8;
-                                switch (player.angle)
-                                {
-                                    case 0:
-                                        Console.Write("\u25B2 ");
-                                        break;
-                                    case 1:
-                                        Console.Write("\u25B6 ");
-                                        break;
-                                    case 2:
-                                        Console.Write("\u25BC ");
-                                        break;
-                                    case 3:
-                                        Console.Write("\u25C0 ");
-                                        break;
-                                }
-
-                                if (GetCoin(player.pos))
-                                {
-                                    player.money++;
-                                }
-                                else if (GetBolts(player.pos))
-                                {
-                                    player.bolts++;
-                                }
-                            }
-                            else
-                            {
-                                bool enemiesAtPos = false;
-                                for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
-                                    if (enemies[e].pos.x == i && j == enemies[e].pos.y)
-                                        enemiesAtPos = true;
-
-                                Console.Write(enemiesAtPos ? "\u2603 " : map[i, j]+" ");
-                            }
-                        }
-                        Console.WriteLine();
-                        Console.WriteLine();
-                    }
-                    Task.Delay(150).Wait();
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine();
-                    Console.WriteLine();
-                }
-            });
         }
     }
 }
