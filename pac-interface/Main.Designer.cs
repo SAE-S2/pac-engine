@@ -45,7 +45,9 @@
             lblPseudo = new Label();
             txtPseudo = new TextBox();
             btnValider = new Button();
-            btnBack = new Button();
+            btnBackProfile = new Button();
+            btnBackLancement = new Button();
+            btnBackNew = new Button();
             pnlPrincipal.SuspendLayout();
             pnlProfil.SuspendLayout();
             pnlLancement.SuspendLayout();
@@ -68,7 +70,7 @@
             btnQuit.Location = new Point(11, 138);
             btnQuit.Name = "btnQuit";
             btnQuit.Size = new Size(214, 87);
-            btnQuit.TabIndex = 5;
+            btnQuit.TabIndex = 1;
             btnQuit.Text = "Quitter";
             btnQuit.UseVisualStyleBackColor = false;
             btnQuit.Click += btnQuit_Click;
@@ -84,7 +86,7 @@
             lblTitle.Location = new Point(498, 157);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new Size(268, 74);
-            lblTitle.TabIndex = 3;
+            lblTitle.TabIndex = 5;
             lblTitle.Text = "PAC-BOT";
             // 
             // btnJouer
@@ -103,7 +105,7 @@
             btnJouer.Location = new Point(12, 12);
             btnJouer.Name = "btnJouer";
             btnJouer.Size = new Size(214, 87);
-            btnJouer.TabIndex = 4;
+            btnJouer.TabIndex = 0;
             btnJouer.Text = "Jouer";
             btnJouer.UseVisualStyleBackColor = false;
             btnJouer.Click += btnJouer_Click;
@@ -118,7 +120,7 @@
             pnlPrincipal.Margin = new Padding(3, 2, 3, 2);
             pnlPrincipal.Name = "pnlPrincipal";
             pnlPrincipal.Size = new Size(236, 262);
-            pnlPrincipal.TabIndex = 6;
+            pnlPrincipal.TabIndex = 1;
             // 
             // pnlProfil
             // 
@@ -131,7 +133,7 @@
             pnlProfil.Margin = new Padding(3, 2, 3, 2);
             pnlProfil.Name = "pnlProfil";
             pnlProfil.Size = new Size(236, 315);
-            pnlProfil.TabIndex = 7;
+            pnlProfil.TabIndex = 3;
             pnlProfil.Visible = false;
             // 
             // btnProfil3
@@ -150,7 +152,7 @@
             btnProfil3.Location = new Point(11, 214);
             btnProfil3.Name = "btnProfil3";
             btnProfil3.Size = new Size(214, 87);
-            btnProfil3.TabIndex = 6;
+            btnProfil3.TabIndex = 2;
             btnProfil3.Text = "Profil 3";
             btnProfil3.UseVisualStyleBackColor = false;
             btnProfil3.Click += btnProfil3_Click;
@@ -171,7 +173,7 @@
             btnProfil2.Location = new Point(11, 113);
             btnProfil2.Name = "btnProfil2";
             btnProfil2.Size = new Size(214, 87);
-            btnProfil2.TabIndex = 5;
+            btnProfil2.TabIndex = 1;
             btnProfil2.Text = "Profil 2";
             btnProfil2.UseVisualStyleBackColor = false;
             btnProfil2.Click += btnProfil2_Click;
@@ -192,7 +194,7 @@
             btnProfil1.Location = new Point(11, 12);
             btnProfil1.Name = "btnProfil1";
             btnProfil1.Size = new Size(214, 87);
-            btnProfil1.TabIndex = 4;
+            btnProfil1.TabIndex = 0;
             btnProfil1.Text = "Profil 1";
             btnProfil1.UseVisualStyleBackColor = false;
             btnProfil1.Click += btnProfil1_Click;
@@ -208,7 +210,7 @@
             pnlLancement.Margin = new Padding(3, 2, 3, 2);
             pnlLancement.Name = "pnlLancement";
             pnlLancement.Size = new Size(236, 315);
-            pnlLancement.TabIndex = 8;
+            pnlLancement.TabIndex = 2;
             pnlLancement.Visible = false;
             // 
             // btnLancer
@@ -227,7 +229,7 @@
             btnLancer.Location = new Point(10, 214);
             btnLancer.Name = "btnLancer";
             btnLancer.Size = new Size(214, 87);
-            btnLancer.TabIndex = 6;
+            btnLancer.TabIndex = 2;
             btnLancer.Text = "Lancer";
             btnLancer.UseVisualStyleBackColor = false;
             // 
@@ -247,7 +249,7 @@
             btnSupp.Location = new Point(10, 113);
             btnSupp.Name = "btnSupp";
             btnSupp.Size = new Size(214, 87);
-            btnSupp.TabIndex = 5;
+            btnSupp.TabIndex = 1;
             btnSupp.Text = " Supprimer";
             btnSupp.UseVisualStyleBackColor = false;
             btnSupp.Click += btnSupp_Click;
@@ -268,7 +270,7 @@
             btnNew.Location = new Point(10, 12);
             btnNew.Name = "btnNew";
             btnNew.Size = new Size(214, 87);
-            btnNew.TabIndex = 4;
+            btnNew.TabIndex = 0;
             btnNew.Text = " Nouveau";
             btnNew.UseVisualStyleBackColor = false;
             btnNew.Click += btnNew_Click;
@@ -284,7 +286,7 @@
             pnlCreation.Margin = new Padding(3, 2, 3, 2);
             pnlCreation.Name = "pnlCreation";
             pnlCreation.Size = new Size(256, 315);
-            pnlCreation.TabIndex = 9;
+            pnlCreation.TabIndex = 4;
             pnlCreation.Visible = false;
             // 
             // lblPseudo
@@ -296,7 +298,7 @@
             lblPseudo.Location = new Point(12, 32);
             lblPseudo.Name = "lblPseudo";
             lblPseudo.Size = new Size(231, 47);
-            lblPseudo.TabIndex = 8;
+            lblPseudo.TabIndex = 2;
             lblPseudo.Text = "Pseudonyme";
             lblPseudo.Click += lblPseudo_Click;
             // 
@@ -310,7 +312,7 @@
             txtPseudo.MaxLength = 12;
             txtPseudo.Name = "txtPseudo";
             txtPseudo.Size = new Size(215, 53);
-            txtPseudo.TabIndex = 7;
+            txtPseudo.TabIndex = 0;
             // 
             // btnValider
             // 
@@ -328,28 +330,67 @@
             btnValider.Location = new Point(21, 170);
             btnValider.Name = "btnValider";
             btnValider.Size = new Size(214, 87);
-            btnValider.TabIndex = 6;
+            btnValider.TabIndex = 1;
             btnValider.Text = "Valider";
             btnValider.UseVisualStyleBackColor = false;
             btnValider.Click += btnValider_Click;
             // 
-            // btnBack
+            // btnBackProfile
             // 
-            btnBack.Anchor = AnchorStyles.Top;
-            btnBack.BackColor = Color.Transparent;
-            btnBack.BackgroundImage = (Image)resources.GetObject("btnBack.BackgroundImage");
-            btnBack.BackgroundImageLayout = ImageLayout.Stretch;
-            btnBack.FlatAppearance.BorderSize = 0;
-            btnBack.FlatAppearance.MouseDownBackColor = Color.Transparent;
-            btnBack.FlatAppearance.MouseOverBackColor = Color.Transparent;
-            btnBack.FlatStyle = FlatStyle.Flat;
-            btnBack.Location = new Point(258, 126);
-            btnBack.Name = "btnBack";
-            btnBack.Size = new Size(84, 38);
-            btnBack.TabIndex = 10;
-            btnBack.UseVisualStyleBackColor = false;
-            btnBack.Visible = false;
-            btnBack.Click += btnBack_Click;
+            btnBackProfile.Anchor = AnchorStyles.Top;
+            btnBackProfile.BackColor = Color.Transparent;
+            btnBackProfile.BackgroundImage = (Image)resources.GetObject("btnBackProfile.BackgroundImage");
+            btnBackProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            btnBackProfile.Cursor = Cursors.Hand;
+            btnBackProfile.FlatAppearance.BorderSize = 0;
+            btnBackProfile.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            btnBackProfile.FlatAppearance.MouseOverBackColor = Color.Transparent;
+            btnBackProfile.FlatStyle = FlatStyle.Flat;
+            btnBackProfile.Location = new Point(258, 126);
+            btnBackProfile.Name = "btnBackProfile";
+            btnBackProfile.Size = new Size(84, 38);
+            btnBackProfile.TabIndex = 0;
+            btnBackProfile.UseVisualStyleBackColor = false;
+            btnBackProfile.Visible = false;
+            btnBackProfile.Click += btnBackProfile_Click;
+            // 
+            // btnBackLancement
+            // 
+            btnBackLancement.Anchor = AnchorStyles.Top;
+            btnBackLancement.BackColor = Color.Transparent;
+            btnBackLancement.BackgroundImage = (Image)resources.GetObject("btnBackLancement.BackgroundImage");
+            btnBackLancement.BackgroundImageLayout = ImageLayout.Stretch;
+            btnBackLancement.Cursor = Cursors.Hand;
+            btnBackLancement.FlatAppearance.BorderSize = 0;
+            btnBackLancement.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            btnBackLancement.FlatAppearance.MouseOverBackColor = Color.Transparent;
+            btnBackLancement.FlatStyle = FlatStyle.Flat;
+            btnBackLancement.Location = new Point(258, 126);
+            btnBackLancement.Name = "btnBackLancement";
+            btnBackLancement.Size = new Size(84, 38);
+            btnBackLancement.TabIndex = 6;
+            btnBackLancement.UseVisualStyleBackColor = false;
+            btnBackLancement.Visible = false;
+            btnBackLancement.Click += btnBackLancement_Click;
+            // 
+            // btnBackNew
+            // 
+            btnBackNew.Anchor = AnchorStyles.Top;
+            btnBackNew.BackColor = Color.Transparent;
+            btnBackNew.BackgroundImage = (Image)resources.GetObject("btnBackNew.BackgroundImage");
+            btnBackNew.BackgroundImageLayout = ImageLayout.Stretch;
+            btnBackNew.Cursor = Cursors.Hand;
+            btnBackNew.FlatAppearance.BorderSize = 0;
+            btnBackNew.FlatAppearance.MouseDownBackColor = Color.Transparent;
+            btnBackNew.FlatAppearance.MouseOverBackColor = Color.Transparent;
+            btnBackNew.FlatStyle = FlatStyle.Flat;
+            btnBackNew.Location = new Point(258, 126);
+            btnBackNew.Name = "btnBackNew";
+            btnBackNew.Size = new Size(84, 38);
+            btnBackNew.TabIndex = 7;
+            btnBackNew.UseVisualStyleBackColor = false;
+            btnBackNew.Visible = false;
+            btnBackNew.Click += btnBackNew_Click;
             // 
             // Main
             // 
@@ -357,12 +398,14 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImage = Properties.Resources.BGMenu;
             ClientSize = new Size(1264, 681);
-            Controls.Add(pnlCreation);
-            Controls.Add(btnBack);
+            Controls.Add(btnBackProfile);
             Controls.Add(pnlLancement);
             Controls.Add(pnlProfil);
             Controls.Add(lblTitle);
             Controls.Add(pnlPrincipal);
+            Controls.Add(pnlCreation);
+            Controls.Add(btnBackNew);
+            Controls.Add(btnBackLancement);
             Name = "Main";
             Text = "Main";
             pnlPrincipal.ResumeLayout(false);
@@ -392,6 +435,8 @@
         private Button btnValider;
         private TextBox txtPseudo;
         private Label lblPseudo;
-        private Button btnBack;
+        private Button btnBackProfile;
+        private Button btnBackLancement;
+        private Button btnBackNew;
     }
 }

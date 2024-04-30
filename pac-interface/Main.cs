@@ -14,10 +14,55 @@ namespace pac_interface
 
     public partial class Main : Form
     {
-        int flag = 0;
+        int profil = 0;
         public Main()
         {
             InitializeComponent();
+        }
+
+        private void LoadPrincipal()
+        {
+            pnlCreation.Visible = false;
+            pnlLancement.Visible = false;
+            pnlProfil.Visible = false;
+            btnBackProfile.Visible = false;
+            btnBackLancement.Visible = false;
+            btnBackNew.Visible = false;
+            pnlPrincipal.Visible = true;
+        }
+
+        private void LoadProfile()
+        {
+            pnlLancement.Visible = false;
+            pnlPrincipal.Visible = false;
+            pnlCreation.Visible = false;
+            btnBackLancement.Visible = false;
+            btnBackNew.Visible = false;
+            btnBackProfile.Visible = true;
+            System.Threading.Thread.Sleep(10);
+            pnlProfil.Visible = true;
+        }
+
+        private void LoadLancement()
+        {
+            LoadProfile();
+            btnBackProfile.Visible = false;
+            btnBackNew.Visible = false;
+            btnBackLancement.Visible = true;
+            pnlCreation.Visible = false;
+            System.Threading.Thread.Sleep(10);
+            pnlLancement.Visible = true;
+        }
+
+        private void LoadNew()
+        {
+            pnlProfil.Visible = false;
+            pnlLancement.Visible = false;
+            btnBackProfile.Visible = false;
+            btnBackLancement.Visible = false;
+            btnBackNew.Visible = true;
+            System.Threading.Thread.Sleep(10);
+            pnlCreation.Visible = true;
         }
 
         private void btnQuit_Click(object sender, EventArgs e)
@@ -27,40 +72,28 @@ namespace pac_interface
 
         private void btnJouer_Click(object sender, EventArgs e)
         {
-            pnlPrincipal.Visible = false;
-            System.Threading.Thread.Sleep(100);
-            pnlProfil.Visible = true;
-            btnBack.Visible = true;
+            LoadProfile();
         }
 
         private void btnProfil1_Click(object sender, EventArgs e)
         {
-            pnlLancement.Visible = false;
-            System.Threading.Thread.Sleep(100);
-            pnlLancement.Visible = true;
-            flag = 1;
+            LoadLancement();
+            profil = 1;
         }
         private void btnProfil2_Click(object sender, EventArgs e)
         {
-            pnlLancement.Visible = false;
-            System.Threading.Thread.Sleep(100);
-            pnlLancement.Visible = true;
-            flag = 2;
+            LoadLancement();
+            profil = 2;
         }
         private void btnProfil3_Click(object sender, EventArgs e)
         {
-            pnlLancement.Visible = false;
-            System.Threading.Thread.Sleep(100);
-            pnlLancement.Visible = true;
-            flag = 3;
+            LoadLancement();
+            profil = 3;
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            pnlProfil.Visible = false;
-            pnlLancement.Visible = false;
-            System.Threading.Thread.Sleep(100);
-            pnlCreation.Visible = true;
+            LoadNew();
         }
 
         private void btnValider_Click(object sender, EventArgs e)
@@ -69,7 +102,7 @@ namespace pac_interface
             switch (txtPseudo.Text.Length) // Changement de la taille de la police
             {
                 default:
-                    txtfont = new Font("Segoe UI",(float)26.5,FontStyle.Bold);
+                    txtfont = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                     break;
                 case <= 8:
                     txtfont = new Font("Segoe UI", 20, FontStyle.Bold);
@@ -78,12 +111,12 @@ namespace pac_interface
                     txtfont = new Font("Segoe UI", 18, FontStyle.Bold);
                     break;
             }
-            if (flag == 1)
+            if (profil == 1)
             {
                 btnProfil1.Font = txtfont;
                 btnProfil1.Text = txtPseudo.Text;
             }
-            else if (flag == 2)
+            else if (profil == 2)
             {
                 btnProfil2.Font = txtfont;
                 btnProfil2.Text = txtPseudo.Text;
@@ -94,20 +127,17 @@ namespace pac_interface
                 btnProfil3.Text = txtPseudo.Text;
             }
             txtPseudo.Text = "";
-            pnlCreation.Visible = false;
-            System.Threading.Thread.Sleep(100);
-            pnlProfil.Visible = true;
-            pnlLancement.Visible = true;
+            LoadLancement();
         }
 
         private void btnSupp_Click(object sender, EventArgs e)
         {
-            if (flag == 1)
+            if (profil == 1)
             {
                 btnProfil1.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil1.Text = "Profil 1";
             }
-            else if (flag == 2)
+            else if (profil == 2)
             {
                 btnProfil2.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil2.Text = "Profil 2";
@@ -124,13 +154,20 @@ namespace pac_interface
 
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private void btnBackProfile_Click(object sender, EventArgs e)
         {
-            pnlCreation.Visible = false;
-            pnlLancement.Visible = false;
-            pnlProfil.Visible = false;
-            btnBack.Visible = false;
-            pnlPrincipal.Visible = true;
+            LoadPrincipal();
+        }
+
+        private void btnBackLancement_Click(object sender, EventArgs e)
+        {
+            LoadProfile();
+            profil = 0;
+        }
+
+        private void btnBackNew_Click(object sender, EventArgs e)
+        {
+            LoadLancement();
         }
     }
 }
