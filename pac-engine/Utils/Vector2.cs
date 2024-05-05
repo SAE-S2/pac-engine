@@ -1,6 +1,9 @@
 ﻿namespace pac_engine.Utils
 {
-	public class Vector2
+    /// <summary>
+    /// Standard 2d position pointer.
+    /// </summary>
+    public class Vector2
 	{
 		public int x, y;
 
@@ -8,7 +11,11 @@
         public Vector2(int xy) { this.x = xy; this.y = xy; }
         public Vector2(int x, int y) { this.x = x; this.y = y; }
 
-		public float Distance(Vector2 vector)
+        /// <summary>
+        /// Get distance between this vector and parameter <paramref name="vector"/>.
+        /// </summary>
+        /// <returns>Distance</returns>
+        public float Distance(Vector2 vector)
         {
             int diffX = this.x - vector.x;
             int diffY = this.y - vector.y;
