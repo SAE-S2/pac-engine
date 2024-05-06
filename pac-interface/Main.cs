@@ -15,6 +15,7 @@ namespace pac_interface
     public partial class Main : Form
     {
         int profil = 0;
+        int menu = 0;
         public Main()
         {
             InitializeComponent();
@@ -24,11 +25,10 @@ namespace pac_interface
         {
             pnlCreation.Visible = false;
             pnlLancement.Visible = false;
-            pnlProfil.Visible = false;
-            btnBackProfile.Visible = false;
-            btnBackLancement.Visible = false;
-            btnBackNew.Visible = false;
             pnlPrincipal.Visible = true;
+            pnlProfil.Visible = false;
+            btnBack.Visible = false;
+            menu = 0;
         }
 
         private void LoadProfile()
@@ -36,33 +36,45 @@ namespace pac_interface
             pnlLancement.Visible = false;
             pnlPrincipal.Visible = false;
             pnlCreation.Visible = false;
-            btnBackLancement.Visible = false;
-            btnBackNew.Visible = false;
-            btnBackProfile.Visible = true;
-            System.Threading.Thread.Sleep(10);
+            btnBack.Visible = true;
             pnlProfil.Visible = true;
+            btnProfil1.ForeColor = Color.White;
+            btnProfil2.ForeColor = Color.White;
+            btnProfil3.ForeColor = Color.White;
+            switch (profil)
+            {
+                case 1:
+                    btnProfil1.ForeColor = Color.Yellow;
+                    break;
+                case 2:
+                    btnProfil2.ForeColor = Color.Yellow;
+                    break;
+                case 3:
+                    btnProfil3.ForeColor = Color.Yellow;
+                    break;
+                default:
+                    break;
+            }
+            menu = 1;
         }
 
         private void LoadLancement()
         {
             LoadProfile();
-            btnBackProfile.Visible = false;
-            btnBackNew.Visible = false;
-            btnBackLancement.Visible = true;
+            btnBack.Visible = true;
             pnlCreation.Visible = false;
-            System.Threading.Thread.Sleep(10);
             pnlLancement.Visible = true;
+            menu = 2;
         }
 
         private void LoadNew()
         {
             pnlProfil.Visible = false;
             pnlLancement.Visible = false;
-            btnBackProfile.Visible = false;
-            btnBackLancement.Visible = false;
-            btnBackNew.Visible = true;
-            System.Threading.Thread.Sleep(10);
+            btnBack.Visible = true;
             pnlCreation.Visible = true;
+            txtPseudo.Text = "";
+            menu = 3;
         }
 
         private void btnQuit_Click(object sender, EventArgs e)
@@ -78,16 +90,25 @@ namespace pac_interface
         private void btnProfil1_Click(object sender, EventArgs e)
         {
             LoadLancement();
+            btnProfil1.ForeColor = Color.Yellow;
+            btnProfil2.ForeColor = Color.White;
+            btnProfil3.ForeColor = Color.White;
             profil = 1;
         }
         private void btnProfil2_Click(object sender, EventArgs e)
         {
             LoadLancement();
+            btnProfil1.ForeColor = Color.White;
+            btnProfil2.ForeColor = Color.Yellow;
+            btnProfil3.ForeColor = Color.White;
             profil = 2;
         }
         private void btnProfil3_Click(object sender, EventArgs e)
         {
             LoadLancement();
+            btnProfil1.ForeColor = Color.White;
+            btnProfil2.ForeColor = Color.White;
+            btnProfil3.ForeColor = Color.Yellow;
             profil = 3;
         }
 
@@ -149,25 +170,45 @@ namespace pac_interface
             }
         }
 
-        private void lblPseudo_Click(object sender, EventArgs e)
+        private void btnBack_Click(object sender, EventArgs e)
         {
-
+            switch (menu)
+            {
+                default:
+                    break;
+                case 1: //Menu profil actif
+                    LoadPrincipal();
+                    break;
+                case 2: //Menu Lancement actif
+                    profil = 0;
+                    LoadProfile();
+                    break;
+                case 3: //Menu Pseudo actif
+                    LoadLancement();
+                    break;
+            }
         }
 
-        private void btnBackProfile_Click(object sender, EventArgs e)
+        Game game;
+        private void btnLancer_Click(object sender, EventArgs e)
         {
-            LoadPrincipal();
+            if (game == null)
+            {
+                game = new Game();
+                this.Visible = false;
+                game.Show();
+                game.FormClosed += Game_FormClosed;
+            }
+            else
+            {
+                game.Activate(); 
+            }
         }
 
-        private void btnBackLancement_Click(object sender, EventArgs e)
+        private void Game_FormClosed(object? sender, FormClosedEventArgs e)
         {
-            LoadProfile();
-            profil = 0;
-        }
-
-        private void btnBackNew_Click(object sender, EventArgs e)
-        {
-            LoadLancement();
+            this.Visible = true;
+            //throw new NotImplementedException();
         }
     }
 }
