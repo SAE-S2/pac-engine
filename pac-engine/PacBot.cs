@@ -61,7 +61,6 @@ namespace pac_engine
                 // TODO: Insert en bdd
 
                 // Level de debut
-                pacbot.StartGame();
             }
             else
             {
@@ -115,6 +114,10 @@ namespace pac_engine
                         lose = true;
                         level = 11;
                     }
+                    else
+                    {
+                        pacbot.player.money -= pacbot.price;
+                    }
                 }
 
                 if (!lose)
@@ -128,7 +131,6 @@ namespace pac_engine
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine("Passage au prochain niveau ("+level+")");
-                        pacbot.player.Heal(pacbot.player.maxHealth - pacbot.player.Health);
                         Thread.Sleep(2000);
                     }
                     else
