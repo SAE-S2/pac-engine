@@ -10,7 +10,7 @@ namespace pac_engine.Core
 		{
 			// TODO: Load from db
 			maxHealth = 3.5f;
-			Health = 2.5f;
+			Health = 3.5f;
 			speed = 1.0f;
 			damage = 0.0f;
 			money = 0;
