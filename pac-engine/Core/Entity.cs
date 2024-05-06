@@ -1,5 +1,4 @@
 using pac_engine.Utils;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace pac_engine.Core
 {
@@ -20,6 +19,12 @@ namespace pac_engine.Core
         public Vector2 pos = new Vector2();
         public Game? actualGame;
 
+        /// <summary>
+        /// Entity take specified amount of <paramref name="damage"/>.
+        /// <para></para>
+        /// (<see cref="Kill"/> player if health below or equal 0)
+        /// </summary>
+        /// <returns>Damages maked</returns>
         public bool TakeDamage(float damage)
         {
             if (imortal)

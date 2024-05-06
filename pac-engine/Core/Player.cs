@@ -9,8 +9,8 @@ namespace pac_engine.Core
 		public Player()
 		{
 			// TODO: Load from db
-			maxHealth = 3.5f;
-			Health = 2.5f;
+			maxHealth = 3.0f;
+			Health = 3.0f;
 			speed = 1.0f;
 			damage = 0.0f;
 			money = 0;
