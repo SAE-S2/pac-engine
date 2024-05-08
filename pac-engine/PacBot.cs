@@ -17,7 +17,7 @@ namespace pac_engine
 		{
 			this.title = title;
 			screenSize = new Vector2(x, y);
-            Console.Title = this.title;
+            //Console.Title = this.title;
             //Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
         }
 
@@ -32,6 +32,14 @@ namespace pac_engine
         {
             string[] profils = { "Profil 1", "Profil 2" };
             return profils;
+        }
+
+        public void initializeGame()
+        {
+            name = "profil 1";
+            player = new Player();
+            price = 0;
+            bool win = StartGame();
         }
 
         static void Main()

@@ -5,7 +5,7 @@ namespace pac_engine.Core
 {
 	public class Game
     {
-        private bool playing = true;
+        private bool playing = false;
         public bool Playing
         {
             get { return playing; }
@@ -109,6 +109,11 @@ namespace pac_engine.Core
                 }
             };
 
+            return map;
+        }
+
+        public Map getMap()
+        {
             return map;
         }
 
