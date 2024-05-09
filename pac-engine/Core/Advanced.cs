@@ -46,14 +46,21 @@ class DepthFirstSearch
         // Vérification des voisins dans les 4 directions à partir du sommet
         // actuel, et ajout de ceux-ci dans la liste neighbor.
 
-        if (x >= sizeX - 23 && maze[y, x - 2] == 1)
+        if (x >= 2 && maze[y, x - 2] == 1) {
             neighbor.Add(new Tuple<int, int>(x - 2, y));
-        if (x < sizeX - 2 && maze[y, x + 2] == 1)
+        }
+        
+        if (x < sizeX - 2 && maze[y, x + 2] == 1) {
             neighbor.Add(new Tuple<int, int>(x + 2, y));
-        if (y >= sizeY - 23 && maze[y - 2, x] == 1)
+        }
+        
+        if (y >= 2 && maze[y - 2, x] == 1){
             neighbor.Add(new Tuple<int, int>(x, y - 2));
-        if (y < sizeY -2 && maze[y + 2, x] == 1)
+        }
+        
+        if (y < sizeY - 2 && maze[y + 2, x] == 1) {
             neighbor.Add(new Tuple<int, int>(x, y + 2));
+        }
 
         return neighbor;
     }
