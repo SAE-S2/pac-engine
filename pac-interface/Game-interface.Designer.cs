@@ -28,18 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
             SuspendLayout();
-            // 
-            // button1
-            // 
-            button1.Location = new Point(408, 139);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // Game
             // 
@@ -47,7 +36,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(700, 338);
-            Controls.Add(button1);
             Margin = new Padding(3, 2, 3, 2);
             Name = "Game";
             Text = "Game";
@@ -55,7 +43,5 @@
         }
 
         #endregion
-
-        private Button button1;
     }
 }

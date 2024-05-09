@@ -1,5 +1,6 @@
 ﻿using pac_engine.Utils;
 using pac_engine.Core;
+using System.Net.Security;
 
 namespace pac_engine
 {
@@ -109,10 +110,10 @@ namespace pac_engine
             pacbot.price = 0;
 
             bool lose = false;
-            int level = 1;
-            while (level < 11)
+            pacbot.ActualGame.level = 1;
+            while (pacbot.ActualGame.level < 11)
             {
-                if (level == 1)
+                if (pacbot.ActualGame.level == 1)
                 {
                     Console.WriteLine("Argent: " + pacbot.player.money);
                     Console.WriteLine("Prix de sortie: " + pacbot.price);
@@ -120,7 +121,7 @@ namespace pac_engine
                     if (pacbot.player.money < pacbot.price)
                     {
                         lose = true;
-                        level = 11;
+                        pacbot.ActualGame.level = 11;
                     }
                     else
                     {
@@ -134,16 +135,16 @@ namespace pac_engine
 
                     if (win)
                     {
-                        level++;
+                        pacbot.ActualGame.level++;
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine();
-                        Console.WriteLine("Passage au prochain niveau ("+level+")");
+                        Console.WriteLine("Passage au prochain niveau ("+pacbot.ActualGame.level+")");
                         Thread.Sleep(2000);
                     }
                     else
                     {
-                        level = 1;
+                        pacbot.ActualGame.level = 1;
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine();

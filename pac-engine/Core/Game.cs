@@ -14,6 +14,7 @@ namespace pac_engine.Core
 		public Player player;
         private int enemiesNum = 0;
         private Entity[] enemies = new Entity[10]; // TODO: Change 10???
+        public int level;
         private bool win = false;
 
         public Game(ref Player playerRef)
@@ -36,6 +37,7 @@ namespace pac_engine.Core
                     }
 
             map = new Map(tempMap, this);
+            level = 1;
             player.pos = map.spawn;
             player.SetActualGame(this);
             player.Movement(map);

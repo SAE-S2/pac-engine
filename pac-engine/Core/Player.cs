@@ -75,9 +75,9 @@ namespace pac_engine.Core
 
                     if (posChange)
                     {
-                        if (level.GetCoin(pos))
+                        if (level.EarnCoin(pos))
                             money++;
-                        else if (level.GetBolts(pos))
+                        else if (level.EarnBolt(pos))
                             bolts++;
 
                         float damage = actualGame.EnemieAtPos(pos);

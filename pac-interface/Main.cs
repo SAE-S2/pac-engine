@@ -1,4 +1,5 @@
-﻿using System;
+﻿using pac_engine;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -192,6 +193,8 @@ namespace pac_interface
         Game game;
         private void btnLancer_Click(object sender, EventArgs e)
         {
+            PacBot test = new PacBot("test", 1280, 720);
+            test.initializeGame();
             if (game == null)
             {
                 game = new Game();
@@ -203,6 +206,7 @@ namespace pac_interface
             {
                 game.Activate(); 
             }
+            game.LoadMap(test);
         }
 
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)
