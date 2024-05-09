@@ -1,11 +1,44 @@
-﻿using System.Runtime.Intrinsics.X86;
+﻿using System.Numerics;
+using System.Runtime.Intrinsics.X86;
 
 class DepthFirstSearch
 {
-    private const int sizeX = 25;
-    private const int sizeY = 25;
-    private int[,] maze = new int[sizeX, sizeY];
+    private int sizeX;
+    private int sizeY;
+    private int[,] maze;
 
+    public DepthFirstSearch(int sizeX, int sizeY)
+    {
+        if (sizeY % 2 == 0 || sizeX % 2 == 0)
+        {
+            throw new ArgumentException("Les bornes doivent etre impaires");
+        }
+        else
+        {
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
+            maze = new int[sizeX, sizeY];
+        }
+    }
+
+    public DepthFirstSearch(Vector2 size)
+    {
+        if (sizeY % 2 == 0 || sizeX % 2 == 0)
+        {
+            throw new ArgumentException("Les bornes doivent etre impaires");
+        }
+        else
+        {
+            this.sizeX = (int)size.X;
+            this.sizeY = (int)size.Y;
+            maze = new int[sizeX, sizeY];
+        }
+    }
+
+    public int[,] getMaze()
+    {
+        return maze;
+    }
 
     public void Generation()
     {
@@ -18,7 +51,6 @@ class DepthFirstSearch
             }
         }
 
-        // Generation en utilisant le parcours en profondeur
         DepthCourse(1, 1);
     }
 
@@ -46,14 +78,26 @@ class DepthFirstSearch
         // Vérification des voisins dans les 4 directions à partir du sommet
         // actuel, et ajout de ceux-ci dans la liste neighbor.
 
-        if (x >= sizeX - 23 && maze[y, x - 2] == 1)
+        if (x >= 2 && maze[y, x - 2] == 1)
+        {
             neighbor.Add(new Tuple<int, int>(x - 2, y));
+        }
+
         if (x < sizeX - 2 && maze[y, x + 2] == 1)
+        {
             neighbor.Add(new Tuple<int, int>(x + 2, y));
-        if (y >= sizeY - 23 && maze[y - 2, x] == 1)
+        }
+
+        if (y >= 2 && maze[y - 2, x] == 1)
+        {
             neighbor.Add(new Tuple<int, int>(x, y - 2));
-        if (y < sizeY -2 && maze[y + 2, x] == 1)
+        }
+
+        if (y < sizeY - 2 && maze[y + 2, x] == 1)
+        {
             neighbor.Add(new Tuple<int, int>(x, y + 2));
+        }
+
 
         return neighbor;
     }
