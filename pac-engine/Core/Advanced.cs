@@ -1,4 +1,4 @@
-﻿using System.Runtime.Intrinsics.X86;
+using System.Runtime.Intrinsics.X86;
 
 class DepthFirstSearch
 {
@@ -20,6 +20,9 @@ class DepthFirstSearch
 
         // Generation en utilisant le parcours en profondeur
         DepthCourse(1, 1);
+
+        //Gestion des impasses
+        RemoveDeadEnds();
     }
 
     private void DepthCourse(int x, int y)
@@ -67,6 +70,66 @@ class DepthFirstSearch
         }
 
         return neighbor;
+    }
+
+    private void RemoveDeadEnds()
+    {
+        Random rand = new Random();
+
+        for (int i = 1; i < sizeX - 1; i += 2) // On parcourt tout le labyrinthe hors bordure
+        {
+            for (int j = 1; j < sizeY - 1; j += 2)
+            {
+                if (maze[i, j] == 0)
+                {
+                    int countWalls = 0; // Réinitialisation du nombres de murs
+
+                    if (maze[i - 1, j] == 1)
+                    {
+                        countWalls++;
+                    }
+                    if (maze[i + 1, j] == 1)
+                    {
+                        countWalls++;
+                    }
+                    if (maze[i, j - 1] == 1)
+                    {
+                        countWalls++;
+                    }
+                    if (maze[i, j + 1] == 1) 
+                    { 
+                        countWalls++; 
+                    }
+                    
+                    if (countWalls == 3)
+                    {
+                        List<Tuple<int, int>> options = new List<Tuple<int, int>>();
+
+                        if (maze[i - 1, j] == 1 && i - 1 != 0)
+                        {
+                            options.Add(new Tuple<int, int>(i - 1, j)); // Sans compter les bordures
+                        }
+                        if (maze[i + 1, j] == 1 && i + 1 != sizeX - 1)
+                        {
+                            options.Add(new Tuple<int, int>(i + 1, j));
+                        }
+                        if (maze[i, j - 1] == 1 && j - 1 != 0)
+                        {
+                            options.Add(new Tuple<int, int>(i, j - 1));
+                        }
+                        if (maze[i, j + 1] == 1 && j + 1 != sizeY - 1)
+                        {
+                            options.Add(new Tuple<int, int>(i, j + 1));
+                        }
+
+                        int changeIndex = rand.Next(options.Count);
+                        Tuple<int, int> changeCell = options[changeIndex];
+                        maze[changeCell.Item1, changeCell.Item2] = 0; // Remplacement aléatoire d'un seul mur par
+                                                                      // une case vide.                                
+                    }
+                }
+            }
+        }
     }
 
     public void Print() // Affichage du labyrinthe
