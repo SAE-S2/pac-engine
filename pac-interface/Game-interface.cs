@@ -19,12 +19,14 @@ namespace pac_interface
     public partial class Game : Form
     {
         public const int tileSize = 64;
-        public Game()
+        public PacBot game;
+        public Game(PacBot game)
         {
             InitializeComponent();
+            this.game = game;
         }
 
-        private PictureBox placeWall(Point coords,int level, int type)
+        private PictureBox placeWall(Point coords, int level, int type)
         {
             PictureBox pictureBox = new PictureBox()
             {
@@ -35,7 +37,7 @@ namespace pac_interface
             return pictureBox;
         }
 
-        public void LoadMap(PacBot game)
+        public void LoadMap()
         {
             Map map = game.ActualGame.getMap();
             Vector2 startpos = new Vector2(0);
@@ -50,7 +52,7 @@ namespace pac_interface
                 {
                     if (map.GetWall(line, col))
                     {
-                        grid[line, col] = placeWall(new Point(col * tileSize, line * tileSize), game.ActualGame.level,map.GetWallType(line,col)); // LEVEL
+                        grid[line, col] = placeWall(new Point(col * tileSize, line * tileSize), game.ActualGame.level, map.GetWallType(line, col)); // LEVEL
                     }
                     else if (map.GetCoin(line, col))
                     {
@@ -60,7 +62,7 @@ namespace pac_interface
                             Size = new Size(tileSize, tileSize),
                             Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Coin.png")
                         };
-                    
+
                     }
                     else if (map.GetBolt(line, col))
                     {
@@ -76,6 +78,40 @@ namespace pac_interface
                 }
             }
             //Controls.Remove(grid[line, col]); -> Retirer une picturebox
+        }
+
+        private void Game_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                default:
+                    break;
+                case Keys.Z:
+                    {
+                        game.ActualGame.player.AngleChange(0);
+                        break;
+                    }
+                case Keys.Q:
+                    {
+                        game.ActualGame.player.AngleChange(1);
+                        break;
+                    }
+                case Keys.S:
+                    {
+                        game.ActualGame.player.AngleChange(2);
+                        break;
+                    }
+                case Keys.D:
+                    {
+                        game.ActualGame.player.AngleChange(3);
+                        break;
+                    }
+                case Keys.Space:
+                    {
+                        game.ActualGame.player.AngleChange(4);
+                        break;
+                    }
+            }
         }
     }
 }

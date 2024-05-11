@@ -39,6 +39,7 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "Game";
             Text = "Game";
+            KeyDown += Game_KeyDown;
             ResumeLayout(false);
         }
 

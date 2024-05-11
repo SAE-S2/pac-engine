@@ -197,7 +197,7 @@ namespace pac_interface
             test.initializeGame();
             if (game == null)
             {
-                game = new Game();
+                game = new Game(test);
                 this.Visible = false;
                 game.Show();
                 game.FormClosed += Game_FormClosed;
@@ -206,7 +206,7 @@ namespace pac_interface
             {
                 game.Activate(); 
             }
-            game.LoadMap(test);
+            game.LoadMap();
         }
 
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)
