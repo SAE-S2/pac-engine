@@ -1,15 +1,48 @@
+using System.Numerics;
 using System.Runtime.Intrinsics.X86;
 
 class DepthFirstSearch
 {
-    private const int sizeX = 25;
-    private const int sizeY = 49;
-    private int[,] maze = new int[sizeX, sizeY];
 
+    private int sizeX;
+    private int sizeY;
+    private int[,] maze;
+
+    public DepthFirstSearch(int sizeX, int sizeY)
+    {
+        if (sizeY % 2 == 0 || sizeX % 2 == 0)
+        {
+            throw new ArgumentException("Les bornes doivent etre impaires");
+        }
+        else
+        {
+            this.sizeX = sizeX;
+            this.sizeY = sizeY;
+            maze = new int[sizeX, sizeY];
+        }
+    }
+
+    public DepthFirstSearch(Vector2 size)
+    {
+        if (sizeY % 2 == 0 || sizeX % 2 == 0)
+        {
+            throw new ArgumentException("Les bornes doivent etre impaires");
+        }
+        else
+        {
+            this.sizeX = (int)size.X;
+            this.sizeY = (int)size.Y;
+            maze = new int[sizeX, sizeY];
+        }
+    }
+
+    public int[,] getMaze()
+    {
+        return maze;
+    }
 
     public void Generation()
     {
-        // Initialisation qu'avec des murs
         for (int i = 0; i < sizeX; i++)
         {
             for (int j = 0; j < sizeY; j++)
@@ -17,12 +50,8 @@ class DepthFirstSearch
                 maze[i, j] = 1;
             }
         }
-
         // Generation en utilisant le parcours en profondeur
         DepthCourse(1, 1);
-
-        //Gestion des impasses
-        RemoveDeadEnds();
     }
 
     private void DepthCourse(int x, int y)
@@ -44,10 +73,12 @@ class DepthFirstSearch
 
     private List<Tuple<int, int>> NewNeighbor(int x, int y)
     {
-        List<Tuple<int, int>> neighbor = new List<Tuple<int, int>>();
+        List<Tuple<int, int>> neighbor = new List<Tuple<int, int>>(); // Liste contenant les coordonnées des voisins non visités
+                                                                      // Vérification des voisins dans les 4 directions à partir du sommet
+                                                                      // actuel, et ajout de ceux-ci dans la liste neighbor.
 
-        // Vérification des voisins dans les 4 directions à partir du sommet actuel.
-        // Nous vérifions si les voisins sont à l'intérieur des limites du tableau.
+        // Vérification des voisins dans les 4 directions à partir du sommet
+        // actuel, et ajout de ceux-ci dans la liste neighbor.
 
         if (x >= 2 && maze[y, x - 2] == 1)
         {
@@ -69,10 +100,11 @@ class DepthFirstSearch
             neighbor.Add(new Tuple<int, int>(x, y + 2));
         }
 
+
         return neighbor;
     }
 
-    private void RemoveDeadEnds()
+    public void RemoveDeadEnds()
     {
         Random rand = new Random();
 
@@ -96,11 +128,11 @@ class DepthFirstSearch
                     {
                         countWalls++;
                     }
-                    if (maze[i, j + 1] == 1) 
-                    { 
-                        countWalls++; 
+                    if (maze[i, j + 1] == 1)
+                    {
+                        countWalls++;
                     }
-                    
+
                     if (countWalls == 3)
                     {
                         List<Tuple<int, int>> options = new List<Tuple<int, int>>();
@@ -132,7 +164,7 @@ class DepthFirstSearch
         }
     }
 
-    public void Print() // Affichage du labyrinthe
+    public void Print() //Affichage du labyrinthe
     {
         for (int i = 0; i < sizeX; i++)
         {
@@ -151,3 +183,4 @@ class DepthFirstSearch
         }
     }
 }
+
