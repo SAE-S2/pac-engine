@@ -88,8 +88,10 @@ namespace pac_engine.Core
         {
             DepthFirstSearch map = new DepthFirstSearch(25,15);
             map.Generation();
-            map.Print();
-            return map.getMaze();
+	    map.AddExit();
+	    map.RemoveDeadEnds();
+	    map.Print();
+	    map.GetMaze();
         }
 
         public (int[,], float, int, int) GetInfo()
