@@ -1,11 +1,24 @@
 using System.Numerics;
 using System.Runtime.Intrinsics.X86;
+using System;
 
+class Enemy
+{
+    public int PositionX { get; set; }
+    public int PositionY { get; set; }
+
+    public Enemy(int x, int y)
+    {
+        PositionX = x;
+        PositionY = y;
+    }
+}
 class DepthFirstSearch
 {
     private int sizeX;
     private int sizeY;
     private int[,] maze;
+    private List<Enemy> enemies = new List<Enemy>(); // Stock des ennemis
 
     public DepthFirstSearch(int sizeX, int sizeY)
     {
@@ -35,7 +48,7 @@ class DepthFirstSearch
         }
     }
 
-    public int[,] getMaze()
+    public int[,] GetMaze()
     {
         return maze;
     }
@@ -49,8 +62,11 @@ class DepthFirstSearch
                 maze[i, j] = 1;
             }
         }
+
         // Generation en utilisant le parcours en profondeur
         DepthCourse(1, 1);
+
+        GenerateEnemies();
     }
 
     public void AddExit()
@@ -58,7 +74,8 @@ class DepthFirstSearch
         Random rand = new Random();
 
         int side = rand.Next(4); // Choisir aléatoirement un bord (0: haut, 1: droite, 2: bas, 3: gauche)
-        int exitX, exitY;
+        int exitX;
+        int exitY;
 
         switch (side)
         {
@@ -68,15 +85,15 @@ class DepthFirstSearch
                 break;
             case 1: // Droite
                 exitX = sizeX - 1;
-                exitY = rand.Next(1, sizeY - 1); 
+                exitY = rand.Next(1, sizeY - 1);
                 break;
             case 2: // Bas
-                exitX = rand.Next(1, sizeX - 1); 
+                exitX = rand.Next(1, sizeX - 1);
                 exitY = sizeY - 1;
                 break;
             case 3: // Gauche
                 exitX = 0;
-                exitY = rand.Next(1, sizeY - 1); 
+                exitY = rand.Next(1, sizeY - 1);
                 break;
             default:
                 throw new InvalidOperationException("Côté invalide");
@@ -139,7 +156,6 @@ class DepthFirstSearch
         {
             neighbor.Add(new Tuple<int, int>(x, y + 2));
         }
-
 
         return neighbor;
     }
@@ -204,23 +220,60 @@ class DepthFirstSearch
         }
     }
 
-    public void Print() //Affichage du labyrinthe
+    public void GenerateEnemies()
     {
-        for (int i = 0; i < sizeX; i++)
+        Random rand = new Random();
+        int enemyCount = 0;
+
+        while (enemyCount < 3) // Limite le nombre d'ennemis à 3
         {
-            for (int j = 0; j < sizeY; j++)
+            int posX = rand.Next(1, sizeX - 1);
+            int posY = rand.Next(1, sizeY - 1);
+
+            // Vérifie que la position n'est pas un mur ni à l'extérieur des limites du labyrinthe
+            if (maze[posY, posX] == 0)
             {
-                if (maze[i, j] == 0)
+                enemies.Add(new Enemy(posX, posY));
+                enemyCount++;
+            }
+        }
+    }
+
+
+    private bool EnemyLocation(int x, int y)
+    {
+        foreach (Enemy enemy in enemies)
+        {
+            if (enemy.PositionX == x && enemy.PositionY == y)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public void Print() // Affichage du labyrinthe
+    {        
+        for (int i = 0; i < sizeY; i++)
+        {
+            for (int j = 0; j < sizeX; j++)
+            {
+                if (EnemyLocation(j, i) && maze[i, j] == 0)
                 {
-                    Console.Write("  ");
+                    Console.Write("0 "); // Si un ennemi est présent à cette position dans le labyrinthe, affiche "0".
+
+                }
+                else if (maze[i, j] == 0)
+                {
+                    Console.Write("  "); // Si la case est vide, afficher deux espaces pour représenter un chemin libre
                 }
                 else
                 {
-                    Console.Write("X ");
+                    Console.Write("X "); // Si la case n'est pas vide et n'est pas un ennemi, afficher "X" pour représenter un mur
                 }
             }
             Console.WriteLine();
         }
     }
 }
-
