@@ -22,6 +22,11 @@ namespace pac_engine.Core
             player = playerRef;
         }
 
+        public Entity[] GetEnemies()
+        {
+            return enemies;
+        }
+
         public bool Start()
         {
             int[,] tempMap = CreateMap();
