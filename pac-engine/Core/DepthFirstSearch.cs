@@ -3,7 +3,6 @@ using System.Runtime.Intrinsics.X86;
 
 class DepthFirstSearch
 {
-
     private int sizeX;
     private int sizeY;
     private int[,] maze;
@@ -52,6 +51,47 @@ class DepthFirstSearch
         }
         // Generation en utilisant le parcours en profondeur
         DepthCourse(1, 1);
+    }
+
+    public void AddExit()
+    {
+        Random rand = new Random();
+
+        int side = rand.Next(4); // Choisir aléatoirement un bord (0: haut, 1: droite, 2: bas, 3: gauche)
+        int exitX, exitY;
+
+        switch (side)
+        {
+            case 0: // Haut
+                exitX = rand.Next(1, sizeX - 1); // Éviter les coins
+                exitY = 0;
+                break;
+            case 1: // Droite
+                exitX = sizeX - 1;
+                exitY = rand.Next(1, sizeY - 1); 
+                break;
+            case 2: // Bas
+                exitX = rand.Next(1, sizeX - 1); 
+                exitY = sizeY - 1;
+                break;
+            case 3: // Gauche
+                exitX = 0;
+                exitY = rand.Next(1, sizeY - 1); 
+                break;
+            default:
+                throw new InvalidOperationException("Côté invalide");
+        }
+
+        // Vérifier si les coordonnées de sortie sont à l'intérieur des limites du labyrinthe
+        if (exitX >= 0 && exitX < sizeX && exitY >= 0 && exitY < sizeY)
+        {
+            maze[exitY, exitX] = 0; // Placer la sortie
+        }
+
+        else
+        {
+            throw new InvalidOperationException("Coordonnées de sortie en dehors des limites du labyrinthe");
+        }
     }
 
     private void DepthCourse(int x, int y)
