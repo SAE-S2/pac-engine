@@ -91,7 +91,7 @@ namespace pac_engine.Core
 	    map.AddExit();
 	    map.RemoveDeadEnds();
 	    map.Print();
-	    map.GetMaze();
+	    return map.GetMaze();
         }
 
         public (int[,], float, int, int) GetInfo()
