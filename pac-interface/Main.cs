@@ -207,6 +207,7 @@ namespace pac_interface
                 game.Activate(); 
             }
             game.LoadMap();
+            game.LoadEntities();
         }
 
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)

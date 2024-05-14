@@ -19,7 +19,10 @@ namespace pac_interface
     public partial class Game : Form
     {
         public const int tileSize = 64;
-        public PacBot game;
+        private PacBot game;
+        private PictureBox[,] grid;
+        private PictureBox PBplayer;
+        private PictureBox[] PBenemy;
         public Game(PacBot game)
         {
             InitializeComponent();
@@ -32,6 +35,7 @@ namespace pac_interface
             {
                 Location = coords,
                 Size = new Size(tileSize, tileSize),
+                SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\murs\\Level" + level.ToString() + "\\type" + type.ToString() + ".png")
             };
             return pictureBox;
@@ -40,10 +44,10 @@ namespace pac_interface
         public void LoadMap()
         {
             Map map = game.ActualGame.getMap();
-            Vector2 startpos = new Vector2(0);
+            Vector2 startpos = new Vector2(0); //TOP-LEFT corner
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
-            PictureBox[,] grid = new PictureBox[maxY, maxX];
+             grid = new PictureBox[maxY, maxX];
 
             Size = new Size((maxX + 1) * tileSize, (maxY + 1) * tileSize);
             for (int line = 0; line < maxY; line++)
@@ -60,6 +64,7 @@ namespace pac_interface
                         {
                             Location = new Point(col * tileSize, line * tileSize),
                             Size = new Size(tileSize, tileSize),
+                            SizeMode = PictureBoxSizeMode.Zoom,
                             Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Coin.png")
                         };
 
@@ -70,6 +75,7 @@ namespace pac_interface
                         {
                             Location = new Point(col * tileSize, line * tileSize),
                             Size = new Size(tileSize, tileSize),
+                            SizeMode = PictureBoxSizeMode.Zoom,
                             Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Boulon.png")
                         };
 
@@ -78,6 +84,35 @@ namespace pac_interface
                 }
             }
             //Controls.Remove(grid[line, col]); -> Retirer une picturebox
+        }
+        public void LoadEntities()
+        {
+            Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
+            PBplayer = new PictureBox()
+            {
+                Location = new Point(playerpos.y * tileSize, playerpos.x * tileSize),
+                Size = new Size(tileSize, tileSize),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
+            };
+            Controls.Add(PBplayer);
+
+            Entity[] enemy = game.ActualGame.GetEnemies();
+            PBenemy = new PictureBox[enemy.Length];
+            int i = 0;
+             while (enemy[i] != null) 
+            {
+                PBenemy[i] = new PictureBox()
+                {
+                    Location = new Point(enemy[i].pos.y * tileSize, enemy[i].pos.x * tileSize),
+                    Size = new Size(tileSize, tileSize),
+                    SizeMode= PictureBoxSizeMode.Zoom,
+                    Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
+                };
+                grid[enemy[i].pos.x, enemy[i].pos.y].Visible = false;
+                Controls.Add(PBenemy[i]);
+                i++;
+            }
         }
 
         private void Game_KeyDown(object sender, KeyEventArgs e)
