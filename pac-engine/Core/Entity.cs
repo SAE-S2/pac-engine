@@ -18,6 +18,12 @@ namespace pac_engine.Core
         public int angle = 0;
         public Vector2 pos = new Vector2();
         public Game? actualGame;
+        public event EventHandler<PositionChangedEventArgs> PositionChanged;
+
+        protected void eventPosChanged(Vector2 oldPos, Vector2 newPos)
+        {
+            PositionChanged?.Invoke(this,new PositionChangedEventArgs { Entity = this, OldPos = oldPos, NewPos = newPos });
+        }
 
         /// <summary>
         /// Entity take specified amount of <paramref name="damage"/>.
@@ -66,28 +72,31 @@ namespace pac_engine.Core
                     {
                         case 0: //Z (Haut)
                             if (level.GetWall(pos.x - 1, pos.y)) { break; }
+                            eventPosChanged(pos, new Vector2(pos.x-1, pos.y));
                             pos.x -= 1;
                             posChange = true;
                             break;
                         case 1: //Q (Gauche)
                             if (level.GetWall(pos.x, pos.y + 1)) { break; }
+                            eventPosChanged(pos, new Vector2(pos.x, pos.y + 1));
                             pos.y += 1;
                             posChange = true;
                             break;
                         case 2: //S (Bas)
                             if (level.GetWall(pos.x + 1, pos.y)) { break; }
+                            eventPosChanged(pos, new Vector2(pos.x + 1, pos.y));
                             pos.x += 1;
                             posChange = true;
                             break;
                         case 3: //D (Droite)
                             if (level.GetWall(pos.x, pos.y - 1)) { break; }
+                            eventPosChanged(pos, new Vector2(pos.x, pos.y - 1));
                             pos.y -= 1;
                             posChange = true;
                             break;
                         case 4: //STOP
                             break;
                     }
-
                     if (posChange && actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                         actualGame.player.TakeDamage(damage);
 

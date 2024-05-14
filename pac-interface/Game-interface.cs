@@ -87,7 +87,10 @@ namespace pac_interface
         }
         public void LoadEntities()
         {
+            Entity[] enemy = game.ActualGame.GetEnemies();
             Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
+            game.ActualGame.player.PositionChanged += Player_PositionChanged;
+
             PBplayer = new PictureBox()
             {
                 Location = new Point(playerpos.y * tileSize, playerpos.x * tileSize),
@@ -97,11 +100,11 @@ namespace pac_interface
             };
             Controls.Add(PBplayer);
 
-            Entity[] enemy = game.ActualGame.GetEnemies();
             PBenemy = new PictureBox[enemy.Length];
             int i = 0;
              while (enemy[i] != null) 
             {
+                enemy[i].PositionChanged += Enemy_PositionChanged;
                 PBenemy[i] = new PictureBox()
                 {
                     Location = new Point(enemy[i].pos.y * tileSize, enemy[i].pos.x * tileSize),
@@ -115,6 +118,26 @@ namespace pac_interface
             }
         }
 
+        private void Player_PositionChanged(object? sender, PositionChangedEventArgs player)
+        {
+            grid[player.OldPos.y, player.OldPos.x].Visible = true;
+            grid[player.NewPos.y, player.NewPos.x].Visible = false;
+            PBplayer.Location = new Point(player.NewPos.y * tileSize, player.NewPos.x * tileSize);
+        }
+
+        private void Enemy_PositionChanged(object? sender, PositionChangedEventArgs enemy)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Enemy_PositionChanged(sender, enemy); }));
+                return;
+            }
+
+            grid[enemy.OldPos.y, enemy.OldPos.x].Visible = true;
+            grid[enemy.NewPos.y, enemy.NewPos.x].Visible = false;
+            PBenemy[0].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
+        }
+
         private void Game_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -123,27 +146,27 @@ namespace pac_interface
                     break;
                 case Keys.Z:
                     {
-                        game.ActualGame.player.AngleChange(0);
+                        game.ActualGame.player.AngleChange(0); //Haut
                         break;
                     }
                 case Keys.Q:
                     {
-                        game.ActualGame.player.AngleChange(1);
+                        game.ActualGame.player.AngleChange(1); //Gauche
                         break;
                     }
                 case Keys.S:
                     {
-                        game.ActualGame.player.AngleChange(2);
+                        game.ActualGame.player.AngleChange(2); //Bas
                         break;
                     }
                 case Keys.D:
                     {
-                        game.ActualGame.player.AngleChange(3);
+                        game.ActualGame.player.AngleChange(3); //Droite
                         break;
                     }
                 case Keys.Space:
                     {
-                        game.ActualGame.player.AngleChange(4);
+                        game.ActualGame.player.AngleChange(4); //Stop
                         break;
                     }
             }
