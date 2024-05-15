@@ -22,7 +22,7 @@ namespace pac_engine.Core
 
         protected void eventPosChanged(Vector2 oldPos, Vector2 newPos)
         {
-            PositionChanged?.Invoke(this,new PositionChangedEventArgs { Entity = this, OldPos = oldPos, NewPos = newPos });
+            PositionChanged?.Invoke(this,new PositionChangedEventArgs { OldPos = oldPos, NewPos = newPos });
         }
 
         /// <summary>

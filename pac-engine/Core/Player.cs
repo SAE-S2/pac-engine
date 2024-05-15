@@ -17,6 +17,7 @@ namespace pac_engine.Core
 			bolts = 0;
 		}
 
+
         public new bool TakeDamage(float damage)
         {
             if (imortal)

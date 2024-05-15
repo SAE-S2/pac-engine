@@ -7,6 +7,5 @@ namespace pac_engine.Core
     {
         public Utils.Vector2 NewPos {  get; set; }
         public Utils.Vector2 OldPos { get; set; }
-        public Entity Entity { get; set; }
     }
 }

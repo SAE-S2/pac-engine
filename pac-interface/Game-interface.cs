@@ -133,6 +133,7 @@ namespace pac_interface
             {
                 grid[player.NewPos.x, player.NewPos.y].Visible = false;
             }
+            Player_angle(game.ActualGame.player.angle);
             PBplayer.Location = new Point(player.NewPos.y * tileSize, player.NewPos.x * tileSize);
         }
 
@@ -147,6 +148,31 @@ namespace pac_interface
             grid[enemy.OldPos.x, enemy.OldPos.y].Visible = true;
             grid[enemy.NewPos.x, enemy.NewPos.y].Visible = false;
             PBenemy[0].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
+        }
+
+        private void Player_angle(int angle)
+        {
+            Image image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\Pac-bot1.png");
+            switch (angle)
+            {
+                default:
+                    break;
+                case 0: //Haut
+                    image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    PBplayer.Image = image;
+                    break;
+                case 1: //Droite
+                    PBplayer.Image = image;
+                    break;
+                case 2: //Bas
+                    image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    PBplayer.Image = image;
+                    break;
+                case 3: //Gauche
+                    image.RotateFlip(RotateFlipType.Rotate180FlipY);
+                    PBplayer.Image = image;
+                    break;
+            }
         }
 
         private void Game_KeyDown(object sender, KeyEventArgs e)
