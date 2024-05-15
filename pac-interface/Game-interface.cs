@@ -120,8 +120,19 @@ namespace pac_interface
 
         private void Player_PositionChanged(object? sender, PositionChangedEventArgs player)
         {
-            grid[player.OldPos.y, player.OldPos.x].Visible = true;
-            grid[player.NewPos.y, player.NewPos.x].Visible = false;
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Player_PositionChanged(sender, player); }));
+                return;
+            }
+            if (grid[player.OldPos.x, player.OldPos.y] != null)
+            {
+                grid[player.OldPos.x, player.OldPos.y].Visible = true;
+            }
+            if (grid[player.NewPos.x, player.NewPos.y] != null)
+            {
+                grid[player.NewPos.x, player.NewPos.y].Visible = false;
+            }
             PBplayer.Location = new Point(player.NewPos.y * tileSize, player.NewPos.x * tileSize);
         }
 
@@ -133,8 +144,8 @@ namespace pac_interface
                 return;
             }
 
-            grid[enemy.OldPos.y, enemy.OldPos.x].Visible = true;
-            grid[enemy.NewPos.y, enemy.NewPos.x].Visible = false;
+            grid[enemy.OldPos.x, enemy.OldPos.y].Visible = true;
+            grid[enemy.NewPos.x, enemy.NewPos.y].Visible = false;
             PBenemy[0].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
@@ -149,9 +160,9 @@ namespace pac_interface
                         game.ActualGame.player.AngleChange(0); //Haut
                         break;
                     }
-                case Keys.Q:
+                case Keys.D:
                     {
-                        game.ActualGame.player.AngleChange(1); //Gauche
+                        game.ActualGame.player.AngleChange(1); //Droite
                         break;
                     }
                 case Keys.S:
@@ -159,9 +170,9 @@ namespace pac_interface
                         game.ActualGame.player.AngleChange(2); //Bas
                         break;
                     }
-                case Keys.D:
+                case Keys.Q:
                     {
-                        game.ActualGame.player.AngleChange(3); //Droite
+                        game.ActualGame.player.AngleChange(3); //Gauche
                         break;
                     }
                 case Keys.Space:
