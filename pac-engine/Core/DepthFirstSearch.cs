@@ -65,50 +65,46 @@ class DepthFirstSearch
 
         // Generation en utilisant le parcours en profondeur
         DepthCourse(1, 1);
+        GeneratePlayer();
 
-        GenerateEnemies();
+        int playerX = -1;
+        int playerY = -1;
+
+        for (int i = 0; i < sizeY; i++)
+        {
+            for (int j = 0; j < sizeX; j++)
+            {
+                if (GetMaze()[i, j] == 2)
+                {
+                    playerX = j;
+                    playerY = i;
+                    break;
+                }
+            }
+            if (playerX != -1 && playerY != -1)
+                break;
+        }
+
+        if (playerX == -1 || playerY == -1)
+        {
+            throw new InvalidOperationException("Impossible de trouver les coordonnées du joueur.");
+        }
+        else
+        {
+            // Générer les ennemis en passant les coordonnées du joueur en paramètres
+            GenerateEnemies(playerX, playerY);
+        }
     }
 
     public void AddExit()
     {
-        Random rand = new Random();
-
-        int side = rand.Next(4); // Choisir aléatoirement un bord (0: haut, 1: droite, 2: bas, 3: gauche)
         int exitX;
         int exitY;
 
-        switch (side)
-        {
-            case 0: // Haut
-                exitX = rand.Next(1, sizeX - 1); // Éviter les coins
-                exitY = 0;
-                break;
-            case 1: // Droite
-                exitX = sizeX - 1;
-                exitY = rand.Next(1, sizeY - 1);
-                break;
-            case 2: // Bas
-                exitX = rand.Next(1, sizeX - 1);
-                exitY = sizeY - 1;
-                break;
-            case 3: // Gauche
-                exitX = 0;
-                exitY = rand.Next(1, sizeY - 1);
-                break;
-            default:
-                throw new InvalidOperationException("Côté invalide");
-        }
+        exitX = sizeX - 1;
+        exitY = sizeY / 2 + 1;
 
-        // Vérifier si les coordonnées de sortie sont à l'intérieur des limites du labyrinthe
-        if (exitX >= 0 && exitX < sizeX && exitY >= 0 && exitY < sizeY)
-        {
-            maze[exitY, exitX] = 0; // Placer la sortie
-        }
-
-        else
-        {
-            throw new InvalidOperationException("Coordonnées de sortie en dehors des limites du labyrinthe");
-        }
+        maze[exitY, exitX] = 0; // Placer la sortie
     }
 
     private void DepthCourse(int x, int y)
@@ -220,7 +216,39 @@ class DepthFirstSearch
         }
     }
 
-    public void GenerateEnemies()
+    public void GeneratePlayer()
+    {
+        Random rand = new Random();
+        int playerX;
+        int playerY;
+        int side = rand.Next(4); // Choisir aléatoirement un bord (0: haut, 1: droite, 2: bas, 3: gauche)
+
+        switch (side)
+        {
+            case 0: // Haut
+                playerX = rand.Next(1, sizeX - 1); // Éviter les coins
+                playerY = 1;
+                break;
+            case 1: // Droite
+                playerX = sizeX - 2;
+                playerY = rand.Next(1, sizeY - 1);
+                break;
+            case 2: // Bas
+                playerX = rand.Next(1, sizeX - 1);
+                playerY = sizeY - 2;
+                break;
+            case 3: // Gauche
+                playerX = 1;
+                playerY = rand.Next(1, sizeY - 1);
+                break;
+            default:
+                throw new InvalidOperationException("Côté invalide");
+        }
+
+        maze[playerY, playerX] = 2; // 2 représente le joueur dans la matrice
+    }
+
+    public void GenerateEnemies(int playerX, int playerY)
     {
         Random rand = new Random();
         int enemyCount = 0;
@@ -231,7 +259,7 @@ class DepthFirstSearch
             int posY = rand.Next(1, sizeY - 1);
 
             // Vérifie que la position n'est pas un mur ni à l'extérieur des limites du labyrinthe
-            if (maze[posY, posX] == 0)
+            if (maze[posY, posX] == 0 && Distance(playerX, playerY, posX, posY) >= 5)
             {
                 enemies.Add(new Enemy(posX, posY));
                 enemyCount++;
@@ -239,6 +267,10 @@ class DepthFirstSearch
         }
     }
 
+    private double Distance(int x1, int y1, int x2, int y2)
+    {
+        return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
+    }
 
     private bool EnemyLocation(int x, int y)
     {
@@ -252,9 +284,8 @@ class DepthFirstSearch
         return false;
     }
 
-
-    public void Print() // Affichage du labyrinthe
-    {        
+    public void Print()
+    {
         for (int i = 0; i < sizeY; i++)
         {
             for (int j = 0; j < sizeX; j++)
@@ -262,11 +293,14 @@ class DepthFirstSearch
                 if (EnemyLocation(j, i) && maze[i, j] == 0)
                 {
                     Console.Write("0 "); // Si un ennemi est présent à cette position dans le labyrinthe, affiche "0".
-
                 }
                 else if (maze[i, j] == 0)
                 {
                     Console.Write("  "); // Si la case est vide, afficher deux espaces pour représenter un chemin libre
+                }
+                else if (maze[i, j] == 2)
+                {
+                    Console.Write("P "); // Si la case contient le joueur, afficher "P" pour le représenter
                 }
                 else
                 {
