@@ -44,6 +44,7 @@ namespace pac_interface
         public void LoadMap()
         {
             Map map = game.ActualGame.getMap();
+            map.CoinEarn += Map_CoinEarn;
             Vector2 startpos = new Vector2(0); //TOP-LEFT corner
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
@@ -85,6 +86,12 @@ namespace pac_interface
             }
             //Controls.Remove(grid[line, col]); -> Retirer une picturebox
         }
+
+        private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
+        {
+            grid[e.Pos.x, e.Pos.y].Image = null;
+        }
+
         public void LoadEntities()
         {
             Entity[] enemy = game.ActualGame.GetEnemies();

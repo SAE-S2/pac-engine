@@ -10,6 +10,12 @@ namespace pac_engine.Core
         private int coinsNumber = 0;
         private int coinsEarn = 0;
         public Vector2 door;
+        public event EventHandler<EarnCoinEventArgs> CoinEarn;
+
+        protected void CoinEarnEvent(Vector2 pos)
+        {
+            CoinEarn?.Invoke(this, new EarnCoinEventArgs { Pos = pos });
+        }
 
         public Map(int[,] mapToLoad, Game game)
         {
@@ -47,6 +53,7 @@ namespace pac_engine.Core
         {
             if (GetBolt(pos))
             {
+                CoinEarnEvent(pos);
                 map[pos.x, pos.y] = 0;
                 return true;
             }
@@ -57,6 +64,7 @@ namespace pac_engine.Core
         {
             if (map[pos.x, pos.y] == 2)
             {
+                CoinEarnEvent(pos);
                 map[pos.x, pos.y] = 0;
                 coinsEarn++;
                 if (coinsEarn > coinsNumber*0.75)
