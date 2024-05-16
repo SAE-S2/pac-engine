@@ -74,7 +74,7 @@ class DepthFirstSearch
         {
             for (int j = 0; j < sizeX; j++)
             {
-                if (GetMaze()[i, j] == 2)
+                if (i >= 0 && i < maze.GetLength(0) && j >= 0 && j < maze.GetLength(1) && GetMaze()[i, j] == 2)
                 {
                     playerX = j;
                     playerY = i;
@@ -259,7 +259,7 @@ class DepthFirstSearch
             int posY = rand.Next(1, sizeY - 1);
 
             // Vérifie que la position n'est pas un mur ni à l'extérieur des limites du labyrinthe
-            if (maze[posY, posX] == 0 && Distance(playerX, playerY, posX, posY) >= 5)
+            if (posX >= 0 && posX < sizeX && posY >= 0 && posY < sizeY && maze[posY, posX] == 0 && Distance(playerX, playerY, posX, posY) >= 5)
             {
                 enemies.Add(new Enemy(posX, posY));
                 enemyCount++;
