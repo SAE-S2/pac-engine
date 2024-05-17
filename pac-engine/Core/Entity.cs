@@ -54,33 +54,41 @@ namespace pac_engine.Core
         public async Task Movement(Map level)
         {
             bool posChange;
-            Random random = new Random();
-            int i = 0; // DEV VAR
-            int iToGo = random.Next(1, 10); ; // DEV VAR
+            int nbDeplacment = 10;
+            ShortestPath shortestPath = new ShortestPath(actualGame.map.map);
+            List<int> chemin = new List<int>();
             await Task.Run(() =>
             {
                 while (Health > 0)
                 {
+                    // Contient les angles du chemin
+                    chemin = shortestPath.FindShortestPath(pos, actualGame.player.pos);
+
+                    if (chemin == null || chemin.Count == 0)
+                        continue;
+
                     posChange = false;
+                    AngleChange(chemin[0]);
+                    chemin.RemoveAt(0);
                     switch (angle)
                     {
                         case 0: //Z (Haut)
-                            if (level.GetWall(pos.x - 1, pos.y)) { break; }
+                            if (level.GetWall((int)pos.x - 1, (int)pos.y)) { break; }
                             pos.x -= 1;
                             posChange = true;
                             break;
                         case 1: //Q (Gauche)
-                            if (level.GetWall(pos.x, pos.y + 1)) { break; }
+                            if (level.GetWall((int)pos.x, (int)pos.y + 1)) { break; }
                             pos.y += 1;
                             posChange = true;
                             break;
                         case 2: //S (Bas)
-                            if (level.GetWall(pos.x + 1, pos.y)) { break; }
+                            if (level.GetWall((int)pos.x + 1, (int)pos.y)) { break; }
                             pos.x += 1;
                             posChange = true;
                             break;
                         case 3: //D (Droite)
-                            if (level.GetWall(pos.x, pos.y - 1)) { break; }
+                            if (level.GetWall((int)pos.x, (int)pos.y - 1)) { break; }
                             pos.y -= 1;
                             posChange = true;
                             break;
@@ -91,18 +99,13 @@ namespace pac_engine.Core
                     if (posChange && actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                         actualGame.player.TakeDamage(damage);
 
-                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
+                    nbDeplacment++;
 
-                    if (i == iToGo)
-                    {
-                        i = 0;
-                        angle = random.Next(0, 3);
-                        iToGo = random.Next(1, 10);
-                    }
-                    i++;
+                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
                 }
             });
         }
+
 
         public void AngleChange(int angle)
         {

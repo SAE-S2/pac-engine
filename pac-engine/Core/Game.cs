@@ -10,9 +10,9 @@ namespace pac_engine.Core
         {
             get { return playing; }
         }
-        private Map map;
+        public Map map;
 		public Player player;
-        public int enemiesCount = 3;
+        public int enemiesCount = 1;
         private Entity[] enemies = new Entity[10]; // TODO: Change 10???
         private bool win = false;
 
