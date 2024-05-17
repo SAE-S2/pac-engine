@@ -1,24 +1,13 @@
+using pac_engine.Utils;
 using System.Numerics;
 using System.Runtime.Intrinsics.X86;
-using System;
+using Vector2 = pac_engine.Utils.Vector2;
 
-class Enemy
-{
-    public int PositionX { get; set; }
-    public int PositionY { get; set; }
-
-    public Enemy(int x, int y)
-    {
-        PositionX = x;
-        PositionY = y;
-    }
-}
 class DepthFirstSearch
 {
     private int sizeX;
     private int sizeY;
     private int[,] maze;
-    private List<Enemy> enemies = new List<Enemy>(); // Stock des ennemis
 
     public DepthFirstSearch(int sizeX, int sizeY)
     {
@@ -42,13 +31,13 @@ class DepthFirstSearch
         }
         else
         {
-            this.sizeX = (int)size.X;
-            this.sizeY = (int)size.Y;
+            this.sizeX = (int)size.x;
+            this.sizeY = (int)size.y;
             maze = new int[sizeX, sizeY];
         }
     }
 
-    public int[,] GetMaze()
+    public int[,] getMaze()
     {
         return maze;
     }
@@ -62,49 +51,30 @@ class DepthFirstSearch
                 maze[i, j] = 1;
             }
         }
-
         // Generation en utilisant le parcours en profondeur
-        DepthCourse(1, 1);
-        GeneratePlayer();
+        AddExit();
+        DepthCourse(1,1);
+        AddPlayerSpawn();
+    }
 
-        int playerX = -1;
-        int playerY = -1;
-
-        for (int i = 0; i < sizeY; i++)
+    public void AddPlayerSpawn()
+    {
+        Random coords = new Random();
+        int x = coords.Next(1, sizeX - 1);
+        int y = coords.Next(1, sizeY - 1);
+        if (maze[x,y] == 0)
         {
-            for (int j = 0; j < sizeX; j++)
-            {
-                if (i >= 0 && i < maze.GetLength(0) && j >= 0 && j < maze.GetLength(1) && GetMaze()[i, j] == 2)
-                {
-                    playerX = j;
-                    playerY = i;
-                    break;
-                }
-            }
-            if (playerX != -1 && playerY != -1)
-                break;
-        }
-
-        if (playerX == -1 || playerY == -1)
-        {
-            throw new InvalidOperationException("Impossible de trouver les coordonnées du joueur.");
+            maze[x, y] = 2;
         }
         else
         {
-            // Générer les ennemis en passant les coordonnées du joueur en paramètres
-            GenerateEnemies(playerX, playerY);
+            AddPlayerSpawn(); // Recommence jusqu'à ce que le spawn soit sur une case vide
         }
     }
 
     public void AddExit()
     {
-        int exitX;
-        int exitY;
-
-        exitX = sizeX - 1;
-        exitY = sizeY / 2 + 1;
-
-        maze[exitY, exitX] = 0; // Placer la sortie
+        maze[(sizeX - 1) / 2, (sizeY - 1)] = 4;
     }
 
     private void DepthCourse(int x, int y)
@@ -152,6 +122,7 @@ class DepthFirstSearch
         {
             neighbor.Add(new Tuple<int, int>(x, y + 2));
         }
+
 
         return neighbor;
     }
@@ -216,98 +187,63 @@ class DepthFirstSearch
         }
     }
 
-    public void GeneratePlayer()
+    public void Print() //Affichage du labyrinthe
     {
-        Random rand = new Random();
-        int playerX;
-        int playerY;
-        int side = rand.Next(4); // Choisir aléatoirement un bord (0: haut, 1: droite, 2: bas, 3: gauche)
-
-        switch (side)
+        for (int i = 0; i < sizeX; i++)
         {
-            case 0: // Haut
-                playerX = rand.Next(1, sizeX - 1); // Éviter les coins
-                playerY = 1;
-                break;
-            case 1: // Droite
-                playerX = sizeX - 2;
-                playerY = rand.Next(1, sizeY - 1);
-                break;
-            case 2: // Bas
-                playerX = rand.Next(1, sizeX - 1);
-                playerY = sizeY - 2;
-                break;
-            case 3: // Gauche
-                playerX = 1;
-                playerY = rand.Next(1, sizeY - 1);
-                break;
-            default:
-                throw new InvalidOperationException("Côté invalide");
-        }
-
-        maze[playerY, playerX] = 2; // 2 représente le joueur dans la matrice
-    }
-
-    public void GenerateEnemies(int playerX, int playerY)
-    {
-        Random rand = new Random();
-        int enemyCount = 0;
-
-        while (enemyCount < 3) // Limite le nombre d'ennemis à 3
-        {
-            int posX = rand.Next(1, sizeX - 1);
-            int posY = rand.Next(1, sizeY - 1);
-
-            // Vérifie que la position n'est pas un mur ni à l'extérieur des limites du labyrinthe
-            if (posX >= 0 && posX < sizeX && posY >= 0 && posY < sizeY && maze[posY, posX] == 0 && Distance(playerX, playerY, posX, posY) >= 5)
+            for (int j = 0; j < sizeY; j++)
             {
-                enemies.Add(new Enemy(posX, posY));
-                enemyCount++;
-            }
-        }
-    }
-
-    private double Distance(int x1, int y1, int x2, int y2)
-    {
-        return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
-    }
-
-    private bool EnemyLocation(int x, int y)
-    {
-        foreach (Enemy enemy in enemies)
-        {
-            if (enemy.PositionX == x && enemy.PositionY == y)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void Print()
-    {
-        for (int i = 0; i < sizeY; i++)
-        {
-            for (int j = 0; j < sizeX; j++)
-            {
-                if (EnemyLocation(j, i) && maze[i, j] == 0)
+                switch (maze[i, j])
                 {
-                    Console.Write("0 "); // Si un ennemi est présent à cette position dans le labyrinthe, affiche "0".
-                }
-                else if (maze[i, j] == 0)
-                {
-                    Console.Write("  "); // Si la case est vide, afficher deux espaces pour représenter un chemin libre
-                }
-                else if (maze[i, j] == 2)
-                {
-                    Console.Write("P "); // Si la case contient le joueur, afficher "P" pour le représenter
-                }
-                else
-                {
-                    Console.Write("X "); // Si la case n'est pas vide et n'est pas un ennemi, afficher "X" pour représenter un mur
+                    default:
+                        Console.Write("  ");
+                        break;
+                    case 4:
+                        Console.Write("| ");
+                        break;
+                    case 2:
+                        Console.Write("P ");
+                        break;
+                    case 5:
+                        Console.Write("E ");
+                        break;
+                    case 1:
+                        Console.Write("X ");
+                        break;
                 }
             }
             Console.WriteLine();
+        }
+    }
+
+    internal Vector2 GetPlayerSpawn()
+    {
+        for (int i = 0; i < sizeX; i++)
+        {
+            for (int j = 0; j < sizeY; j++)
+            {
+                if (maze[i,j] == 2)
+                {
+                    return new Vector2(i, j);
+                }
+            }
+        }
+        return new Vector2();
+    }
+
+    internal void GenerateEnemy()
+    {
+        Random coords = new Random();
+        int x = coords.Next(1, sizeX - 1);
+        int y = coords.Next(1, sizeY - 1);
+        Vector2 pos = new Vector2(x, y);
+        if (maze[x, y] == 0 && pos.Distance(GetPlayerSpawn())>5)
+        {
+            maze[x, y] = 5;
+        }
+        else
+        {
+            GenerateEnemy(); // Recommence jusqu'à ce que le spawn soit sur une case vide
         }
     }
 }

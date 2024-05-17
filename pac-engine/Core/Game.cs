@@ -12,7 +12,7 @@ namespace pac_engine.Core
         }
         private Map map;
 		public Player player;
-        private int enemiesNum = 0;
+        public int enemiesCount = 3;
         private Entity[] enemies = new Entity[10]; // TODO: Change 10???
         private bool win = false;
 
@@ -24,15 +24,16 @@ namespace pac_engine.Core
         public bool Start()
         {
             int[,] tempMap = CreateMap();
+            int k = 0;
             for (int i = 0; i < tempMap.GetLength(0); i++)
                 for (int j = 0; j < tempMap.GetLength(1); j++)
                     if (tempMap[i, j] == 5)
                     {
-                        enemies[enemiesNum] = new Guard();
-                        enemies[enemiesNum].angle = 3;
-                        enemies[enemiesNum].pos = new Vector2(i, j);
-                        enemies[enemiesNum].SetActualGame(this);
-                        enemiesNum++;
+                        enemies[k] = new Guard();
+                        enemies[k].angle = 3;
+                        enemies[k].pos = new Vector2(i, j);
+                        enemies[k].SetActualGame(this);
+                        k++;
                     }
 
             map = new Map(tempMap, this);
@@ -40,7 +41,7 @@ namespace pac_engine.Core
             player.SetActualGame(this);
             player.Movement(map);
 
-            for (int i = 0; i < enemiesNum; i++)
+            for (int i = 0; i < enemiesCount; i++)
                 enemies[i].Movement(map);
 
             Print();
@@ -86,12 +87,15 @@ namespace pac_engine.Core
 
         private int[,] CreateMap()
         {
-            DepthFirstSearch map = new DepthFirstSearch(25,15);
+            DepthFirstSearch map = new DepthFirstSearch(15,25);
             map.Generation();
-	    map.AddExit();
-	    map.RemoveDeadEnds();
-	    map.Print();
-	    return map.GetMaze();
+            for (int i = 0; i < enemiesCount; i++)
+            {
+                map.GenerateEnemy();
+            }
+	        map.RemoveDeadEnds();
+	        map.Print();
+	        return map.getMaze();
         }
 
         public (int[,], float, int, int) GetInfo()
@@ -102,7 +106,7 @@ namespace pac_engine.Core
         public float EnemieAtPos(Vector2 pos)
         {
             float damage = 0.0f;
-            for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
+            for (int e = 0; e < enemiesCount && enemiesCount != 0; e++)
                 if (enemies[e].pos.x == pos.x && pos.y == enemies[e].pos.y)
                     damage = enemies[e].damage;
 
@@ -156,7 +160,7 @@ namespace pac_engine.Core
                             else
                             {
                                 bool enemieAtPos = false;
-                                for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
+                                for (int e = 0; e < enemiesCount && enemiesCount != 0; e++)
                                     if (enemies[e].pos.x == i && j == enemies[e].pos.y)
                                         enemieAtPos = true;
                                 if (map[i, j] == 2 || map[i, j] == 3)
