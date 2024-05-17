@@ -19,6 +19,8 @@ namespace pac_interface
     public partial class Game : Form
     {
         public const int tileSize = 64;
+        private int coinCount = 0;
+        private Label coinCounterLabel;
         private PacBot game;
         private PictureBox[,] grid;
         private PictureBox PBplayer;
@@ -27,8 +29,41 @@ namespace pac_interface
         {
             InitializeComponent();
             this.game = game;
+
+            InitializeElements();
         }
 
+        private PictureBox Coin(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Coin.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+
+
+        private void InitializeElements()
+        {
+            coinCounterLabel = new Label()
+            {
+                Location = new Point(560, 10),
+                Size = new Size(30, 30),
+                Text = "0",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(coinCounterLabel);
+
+
+            PictureBox coin = Coin(new Point(585, 10));
+            Controls.Add(coin);
+        }
         private PictureBox placeWall(Point coords, int level, int type)
         {
             PictureBox pictureBox = new PictureBox()
