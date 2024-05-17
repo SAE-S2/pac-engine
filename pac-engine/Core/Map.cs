@@ -32,12 +32,12 @@ namespace pac_engine.Core
                             map[i, j] = 2;
                         }
                     }
-                    else if (map[i, j] == 3)
+                    else if (map[i, j] == 2)
                     {
                         spawn = new Vector2(i, j);
                         map[i, j] = 0;
                     }
-                    else if (map[i, j] == 2)
+                    else if (map[i, j] == 4)
                     {
                         door = new Vector2(i, j);
                         map[i, j] = 4;

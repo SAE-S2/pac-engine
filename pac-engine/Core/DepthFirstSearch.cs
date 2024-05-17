@@ -193,24 +193,57 @@ class DepthFirstSearch
         {
             for (int j = 0; j < sizeY; j++)
             {
-                if (maze[i, j] == 0)
+                switch (maze[i, j])
                 {
-                    Console.Write("  ");
-                }
-                else if (maze[i, j] == 2)
-                {
-                    Console.Write("P ");
-                }
-                else if (maze[i, j] == 5)
-                {
-                    Console.Write("E ");
-                }
-                else
-                {
-                    Console.Write("X ");
+                    default:
+                        Console.Write("  ");
+                        break;
+                    case 4:
+                        Console.Write("| ");
+                        break;
+                    case 2:
+                        Console.Write("P ");
+                        break;
+                    case 5:
+                        Console.Write("E ");
+                        break;
+                    case 1:
+                        Console.Write("X ");
+                        break;
                 }
             }
             Console.WriteLine();
+        }
+    }
+
+    internal Vector2 GetPlayerSpawn()
+    {
+        for (int i = 0; i < sizeX; i++)
+        {
+            for (int j = 0; j < sizeY; j++)
+            {
+                if (maze[i,j] == 2)
+                {
+                    return new Vector2(i, j);
+                }
+            }
+        }
+        return new Vector2();
+    }
+
+    internal void GenerateEnemy()
+    {
+        Random coords = new Random();
+        int x = coords.Next(1, sizeX - 1);
+        int y = coords.Next(1, sizeY - 1);
+        Vector2 pos = new Vector2(x, y);
+        if (maze[x, y] == 0 && pos.Distance(GetPlayerSpawn())>5)
+        {
+            maze[x, y] = 5;
+        }
+        else
+        {
+            GenerateEnemy(); // Recommence jusqu'à ce que le spawn soit sur une case vide
         }
     }
 }
