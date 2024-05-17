@@ -14,15 +14,17 @@ namespace pac_engine.Core
         {
             map = mapToLoad;
             Random random = new Random();
+            int BoltCount = 0;
 
             for (int i = 0; i < map.GetLength(0); i++)
                 for (int j = 0; j < map.GetLength(1); j++)
                     if (map[i, j] == 0 || map[i, j] == 5)
                     {
                         int isBolts = random.Next(1, 25);
-                        if (isBolts == 5)
+                        if (isBolts == 5 && BoltCount<=3)
                         {
                             map[i, j] = 3;
+                            BoltCount++;
                         }
                         else 
                         {

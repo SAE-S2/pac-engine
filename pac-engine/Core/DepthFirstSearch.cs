@@ -1,5 +1,7 @@
+using pac_engine.Utils;
 using System.Numerics;
 using System.Runtime.Intrinsics.X86;
+using Vector2 = pac_engine.Utils.Vector2;
 
 class DepthFirstSearch
 {
@@ -29,8 +31,8 @@ class DepthFirstSearch
         }
         else
         {
-            this.sizeX = (int)size.X;
-            this.sizeY = (int)size.Y;
+            this.sizeX = (int)size.x;
+            this.sizeY = (int)size.y;
             maze = new int[sizeX, sizeY];
         }
     }
@@ -50,48 +52,29 @@ class DepthFirstSearch
             }
         }
         // Generation en utilisant le parcours en profondeur
-        DepthCourse(1, 1);
+        AddExit();
+        DepthCourse(1,1);
+        AddPlayerSpawn();
+    }
+
+    public void AddPlayerSpawn()
+    {
+        Random coords = new Random();
+        int x = coords.Next(1, sizeX - 1);
+        int y = coords.Next(1, sizeY - 1);
+        if (maze[x,y] == 0)
+        {
+            maze[x, y] = 2;
+        }
+        else
+        {
+            AddPlayerSpawn(); // Recommence jusqu'à ce que le spawn soit sur une case vide
+        }
     }
 
     public void AddExit()
     {
-        Random rand = new Random();
-
-        int side = rand.Next(4); // Choisir aléatoirement un bord (0: haut, 1: droite, 2: bas, 3: gauche)
-        int exitX, exitY;
-
-        switch (side)
-        {
-            case 0: // Haut
-                exitX = rand.Next(1, sizeX - 1); // Éviter les coins
-                exitY = 0;
-                break;
-            case 1: // Droite
-                exitX = sizeX - 1;
-                exitY = rand.Next(1, sizeY - 1); 
-                break;
-            case 2: // Bas
-                exitX = rand.Next(1, sizeX - 1); 
-                exitY = sizeY - 1;
-                break;
-            case 3: // Gauche
-                exitX = 0;
-                exitY = rand.Next(1, sizeY - 1); 
-                break;
-            default:
-                throw new InvalidOperationException("Côté invalide");
-        }
-
-        // Vérifier si les coordonnées de sortie sont à l'intérieur des limites du labyrinthe
-        if (exitX >= 0 && exitX < sizeX && exitY >= 0 && exitY < sizeY)
-        {
-            maze[exitY, exitX] = 0; // Placer la sortie
-        }
-
-        else
-        {
-            throw new InvalidOperationException("Coordonnées de sortie en dehors des limites du labyrinthe");
-        }
+        maze[(sizeX - 1) / 2, (sizeY - 1)] = 4;
     }
 
     private void DepthCourse(int x, int y)
@@ -213,6 +196,14 @@ class DepthFirstSearch
                 if (maze[i, j] == 0)
                 {
                     Console.Write("  ");
+                }
+                else if (maze[i, j] == 2)
+                {
+                    Console.Write("P ");
+                }
+                else if (maze[i, j] == 5)
+                {
+                    Console.Write("E ");
                 }
                 else
                 {

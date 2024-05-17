@@ -5,7 +5,7 @@ namespace pac_engine.Core
 {
 	public class Game
     {
-        private bool playing = true;
+        private bool playing = false;
         public bool Playing
         {
             get { return playing; }
@@ -86,12 +86,11 @@ namespace pac_engine.Core
 
         private int[,] CreateMap()
         {
-            DepthFirstSearch map = new DepthFirstSearch(25,15);
-            map.Generation();
-	    map.AddExit();
+        DepthFirstSearch map = new DepthFirstSearch(15,25);
+        map.Generation();
 	    map.RemoveDeadEnds();
 	    map.Print();
-	    return map.GetMaze();
+	    return map.getMaze();
         }
 
         public (int[,], float, int, int) GetInfo()
