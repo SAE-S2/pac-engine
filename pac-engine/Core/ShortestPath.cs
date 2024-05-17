@@ -1,17 +1,49 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 class ShortestPath
 {
     private int[,] maze;
     private int sizeX;
     private int sizeY;
+    private List<Enemy> enemies = new List<Enemy>();
 
     public ShortestPath(int[,] maze)
     {
         this.maze = maze;
         sizeX = maze.GetLength(0);
         sizeY = maze.GetLength(1);
+    }
+
+    public ShortestPath(Vector2 size)
+    {
+        this.sizeX = (int)size.X;
+        this.sizeY = (int)size.Y;
+    }
+
+    private void MoveEnemies(string direction)
+    {
+        foreach (Enemy enemy in enemies)
+        {
+            switch (direction) // Changer la position des ennemis
+            {
+                case "Haut":
+                    enemy.PositionY -= 1;
+                    break;
+                case "Bas":
+                    enemy.PositionY += 1;
+                    break;
+                case "Gauche":
+                    enemy.PositionX -= 1;
+                    break;
+                case "Droite":
+                    enemy.PositionX += 1;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public List<string> FindShortestPath(int startX, int startY, int endX, int endY)
@@ -41,6 +73,12 @@ class ShortestPath
             // Si le nœud actuel est le nœud de destination, reconstruire le chemin et le renvoyer
             if (current.Item1 == endX && current.Item2 == endY)
             {
+                foreach (var direction in ReconstructPath(parents, current))
+                {
+                    MoveEnemies(direction);
+                }
+
+                // Retourner le chemin le plus court
                 return ReconstructPath(parents, current);
             }
 
