@@ -141,11 +141,9 @@ namespace pac_engine
                         Console.WriteLine();
                         Console.WriteLine("Vous êtes mort");
                         Console.WriteLine("Vous revenez en prison");
-                        pacbot.player.Heal(pacbot.player.maxHealth - pacbot.player.Health);
+                        pacbot.player.Health = pacbot.player.maxHealth;
                         if (pacbot.price == 0)
-                        {
                             pacbot.price += 10;
-                        }
                         pacbot.price += (int) Math.Floor(pacbot.price * 0.2);
                         Thread.Sleep(2000);
                     }

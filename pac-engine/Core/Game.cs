@@ -52,21 +52,25 @@ namespace pac_engine.Core
                 {
                     player.AngleChange(0);
                 }
-                if (input == ConsoleKey.Q)
+                else if (input == ConsoleKey.Q)
                 {
                     player.AngleChange(3);
                 }
-                if (input == ConsoleKey.S)
+                else if (input == ConsoleKey.S)
                 {
                     player.AngleChange(2);
                 }
-                if (input == ConsoleKey.D)
+                else if (input == ConsoleKey.D)
                 {
                     player.AngleChange(1);
                 }
-                if (input == ConsoleKey.Spacebar)
+                else if (input == ConsoleKey.Spacebar)
                 {
                     player.AngleChange(4);
+                }
+                else if (input == ConsoleKey.A)
+                {
+                    player.ActivePower();
                 }
             }
 
@@ -76,6 +80,24 @@ namespace pac_engine.Core
         public void PlayerDied()
         {
             playing = false;
+        }
+
+        public void EnemyDie(Entity enemy)
+        {
+            for (int i = 0; i < enemiesNum; i++)
+            {
+                if (enemies[i] == enemy)
+                {
+                    enemiesNum--;
+                    if (i < enemiesNum)
+                    {
+                        for (int j = i; j < enemiesNum; j++)
+                        {
+                            enemies[j] = enemies[j+1];
+                        }
+                    }
+                }
+            }
         }
 
         public void PlayerAtDoor()
@@ -112,35 +134,35 @@ namespace pac_engine.Core
             return map;
         }
 
-        public (int[,], float, int, int) GetInfo()
+        public (int[,], float, float, int, int) GetInfo()
         {
-            return (map.map, player.Health, player.bolts, player.money);
+            return (map.map, player.Health, player.absorption, player.bolts, player.money);
         }
 
-        public float EnemieAtPos(Vector2 pos)
+        public Entity EnemyAtPos(Vector2 pos)
         {
-            float damage = 0.0f;
+            Entity enemy = player;
             for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
                 if (enemies[e].pos.x == pos.x && pos.y == enemies[e].pos.y)
-                    damage = enemies[e].damage;
+                    enemy = enemies[e];
 
-            return damage;
+            return enemy;
         }
 
         // TODO: Delete debug function 
         public async Task Print()
         {
             int[,] map;
-            float health;
+            float health, absorption;
             int bolts, money;
 
             await Task.Run(() =>
             {
                 while (playing)
                 {
-                    (map, health, bolts, money) = GetInfo();
+                    (map, health, absorption, bolts, money) = GetInfo();
 
-                    Console.WriteLine(health + " HP  /  " + bolts + " Bolts  /  " + money + " Coins");
+                    Console.WriteLine(health + " HP /  " + absorption + " Shield /  " + bolts + " Bolts  /  " + money + " Coins");
                     Console.WriteLine();
 
                     for (int i = 0; i < map.GetLength(0); i++)

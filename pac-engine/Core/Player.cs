@@ -1,10 +1,18 @@
 ﻿using pac_engine.Utils;
 namespace pac_engine.Core
 {
-	public class Player : Entity
-	{
-		public int money;
-		public int bolts;
+    public class Player : Entity
+    {
+        public int money;
+        public int bolts;
+        public int lucky;
+        public float absorption = 0.0f;
+
+        private int selectedPower = 1;
+        private Shield shield;
+        private Invisible invisible;
+        public bool isInvisible = false;
+        private Damage damagePower;
 
 		public Player()
 		{
@@ -15,18 +23,52 @@ namespace pac_engine.Core
 			damage = 0.0f;
 			money = 0;
 			bolts = 0;
-		}
+            lucky = 0; // %
+            selectedPower = 2;
+            shield = new Shield(1);
+            damagePower = new Damage(1);
+            invisible = new Invisible(1);
+        }
+
+        public void ActivePower()
+        {
+            switch (selectedPower) {
+                case 1:
+                    shield.Active(this);
+                    break;
+                case 2:
+                    damagePower.Active(this);
+                    break;
+                case 3:
+                    invisible.Active(this);
+                    break;
+            }
+        }
 
         public new bool TakeDamage(float damage)
         {
             if (imortal)
                 return false;
 
-            Health -= damage;
+            if (absorption > damage)
+            {
+                absorption -= damage;
+                if (absorption <= 0.1f)
+                    absorption = 0.0f;
+            }
+            else
+            {
+                if (absorption >= 0.1f)
+                {
+                    damage -= absorption;
+                    absorption = 0;
+                }
 
-            if (Health <= 0.1f)
-                Kill();
+                Health -= damage;
 
+                if (Health <= 0.1f)
+                    Kill();
+            }
             return true;
         }
 
@@ -76,19 +118,34 @@ namespace pac_engine.Core
                     if (posChange)
                     {
                         if (level.GetCoin(pos))
+                        {
                             money++;
+                            Random random = new Random();
+                            int chance = random.Next(1, 100);
+                            if (lucky > chance)
+                                money++;
+                        }
                         else if (level.GetBolts(pos))
                             bolts++;
 
-                        float damage = actualGame.EnemieAtPos(pos);
-                        if (damage > 0.1f)
-                            TakeDamage(damage);
+                        Entity enemy = actualGame.EnemyAtPos(pos);
+                        if (enemy != this)
+                        {
+                            if (damage > 0.1f)
+                            {
+                                enemy.TakeDamage(damage);
+                            }
+                            else
+                            {
+                                TakeDamage(enemy.damage);
+                            }
+                        }
 
                         if (pos.x == level.door.x && pos.y == level.door.y)
                             actualGame.PlayerAtDoor();
                     }
 
-                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
+                    Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
                 }
             });
         }

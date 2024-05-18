@@ -42,7 +42,8 @@ namespace pac_engine.Core
         {
             if (imortal)
                 return false;
-            
+
+            actualGame.EnemyDie(this);
             return true;
         }
 
@@ -89,9 +90,18 @@ namespace pac_engine.Core
                     }
 
                     if (posChange && actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
-                        actualGame.player.TakeDamage(damage);
+                    {
+                        if (actualGame.player.damage > 0.1f)
+                        {
+                            TakeDamage(actualGame.player.damage);
+                        }
+                        else
+                        {
+                            actualGame.player.TakeDamage(damage);
+                        }
+                    }
 
-                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
+                    Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
 
                     if (i == iToGo)
                     {
