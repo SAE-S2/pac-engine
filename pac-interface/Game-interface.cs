@@ -18,13 +18,21 @@ namespace pac_interface
 {
     public partial class Game : Form
     {
-        public const int tileSize = 64;
+        public const int tileSize = 128;
         private int coinCount = 0;
         private Label coinCounterLabel;
+        private Label boltCounterLabel;
         private PacBot game;
         private PictureBox[,] grid;
         private PictureBox PBplayer;
         private PictureBox[] PBenemy;
+        private Panel mapPanel;
+        private Label levelLabel;
+        private int levelCount;
+        private Label scoreLabel;
+        private int scoreCount;
+        private Label powerLabel;
+
         public Game(PacBot game)
         {
             InitializeComponent();
@@ -45,14 +53,60 @@ namespace pac_interface
             return pictureBox;
         }
 
+        private PictureBox Hearth(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Coeur\\Coeur1.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
 
+        private PictureBox Bolt(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Boulon.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox Power(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Bouclier.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
 
         private void InitializeElements()
         {
+            levelCount = 1;
+            scoreCount = 1000;
+
+            PictureBox power = Power(new Point(1230, 5));
+            Controls.Add(power);
+
+            PictureBox coin = Coin(new Point(1555, 10));
+            Controls.Add(coin);
+
+            PictureBox bolt = Bolt(new Point(1490, 10));
+            Controls.Add(bolt);
+
             coinCounterLabel = new Label()
             {
-                Location = new Point(560, 10),
-                Size = new Size(30, 30),
+                Location = new Point(1535, 10),
+                Size = new Size(35, 30),
                 Text = "0",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
@@ -60,9 +114,52 @@ namespace pac_interface
             };
             Controls.Add(coinCounterLabel);
 
+            boltCounterLabel = new Label()
+            {
+                Location = new Point(1470, 10),
+                Size = new Size(35, 30),
+                Text = "0",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(boltCounterLabel);
 
-            PictureBox coin = Coin(new Point(585, 10));
-            Controls.Add(coin);
+            levelLabel = new Label()
+            {
+                Location = new Point(400, 10),
+                Size = new Size(275, 30),
+                Text = $"Niveau {levelCount}",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(levelLabel);
+
+            scoreLabel = new Label()
+            {
+                Location = new Point(750, 10),
+                Size = new Size(400, 30),
+                Text = $"Score {scoreCount}",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(scoreLabel);
+
+            powerLabel = new Label()
+            {
+                Location = new Point(1150, 10),
+                Size = new Size(400, 30),
+                Text = "00:15",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(powerLabel);
+
+            PictureBox hearth = Hearth(new Point(10, 10));
+            Controls.Add(hearth);
         }
         private PictureBox placeWall(Point coords, int level, int type)
         {
@@ -82,9 +179,18 @@ namespace pac_interface
             Vector2 startpos = new Vector2(0); //TOP-LEFT corner
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
-             grid = new PictureBox[maxY, maxX];
+            grid = new PictureBox[maxY, maxX];
+            
 
-            Size = new Size((maxX + 1) * tileSize, (maxY + 1) * tileSize);
+            mapPanel = new Panel
+            {
+                Location = new Point(200, 60),
+                Size = new Size(maxX * tileSize, maxY * tileSize),
+                BorderStyle = BorderStyle.FixedSingle 
+            };
+
+            Controls.Add(mapPanel);
+
             for (int line = 0; line < maxY; line++)
             {
                 for (int col = 0; col < maxX; col++)
@@ -115,7 +221,7 @@ namespace pac_interface
                         };
 
                     }
-                    Controls.Add(grid[line, col]);
+                    mapPanel.Controls.Add(grid[line, col]);
                 }
             }
             //Controls.Remove(grid[line, col]); -> Retirer une picturebox
@@ -133,7 +239,7 @@ namespace pac_interface
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
             };
-            Controls.Add(PBplayer);
+            mapPanel.Controls.Add(PBplayer);
 
             PBenemy = new PictureBox[enemy.Length];
             int i = 0;
@@ -148,7 +254,7 @@ namespace pac_interface
                     Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
                 };
                 grid[enemy[i].pos.x, enemy[i].pos.y].Visible = false;
-                Controls.Add(PBenemy[i]);
+                mapPanel.Controls.Add(PBenemy[i]);
                 i++;
             }
         }
