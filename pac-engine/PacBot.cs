@@ -8,7 +8,7 @@ namespace pac_engine
 	{
         private string title;
 		private Vector2 screenSize;
-        private Player player;
+        public Player player;
         public Game ActualGame;
         public string name;
         public int price;
@@ -22,10 +22,10 @@ namespace pac_engine
             //Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
         }
 
-        public bool StartGame()
+        public bool StartGame(int level)
         {
             ActualGame = new Game(ref player);
-            return ActualGame.Start();
+            return ActualGame.Start(level);
         }
 
         public string[] GetProfils()
@@ -39,7 +39,7 @@ namespace pac_engine
             name = "profil 1";
             player = new Player();
             price = 0;
-            bool win = StartGame();
+            bool win = StartGame(1);
         }
 
         static void Main()
@@ -130,7 +130,7 @@ namespace pac_engine
 
                 if (!lose)
                 {
-                    bool win = pacbot.StartGame(); // TODO: Ajouter level en param pour la génération du monde
+                    bool win = pacbot.StartGame(1);
 
                     if (win)
                     {

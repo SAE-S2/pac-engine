@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
+using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
@@ -19,7 +20,7 @@ namespace pac_interface
     public partial class Game : Form
     {
         public int tileSize = 256;
-        public Panel? pnlGame = new Panel();
+        public Panel? pnlGame;
         private PacBot game;
         private PictureBox[,]? grid;
         private PictureBox? PBplayer;
@@ -30,16 +31,37 @@ namespace pac_interface
             InitializeComponent();
             this.game = game;
             game.ActualGame.GameState += EndGame;
-            pnlGame.Visible = true;
         }
 
         private void EndGame(object? sender, GameStateEventArgs e)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { EndGame(sender, e); }));
+                return;
+            }
             Unload();
+            if (e.win)
+            {
+                game.StartGame(e.level + 1);
+                game.player.SetActualGame(game.ActualGame);
+                LoadMap();
+                LoadEntities();
+                pnlGame.Visible = true;
+            }
+            else
+            {
+                // TODO: retour hub
+            }
         }
 
         private void Game_FormClosed(object sender, FormClosedEventArgs e)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Game_FormClosed(sender, e); }));
+                return;
+            }
             Unload();
         }
 
@@ -57,6 +79,7 @@ namespace pac_interface
 
         public void LoadMap()
         {
+            pnlGame = new Panel();
             pnlGame.SuspendLayout();
             Map map = game.ActualGame.getMap();
             map.CoinEarn += Map_CoinEarn;
@@ -104,35 +127,34 @@ namespace pac_interface
             }
             pnlGame.AutoSize = true;
             Controls.Add(pnlGame);
-
-            // Redimentionnement de la map si elle dépasse de la fenêtre
+            pnlGame.Visible = true;
             pnlGame.Location = new Point( (ClientSize.Width - pnlGame.Width) / 2, (ClientSize.Height - pnlGame.Height) / 2); // Center window
             pnlGame.ResumeLayout();
         }
 
         public void Unload()
         {
-            this.Invoke(new MethodInvoker(delegate ()
+            // Désabonnement aux events
+            game.ActualGame.player.PositionChanged -= Player_PositionChanged;
+            foreach (var enemy in enemy)
             {
-                // Désabonnement aux events
-                game.ActualGame.player.PositionChanged -= Player_PositionChanged;
-                foreach (var enemy in enemy)
+                if (enemy != null)
                 {
-                    if (enemy != null)
-                    {
-                        enemy.PositionChanged -= Enemy_PositionChanged;
-                    }
+                    enemy.PositionChanged -= Enemy_PositionChanged;
                 }
-                Map map = game.ActualGame.getMap();
-                map.CoinEarn -= Map_CoinEarn;
-                map.DoorOpen -= Map_DoorOpen;
-                grid = null;
-                PBenemy = null;
-                PBplayer = null;
-                pnlGame.Visible = false;
-                pnlGame = null;
-                Controls.Remove(pnlGame);
-            }));
+            }
+            Map map = game.ActualGame.getMap();
+            map.CoinEarn -= Map_CoinEarn;
+            map.DoorOpen -= Map_DoorOpen;
+            grid = null;
+            PBenemy = null;
+            PBplayer = null;
+            pnlGame.Visible = false;
+            pnlGame = null;
+            Controls.Remove(pnlGame);
+            game.player.ResetActualGame();
+            game.player.StopMovement();
+            game.ActualGame = null;
         }
 
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)

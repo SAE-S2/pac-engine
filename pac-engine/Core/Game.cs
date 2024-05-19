@@ -29,7 +29,7 @@ namespace pac_engine.Core
             return enemies;
         }
 
-        public bool Start()
+        public bool Start(int level)
         {
             int[,] tempMap = CreateMap();
             for (int i = 0; i < tempMap.GetLength(0); i++)
@@ -44,10 +44,10 @@ namespace pac_engine.Core
                     }
 
             map = new Map(tempMap, this);
-            level = 1;
+            this.level = level;
             player.pos = map.spawn;
             player.SetActualGame(this);
-            player.Movement(map);
+            player.StartMovement(map);
 
             for (int i = 0; i < enemiesNum; i++)
                 enemies[i].Movement(map);
@@ -56,12 +56,13 @@ namespace pac_engine.Core
 
         public void PlayerDied()
         {
+            GameState?.Invoke(this, new GameStateEventArgs { win = false });
             playing = false;
         }
 
         public void PlayerAtDoor()
         {
-            GameState?.Invoke(this, new GameStateEventArgs { });
+            GameState?.Invoke(this, new GameStateEventArgs { win = true, level = level });
             win = true;
             playing = false;
         }

@@ -1,21 +1,37 @@
 ﻿using pac_engine.Utils;
 namespace pac_engine.Core
 {
-	public class Player : Entity
-	{
-		public int money;
-		public int bolts;
+    public class Player : Entity
+    {
+        public int money;
+        public int bolts;
+        private CancellationTokenSource cancellationTokenSource;
 
-		public Player()
-		{
-			// TODO: Load from db
-			maxHealth = 3.0f;
-			Health = 3.0f;
-			speed = 1.0f;
-			damage = 0.0f;
-			money = 0;
-			bolts = 0;
-		}
+        public Player()
+        {
+            // TODO: Load from db
+            maxHealth = 3.0f;
+            Health = 3.0f;
+            speed = 1.0f;
+            damage = 0.0f;
+            money = 0;
+            bolts = 0;
+        }
+
+        public void StartMovement(Map level)
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            Movement(level, cancellationTokenSource.Token);
+        }
+
+        public void StopMovement()
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+            }
+        }
+
 
 
         public new bool TakeDamage(float damage)
@@ -35,18 +51,23 @@ namespace pac_engine.Core
         {
             if (imortal)
                 return false;
-            
+
             actualGame.PlayerDied();
             return true;
         }
 
-        public new async Task Movement(Map level)
+        public async Task Movement(Map level, CancellationToken token)
         {
             bool posChange;
             await Task.Run(() =>
             {
                 while (actualGame.Playing)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        break; // Sortir de la boucle si l'annulation est demandée
+                    }
+
                     posChange = false;
                     switch (angle)
                     {
@@ -95,7 +116,8 @@ namespace pac_engine.Core
 
                     Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
                 }
-            });
+            }, token);
         }
+
     }
 }

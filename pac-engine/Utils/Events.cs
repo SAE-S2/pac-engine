@@ -21,6 +21,7 @@ namespace pac_engine.Utils
 
     public class GameStateEventArgs
     {
-
+        public bool win { get; set;}
+        public int level { get; set;}
     }
 }
