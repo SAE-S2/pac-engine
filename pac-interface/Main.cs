@@ -200,6 +200,7 @@ namespace pac_interface
                 game = new Game(test);
                 this.Visible = false;
                 game.Show();
+                game.WindowState = FormWindowState.Maximized;
                 game.FormClosed += Game_FormClosed;
             }
             else

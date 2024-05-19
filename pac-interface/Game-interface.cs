@@ -18,7 +18,8 @@ namespace pac_interface
 {
     public partial class Game : Form
     {
-        public const int tileSize = 64;
+        public int tileSize = 256;
+        public Panel pnlGame = new Panel();
         private PacBot game;
         private PictureBox[,]? grid;
         private PictureBox? PBplayer;
@@ -27,6 +28,7 @@ namespace pac_interface
         {
             InitializeComponent();
             this.game = game;
+            pnlGame.Visible = true;
         }
 
         private PictureBox placeWall(Point coords, int level, int type)
@@ -43,15 +45,18 @@ namespace pac_interface
 
         public void LoadMap()
         {
+            pnlGame.SuspendLayout();
             Map map = game.ActualGame.getMap();
             map.CoinEarn += Map_CoinEarn;
             map.DoorOpen += Map_DoorOpen;
-            Vector2 startpos = new Vector2(0); //TOP-LEFT corner
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
-             grid = new PictureBox[maxY, maxX];
+            grid = new PictureBox[maxY, maxX];
+            while (maxY * tileSize + 4 * tileSize > ClientSize.Height && maxX * tileSize + 4 * tileSize > ClientSize.Width)
+            {
+                tileSize -= 8;
+            }
 
-            Size = new Size((maxX + 1) * tileSize, (maxY + 1) * tileSize);
             for (int line = 0; line < maxY; line++)
             {
                 for (int col = 0; col < maxX; col++)
@@ -82,10 +87,15 @@ namespace pac_interface
                         };
 
                     }
-                    Controls.Add(grid[line, col]);
+                    pnlGame.Controls.Add(grid[line, col]);
                 }
             }
-            //Controls.Remove(grid[line, col]); -> Retirer une picturebox
+            pnlGame.AutoSize = true;
+            Controls.Add(pnlGame);
+
+            // Redimentionnement de la map si elle dépasse de la fenêtre
+            pnlGame.Location = new Point( (ClientSize.Width - pnlGame.Width) / 2, (ClientSize.Height - pnlGame.Height) / 2); // Center window
+            pnlGame.ResumeLayout();
         }
 
         private void Unload()
@@ -118,7 +128,7 @@ namespace pac_interface
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
             };
-            Controls.Add(PBplayer);
+            pnlGame.Controls.Add(PBplayer);
 
             PBenemy = new PictureBox[enemy.Length];
             int i = 0;
@@ -133,7 +143,7 @@ namespace pac_interface
                     Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
                 };
                 grid[enemy[i].pos.x, enemy[i].pos.y].Visible = false;
-                Controls.Add(PBenemy[i]);
+                pnlGame.Controls.Add(PBenemy[i]);
                 i++;
             }
         }
