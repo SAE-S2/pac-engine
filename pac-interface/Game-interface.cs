@@ -20,9 +20,9 @@ namespace pac_interface
     {
         public const int tileSize = 64;
         private PacBot game;
-        private PictureBox[,] grid;
-        private PictureBox PBplayer;
-        private PictureBox[] PBenemy;
+        private PictureBox[,]? grid;
+        private PictureBox? PBplayer;
+        private PictureBox[]? PBenemy;
         public Game(PacBot game)
         {
             InitializeComponent();
@@ -45,6 +45,7 @@ namespace pac_interface
         {
             Map map = game.ActualGame.getMap();
             map.CoinEarn += Map_CoinEarn;
+            map.DoorOpen += Map_DoorOpen;
             Vector2 startpos = new Vector2(0); //TOP-LEFT corner
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
@@ -85,6 +86,18 @@ namespace pac_interface
                 }
             }
             //Controls.Remove(grid[line, col]); -> Retirer une picturebox
+        }
+
+        private void Unload()
+        {
+            grid = null;
+            PBenemy = null;
+            PBplayer = null;
+        }
+
+        private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
+        {
+            grid[e.DoorPos.x, e.DoorPos.y].Image = null;
         }
 
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)

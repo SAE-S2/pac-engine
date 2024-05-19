@@ -6,15 +6,20 @@ namespace pac_engine
 {
 	public class PacBot
 	{
-		private string title;
+        private string title;
 		private Vector2 screenSize;
         private Player player;
         public Game ActualGame;
         public string name;
         public int price;
+        public event EventHandler<GameStateEventArgs> GameState;
+        protected void GameStateEvent(bool win)
+        {
+            GameState?.Invoke(this, new GameStateEventArgs { win = win });
+        }
 
 
-		public PacBot(string title, int x, int y)
+        public PacBot(string title, int x, int y)
 		{
 			this.title = title;
 			screenSize = new Vector2(x, y);
@@ -25,7 +30,6 @@ namespace pac_engine
         public bool StartGame()
         {
             ActualGame = new Game(ref player);
-
             return ActualGame.Start();
         }
 

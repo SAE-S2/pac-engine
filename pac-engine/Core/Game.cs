@@ -1,4 +1,5 @@
 ﻿using pac_engine.Utils;
+using System.ComponentModel;
 using System.Text;
 
 namespace pac_engine.Core
@@ -16,6 +17,7 @@ namespace pac_engine.Core
         private Entity[] enemies = new Entity[10]; // TODO: Change 10???
         public int level;
         private bool win = false;
+        public event EventHandler<GameStateEventArgs> GameState;
 
         public Game(ref Player playerRef)
 		{
