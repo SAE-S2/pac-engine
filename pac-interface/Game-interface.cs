@@ -19,16 +19,28 @@ namespace pac_interface
     public partial class Game : Form
     {
         public int tileSize = 256;
-        public Panel pnlGame = new Panel();
+        public Panel? pnlGame = new Panel();
         private PacBot game;
         private PictureBox[,]? grid;
         private PictureBox? PBplayer;
         private PictureBox[]? PBenemy;
+        private Entity[] enemy;
         public Game(PacBot game)
         {
             InitializeComponent();
             this.game = game;
+            game.ActualGame.GameState += EndGame;
             pnlGame.Visible = true;
+        }
+
+        private void EndGame(object? sender, GameStateEventArgs e)
+        {
+            Unload();
+        }
+
+        private void Game_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Unload();
         }
 
         private PictureBox placeWall(Point coords, int level, int type)
@@ -98,11 +110,29 @@ namespace pac_interface
             pnlGame.ResumeLayout();
         }
 
-        private void Unload()
+        public void Unload()
         {
-            grid = null;
-            PBenemy = null;
-            PBplayer = null;
+            this.Invoke(new MethodInvoker(delegate ()
+            {
+                // Désabonnement aux events
+                game.ActualGame.player.PositionChanged -= Player_PositionChanged;
+                foreach (var enemy in enemy)
+                {
+                    if (enemy != null)
+                    {
+                        enemy.PositionChanged -= Enemy_PositionChanged;
+                    }
+                }
+                Map map = game.ActualGame.getMap();
+                map.CoinEarn -= Map_CoinEarn;
+                map.DoorOpen -= Map_DoorOpen;
+                grid = null;
+                PBenemy = null;
+                PBplayer = null;
+                pnlGame.Visible = false;
+                pnlGame = null;
+                Controls.Remove(pnlGame);
+            }));
         }
 
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
@@ -117,7 +147,7 @@ namespace pac_interface
 
         public void LoadEntities()
         {
-            Entity[] enemy = game.ActualGame.GetEnemies();
+            enemy = game.ActualGame.GetEnemies();
             Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
 

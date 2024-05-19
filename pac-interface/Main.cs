@@ -214,8 +214,7 @@ namespace pac_interface
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)
         {
             game = null;
-            this.Visible = true;
-            //throw new NotImplementedException();
+            this.Show();
         }
     }
 }

@@ -61,6 +61,7 @@ namespace pac_engine.Core
 
         public void PlayerAtDoor()
         {
+            GameState?.Invoke(this, new GameStateEventArgs { });
             win = true;
             playing = false;
         }

@@ -100,7 +100,7 @@ namespace pac_engine.Core
                     if (posChange && actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                         actualGame.player.TakeDamage(damage);
 
-                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
+                    Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
 
                     if (i == iToGo)
                     {

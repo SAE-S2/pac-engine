@@ -93,7 +93,7 @@ namespace pac_engine.Core
                             actualGame.PlayerAtDoor();
                     }
 
-                    Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
+                    Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
                 }
             });
         }

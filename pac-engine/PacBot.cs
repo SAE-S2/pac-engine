@@ -12,11 +12,6 @@ namespace pac_engine
         public Game ActualGame;
         public string name;
         public int price;
-        public event EventHandler<GameStateEventArgs> GameState;
-        protected void GameStateEvent(bool win)
-        {
-            GameState?.Invoke(this, new GameStateEventArgs { win = win });
-        }
 
 
         public PacBot(string title, int x, int y)
