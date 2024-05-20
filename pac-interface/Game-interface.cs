@@ -238,21 +238,23 @@ namespace pac_interface
             pnlGame.Controls.Add(PBplayer);
 
             PBenemy = new PictureBox[enemy.Length];
-            int i = 0;
-             while (enemy[i] != null) 
+            foreach(var en in enemy)
             {
-                enemy[i].PositionChanged += Enemy_PositionChanged;
-                PBenemy[i] = new PictureBox()
+                if (en != null)
                 {
-                    Location = new Point(enemy[i].pos.y * tileSize, enemy[i].pos.x * tileSize),
-                    Size = new Size(tileSize, tileSize),
-                    SizeMode= PictureBoxSizeMode.Zoom,
-                    Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
-                };
-                grid[enemy[i].pos.x, enemy[i].pos.y].Visible = false;
-                pnlGame.Controls.Add(PBenemy[i]);
-                i++;
+                    en.PositionChanged += Enemy_PositionChanged;
+                    PBenemy[en.indice] = new PictureBox()
+                    {
+                        Location = new Point(en.pos.y * tileSize, en.pos.x * tileSize),
+                        Size = new Size(tileSize, tileSize),
+                        SizeMode = PictureBoxSizeMode.Zoom,
+                        Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
+                    };
+                    pnlGame.Controls.Add(PBenemy[en.indice]);
+                    PBenemy[en.indice].BringToFront();
+                }
             }
+            PBplayer.BringToFront();
         }
 
         private void Player_PositionChanged(object? sender, PositionChangedEventArgs player)
@@ -261,14 +263,6 @@ namespace pac_interface
             {
                 Invoke(new MethodInvoker(delegate { Player_PositionChanged(sender, player); }));
                 return;
-            }
-            if (grid[player.OldPos.x, player.OldPos.y] != null)
-            {
-                grid[player.OldPos.x, player.OldPos.y].Visible = true;
-            }
-            if (grid[player.NewPos.x, player.NewPos.y] != null)
-            {
-                grid[player.NewPos.x, player.NewPos.y].Visible = false;
             }
             Player_angle(game.ActualGame.player.angle);
             PBplayer.Location = new Point(player.NewPos.y * tileSize, player.NewPos.x * tileSize);
@@ -281,9 +275,6 @@ namespace pac_interface
                 Invoke(new MethodInvoker(delegate { Enemy_PositionChanged(sender, enemy); }));
                 return;
             }
-
-            grid[enemy.OldPos.x, enemy.OldPos.y].Visible = true;
-            grid[enemy.NewPos.x, enemy.NewPos.y].Visible = false;
             PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
