@@ -94,7 +94,6 @@ namespace pac_interface
         private void InitializeElements()
         {
             levelCount = 1;
-            scoreCount = 1000;
 
             PictureBox power = Power(new Point(1230, 5));
             Controls.Add(power);
@@ -142,7 +141,7 @@ namespace pac_interface
             {
                 Location = new Point(720, 10),
                 Size = new Size(400, 30),
-                Text = $"Score {scoreCount}",
+                Text = $"Score : {scoreCount}",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.Black
@@ -205,6 +204,7 @@ namespace pac_interface
             if (playerHP >= 0)
             {
                 heartsToRemove = 1;
+                scoreCount -= 300;
             }
 
             for (int i = 0; i < heartsToRemove; i++)
@@ -215,6 +215,8 @@ namespace pac_interface
                     hearthPanel.Controls.RemoveAt(lastIndex);
                 }
             }
+
+            UpdateScoreLabel();
         }
 
         public void LoadMap()
@@ -281,6 +283,7 @@ namespace pac_interface
             if (map.GetCoin(e.Pos.x, e.Pos.y))
             {
                 coinCount += 1;
+                scoreCount += 10;
                 coinCounterLabel.Invoke((MethodInvoker)delegate {
                     coinCounterLabel.Text = coinCount.ToString();
                 });
@@ -289,10 +292,25 @@ namespace pac_interface
             else if (map.GetBolt(e.Pos.x, e.Pos.y))
             {
                 boltCount += 1;
+                scoreCount += 100;
                 boltCounterLabel.Invoke((MethodInvoker)delegate {
                     boltCounterLabel.Text = boltCount.ToString();
                 });
             }
+            UpdateScoreLabel();
+        }
+
+        private void UpdateScoreLabel()
+        {
+            scoreLabel.Invoke((MethodInvoker)delegate {
+                scoreLabel.Text = $"Score : {scoreCount}";
+            });
+
+            // TODO
+
+            // Pouvoirs
+            // Passage de niveaux
+            // Kill des ennemis
         }
 
         public void LoadEntities()
