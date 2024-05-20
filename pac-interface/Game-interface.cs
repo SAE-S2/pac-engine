@@ -284,7 +284,7 @@ namespace pac_interface
 
             grid[enemy.OldPos.x, enemy.OldPos.y].Visible = true;
             grid[enemy.NewPos.x, enemy.NewPos.y].Visible = false;
-            PBenemy[0].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
+            PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
         private void Player_angle(int angle)

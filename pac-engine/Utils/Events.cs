@@ -7,6 +7,7 @@ namespace pac_engine.Utils
     {
         public Vector2 NewPos { get; set; }
         public Vector2 OldPos { get; set; }
+        public int indice {  get; }
     }
 
     public class EarnCoinEventArgs 

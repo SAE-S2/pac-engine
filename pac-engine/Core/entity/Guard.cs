@@ -8,6 +8,12 @@
             this.Health = 1.0f;
             this.speed = 0.9f;
             this.damage = 1.0f;
+            indice++;
+        }  
+
+        ~Guard()
+        {
+            indice--;
         }
 
         public bool CalledToPos()

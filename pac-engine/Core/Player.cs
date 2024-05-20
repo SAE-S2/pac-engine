@@ -74,25 +74,25 @@ namespace pac_engine.Core
                         case 0: //Z (Haut)
                             if (level.GetWall(pos.x - 1, pos.y)) { break; }
                             posChange = true;
-                            eventPosChanged(pos, new Vector2(pos.x - 1, pos.y));
+                            eventPosChanged(pos, new Vector2(pos.x - 1, pos.y), indice: -1);
                             pos.x -= 1;
                             break;
                         case 1: //Q (Gauche)
                             if (level.GetWall(pos.x, pos.y + 1)) { break; }
                             posChange = true;
-                            eventPosChanged(pos, new Vector2(pos.x, pos.y + 1));
+                            eventPosChanged(pos, new Vector2(pos.x, pos.y + 1), indice: -1);
                             pos.y += 1;
                             break;
                         case 2: //S (Bas)
                             if (level.GetWall(pos.x + 1, pos.y)) { break; }
                             posChange = true;
-                            eventPosChanged(pos, new Vector2(pos.x + 1, pos.y));
+                            eventPosChanged(pos, new Vector2(pos.x + 1, pos.y), indice: -1);
                             pos.x += 1;
                             break;
                         case 3: //D (Droite)
                             if (level.GetWall(pos.x, pos.y - 1)) { break; }
                             posChange = true;
-                            eventPosChanged(pos, new Vector2(pos.x, pos.y - 1));
+                            eventPosChanged(pos, new Vector2(pos.x, pos.y - 1), indice: -1);
                             pos.y -= 1;
                             break;
                         case 4: //STOP

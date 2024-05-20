@@ -1,5 +1,6 @@
 ﻿using pac_engine.Utils;
 using System.ComponentModel;
+using System.Security;
 using System.Text;
 
 namespace pac_engine.Core
@@ -56,15 +57,16 @@ namespace pac_engine.Core
 
         public void PlayerDied()
         {
-            GameState?.Invoke(this, new GameStateEventArgs { win = false });
+            win = false;
             playing = false;
+            GameState?.Invoke(this, new GameStateEventArgs { win = false });
         }
 
         public void PlayerAtDoor()
         {
-            GameState?.Invoke(this, new GameStateEventArgs { win = true, level = level });
             win = true;
             playing = false;
+            GameState.Invoke(this, new GameStateEventArgs { win = true, level = level });
         }
 
         private int[,] CreateMap()
