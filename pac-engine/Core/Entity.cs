@@ -54,21 +54,31 @@ namespace pac_engine.Core
         public async Task Movement(Map level)
         {
             bool posChange;
-            int nbDeplacment = 10;
+            int nbDeplacment = 30;
             ShortestPath shortestPath = new ShortestPath(actualGame.map.map);
-            List<int> chemin = new List<int>();
+            List<int> chemin = new List<int>(); // Contient les angles du chemins
             await Task.Run(() =>
             {
                 while (Health > 0)
                 {
-                    // Contient les angles du chemin
-                    chemin = shortestPath.FindShortestPath(pos, actualGame.player.pos);
+                    if (nbDeplacment >= 30)
+                    {
+                        chemin = shortestPath.FindShortestPath(pos.x, pos.y, actualGame.player.pos.x, actualGame.player.pos.y);
+                        nbDeplacment -= 30; //Reset compteur
+                    }
 
                     if (chemin == null || chemin.Count == 0)
+                    {
+                        nbDeplacment++;
+                        Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
                         continue;
+                    }
 
                     posChange = false;
-                    AngleChange(chemin[0]);
+                    if (chemin[0] != angle)
+                    {
+                        AngleChange(chemin[0]);
+                    }
                     chemin.RemoveAt(0);
                     switch (angle)
                     {
@@ -77,7 +87,7 @@ namespace pac_engine.Core
                             pos.x -= 1;
                             posChange = true;
                             break;
-                        case 1: //Q (Gauche)
+                        case 3: //Q (Gauche)
                             if (level.GetWall((int)pos.x, (int)pos.y + 1)) { break; }
                             pos.y += 1;
                             posChange = true;
@@ -87,7 +97,7 @@ namespace pac_engine.Core
                             pos.x += 1;
                             posChange = true;
                             break;
-                        case 3: //D (Droite)
+                        case 1: //D (Droite)
                             if (level.GetWall((int)pos.x, (int)pos.y - 1)) { break; }
                             pos.y -= 1;
                             posChange = true;

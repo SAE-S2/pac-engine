@@ -12,7 +12,7 @@ namespace pac_engine.Core
         }
         public Map map;
 		public Player player;
-        public int enemiesCount = 1;
+        public int enemiesCount = 3;
         private Entity[] enemies = new Entity[10]; // TODO: Change 10???
         private bool win = false;
 
@@ -30,7 +30,7 @@ namespace pac_engine.Core
                     if (tempMap[i, j] == 5)
                     {
                         enemies[k] = new Guard();
-                        enemies[k].angle = 3;
+                        enemies[k].angle = 4;
                         enemies[k].pos = new Vector2(i, j);
                         enemies[k].SetActualGame(this);
                         k++;
@@ -87,7 +87,7 @@ namespace pac_engine.Core
 
         private int[,] CreateMap()
         {
-            DepthFirstSearch map = new DepthFirstSearch(15,25);
+            DepthFirstSearch map = new DepthFirstSearch(25,25);
             map.Generation();
             for (int i = 0; i < enemiesCount; i++)
             {
@@ -176,7 +176,7 @@ namespace pac_engine.Core
                         Console.WriteLine();
                         Console.WriteLine();
                     }
-                    Task.Delay(150).Wait();
+                    Task.Delay(300).Wait();
                     Console.WriteLine();
                     Console.WriteLine();
                     Console.WriteLine();

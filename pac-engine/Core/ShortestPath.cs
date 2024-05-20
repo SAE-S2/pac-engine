@@ -1,9 +1,5 @@
-using pac_engine.Core;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
-using Vector2 = pac_engine.Utils.Vector2;
 
 class ShortestPath
 {
@@ -18,7 +14,7 @@ class ShortestPath
         sizeY = maze.GetLength(1);
     }
 
-    public List<int> FindShortestPath(Vector2 start, Vector2 end)
+    public List<int> FindShortestPath(int startX, int startY, int endX, int endY)
     {
         // Liste des nœuds à explorer
         var openList = new List<Tuple<int, int>>();
@@ -33,8 +29,8 @@ class ShortestPath
         var parents = new Dictionary<Tuple<int, int>, Tuple<int, int>>();
 
         // Ajouter le nœud de départ à la liste ouverte
-        openList.Add(new Tuple<int, int>(start.x, start.y));
-        gCosts[new Tuple<int, int>(start.x, start.y)] = 0;
+        openList.Add(new Tuple<int, int>(startX, startY));
+        gCosts[new Tuple<int, int>(startX, startY)] = 0;
 
         // Tant que la liste ouverte n'est pas vide
         while (openList.Count > 0)
@@ -43,9 +39,8 @@ class ShortestPath
             var current = FindLowestCostNode(openList, gCosts);
 
             // Si le nœud actuel est le nœud de destination, reconstruire le chemin et le renvoyer
-            if (current.Item1 == end.x && current.Item2 == end.y)
+            if (current.Item1 == endX && current.Item2 == endY)
             {
-                // Retourner le chemin le plus court
                 return ReconstructPath(parents, current);
             }
 
@@ -117,13 +112,13 @@ class ShortestPath
         var neighbors = new List<Tuple<int, int>>();
 
         // Ajouter les voisins qui sont des cases vides
-        if (x > 0 && maze[x - 1, y] == 0 || x > 0 && maze[x - 1, y] == 2)
+        if (x > 0 && (maze[x - 1, y] == 0 || maze[x - 1, y] == 2 || maze[x - 1, y] == 3))
             neighbors.Add(new Tuple<int, int>(x - 1, y));
-        if (x < sizeX - 1 && maze[x + 1, y] == 0 || x < sizeX-1 && maze[x + 1, y] == 2)
+        if (x < sizeX - 1 && (maze[x + 1, y] == 0 || maze[x + 1, y] == 2 || maze[x + 1, y] == 3))
             neighbors.Add(new Tuple<int, int>(x + 1, y));
-        if (y > 0 && maze[x, y - 1] == 0 || y > 0 && maze[x, y - 1] == 2)
+        if (y > 0 && (maze[x, y - 1] == 0 || maze[x, y - 1] == 2 || maze[x, y - 1] == 3))
             neighbors.Add(new Tuple<int, int>(x, y - 1));
-        if (y < sizeY - 1 && maze[x, y + 1] == 0 || y < sizeY - 1 && maze[x, y + 1] == 2)
+        if (y < sizeY - 1 && (maze[x, y + 1] == 0 || maze[x, y + 1] == 2 || maze[x, y + 1] == 3))
             neighbors.Add(new Tuple<int, int>(x, y + 1));
 
         return neighbors;
