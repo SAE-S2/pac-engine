@@ -5,8 +5,9 @@ namespace pac_engine.Core
 	{
 		public int money;
 		public int bolts;
+        public event EventHandler<DamageEventArgs> DamageTaken;
 
-		public Player()
+        public Player()
 		{
 			// TODO: Load from db
 			maxHealth = 3.0f;
@@ -24,6 +25,7 @@ namespace pac_engine.Core
                 return false;
 
             Health -= damage;
+            DamageTaken?.Invoke(this, new DamageEventArgs { playerHP = Health });
 
             if (Health <= 0.1f)
                 Kill();

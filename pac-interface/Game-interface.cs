@@ -180,6 +180,11 @@ namespace pac_interface
             return pictureBox;
         }
 
+        private void Player_DamageTaken(object? sender, DamageEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         public void LoadMap()
         {
             Map map = game.ActualGame.getMap();
@@ -263,6 +268,7 @@ namespace pac_interface
             Entity[] enemy = game.ActualGame.GetEnemies();
             Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
+            game.ActualGame.player.DamageTaken += Player_DamageTaken;
 
             PBplayer = new PictureBox()
             {
