@@ -33,6 +33,7 @@ namespace pac_interface
         private Label scoreLabel;
         private int scoreCount;
         private Label powerLabel;
+        private Panel hearthPanel;
 
         public Game(PacBot game)
         {
@@ -159,15 +160,24 @@ namespace pac_interface
             };
             Controls.Add(powerLabel);
 
+            hearthPanel = new Panel
+            {
+                Location = new Point(10, 10),
+                Size = new Size(130, 80)
+            };
+
+            Controls.Add(hearthPanel);
+
             PictureBox hearth1 = Hearth(new Point(10, 10));
-            Controls.Add(hearth1);
+            hearthPanel.Controls.Add(hearth1);
 
             PictureBox hearth2 = Hearth(new Point(50, 10));
-            Controls.Add(hearth2);
+            hearthPanel.Controls.Add(hearth2);
 
             PictureBox hearth3 = Hearth(new Point(90, 10));
-            Controls.Add(hearth3);
+            hearthPanel.Controls.Add(hearth3);
         }
+
         private PictureBox placeWall(Point coords, int level, int type)
         {
             PictureBox pictureBox = new PictureBox()
@@ -182,7 +192,29 @@ namespace pac_interface
 
         private void Player_DamageTaken(object? sender, DamageEventArgs e)
         {
-            throw new NotImplementedException();
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() => Player_DamageTaken(sender, e)));
+                return;
+            }
+
+            float playerHP = e.playerHP;
+
+            int heartsToRemove = 0;
+
+            if (playerHP >= 0)
+            {
+                heartsToRemove = 1;
+            }
+
+            for (int i = 0; i < heartsToRemove; i++)
+            {
+                int lastIndex = hearthPanel.Controls.Count - 1;
+                if (lastIndex >= 0)
+                {
+                    hearthPanel.Controls.RemoveAt(lastIndex);
+                }
+            }
         }
 
         public void LoadMap()
