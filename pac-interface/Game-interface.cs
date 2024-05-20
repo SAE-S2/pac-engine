@@ -25,7 +25,7 @@ namespace pac_interface
         private PictureBox[,]? grid;
         private PictureBox? PBplayer;
         private PictureBox[]? PBenemy;
-        private Entity[] enemy;
+        private Entity[]? enemy;
         public Game(PacBot game)
         {
             InitializeComponent();
@@ -136,28 +136,78 @@ namespace pac_interface
         {
             // Désabonnement aux events
             game.ActualGame.player.PositionChanged -= Player_PositionChanged;
-            foreach (var enemy in enemy)
+
+            if (enemy != null)
             {
-                if (enemy != null)
+                foreach (var en in enemy)
                 {
-                    enemy.PositionChanged -= Enemy_PositionChanged;
+                    if (en != null)
+                    {
+                        en.PositionChanged -= Enemy_PositionChanged;
+                    }
                 }
             }
+
             Map map = game.ActualGame.getMap();
-            map.CoinEarn -= Map_CoinEarn;
-            map.DoorOpen -= Map_DoorOpen;
+            if (map != null)
+            {
+                map.CoinEarn -= Map_CoinEarn;
+                map.DoorOpen -= Map_DoorOpen;
+            }
+
             game.ActualGame.GameState -= EndGame;
 
+            // Dispose PictureBoxes
+            if (grid != null)
+            {
+                foreach (var pictureBox in grid)
+                {
+                    if (pictureBox != null)
+                    {
+                        pictureBox.Image?.Dispose();
+                        pictureBox.Dispose();
+                    }
+                }
+            }
+
+            if (PBplayer != null)
+            {
+                PBplayer.Image?.Dispose();
+                PBplayer.Dispose();
+                PBplayer = null;
+            }
+
+            if (PBenemy != null)
+            {
+                foreach (var pb in PBenemy)
+                {
+                    if (pb != null)
+                    {
+                        pb.Image?.Dispose();
+                        pb.Dispose();
+                    }
+                }
+                PBenemy = null;
+            }
+
+            if (pnlGame != null)
+            {
+                Controls.Remove(pnlGame);
+                pnlGame.Dispose();
+                pnlGame = null;
+            }
+
             grid = null;
-            PBenemy = null;
-            PBplayer = null;
-            pnlGame.Visible = false;
-            pnlGame = null;
-            Controls.Remove(pnlGame);
             game.player.ResetActualGame();
             game.player.StopMovement();
             game.ActualGame = null;
+
+            // Forcer le garbage collector pour libérer la mémoire
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
         }
+
 
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
         {
