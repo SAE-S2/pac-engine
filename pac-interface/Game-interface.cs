@@ -1,4 +1,4 @@
-﻿using pac_engine;
+﻿﻿using pac_engine;
 using pac_engine.Core;
 using pac_engine.Utils;
 using System;
@@ -21,6 +21,7 @@ namespace pac_interface
         public const int tileSize = 128;
         private int coinCount = 0;
         private Label coinCounterLabel;
+        private int boltCount = 0;
         private Label boltCounterLabel;
         private PacBot game;
         private PictureBox[,] grid;
@@ -105,9 +106,9 @@ namespace pac_interface
 
             coinCounterLabel = new Label()
             {
-                Location = new Point(1535, 10),
-                Size = new Size(35, 30),
-                Text = "0",
+                Location = new Point(1527, 10),
+                Size = new Size(50, 30),
+                Text = $"{coinCount}",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.Black
@@ -116,8 +117,8 @@ namespace pac_interface
 
             boltCounterLabel = new Label()
             {
-                Location = new Point(1470, 10),
-                Size = new Size(35, 30),
+                Location = new Point(1462, 10),
+                Size = new Size(50, 30),
                 Text = "0",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
@@ -138,7 +139,7 @@ namespace pac_interface
 
             scoreLabel = new Label()
             {
-                Location = new Point(750, 10),
+                Location = new Point(720, 10),
                 Size = new Size(400, 30),
                 Text = $"Score {scoreCount}",
                 Font = new Font("Arial", 16, FontStyle.Bold),
@@ -158,8 +159,14 @@ namespace pac_interface
             };
             Controls.Add(powerLabel);
 
-            PictureBox hearth = Hearth(new Point(10, 10));
-            Controls.Add(hearth);
+            PictureBox hearth1 = Hearth(new Point(10, 10));
+            Controls.Add(hearth1);
+
+            PictureBox hearth2 = Hearth(new Point(50, 10));
+            Controls.Add(hearth2);
+
+            PictureBox hearth3 = Hearth(new Point(90, 10));
+            Controls.Add(hearth3);
         }
         private PictureBox placeWall(Point coords, int level, int type)
         {
@@ -176,6 +183,7 @@ namespace pac_interface
         public void LoadMap()
         {
             Map map = game.ActualGame.getMap();
+            map.CoinEarn += Map_CoinEarn;
             Vector2 startpos = new Vector2(0); //TOP-LEFT corner
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
@@ -226,6 +234,30 @@ namespace pac_interface
             }
             //Controls.Remove(grid[line, col]); -> Retirer une picturebox
         }
+
+        private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
+        {
+            Map map = game.ActualGame.getMap();
+
+            grid[e.Pos.x, e.Pos.y].Image = null;
+
+            if (map.GetCoin(e.Pos.x, e.Pos.y))
+            {
+                coinCount += 1;
+                coinCounterLabel.Invoke((MethodInvoker)delegate {
+                    coinCounterLabel.Text = coinCount.ToString();
+                });
+            }
+
+            else if (map.GetBolt(e.Pos.x, e.Pos.y))
+            {
+                boltCount += 1;
+                boltCounterLabel.Invoke((MethodInvoker)delegate {
+                    boltCounterLabel.Text = boltCount.ToString();
+                });
+            }
+        }
+
         public void LoadEntities()
         {
             Entity[] enemy = game.ActualGame.GetEnemies();

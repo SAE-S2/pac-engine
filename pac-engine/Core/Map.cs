@@ -10,6 +10,12 @@ namespace pac_engine.Core
         private int coinsNumber = 0;
         private int coinsEarn = 0;
         public Vector2 door;
+        public event EventHandler<EarnCoinEventArgs> CoinEarn;
+
+        protected void CoinEarnEvent(Vector2 pos)
+        {
+            CoinEarn?.Invoke(this, new EarnCoinEventArgs { Pos = pos });
+        }
 
         public Map(int[,] mapToLoad, Game game)
         {
@@ -25,7 +31,7 @@ namespace pac_engine.Core
                         {
                             map[i, j] = 3;
                         }
-                        else 
+                        else
                         {
                             coinsNumber++;
                             map[i, j] = 2;
@@ -47,6 +53,7 @@ namespace pac_engine.Core
         {
             if (GetBolt(pos))
             {
+                CoinEarnEvent(pos);
                 map[pos.x, pos.y] = 0;
                 return true;
             }
@@ -57,9 +64,10 @@ namespace pac_engine.Core
         {
             if (map[pos.x, pos.y] == 2)
             {
+                CoinEarnEvent(pos);
                 map[pos.x, pos.y] = 0;
                 coinsEarn++;
-                if (coinsEarn > coinsNumber*0.75)
+                if (coinsEarn > coinsNumber * 0.75)
                 {
                     map[door.x, door.y] = 0;
                 }
@@ -171,7 +179,7 @@ namespace pac_engine.Core
 
         public bool GetVoid(int x, int y)
         {
-            return (GetBolt(x,y) || GetCoin(x,y) || map[x,y]==0);
+            return (GetBolt(x, y) || GetCoin(x, y) || map[x, y] == 0);
         }
 
         public bool GetBolt(Vector2 pos)
@@ -199,9 +207,9 @@ namespace pac_engine.Core
             return (map[pos.x, pos.y] == 1 || map[pos.x, pos.y] == 4);
         }
 
-        public bool GetWall(int x,int y)
+        public bool GetWall(int x, int y)
         {
-            return (map[x,y] == 1 || map[x, y] == 4);
+            return (map[x, y] == 1 || map[x, y] == 4);
         }
     }
 }
