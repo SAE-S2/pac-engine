@@ -99,7 +99,17 @@ namespace pac_interface
             {
                 for (int col = 0; col < maxX; col++)
                 {
-                    if (map.GetWall(line, col))
+                    if (map.door.x == line && map.door.y == col)
+                    {
+                        grid[line, col] = new PictureBox()
+                        {
+                            Location = new Point(col * tileSize, line * tileSize),
+                            Size = new Size(tileSize, tileSize),
+                            SizeMode = PictureBoxSizeMode.Zoom,
+                            Image = Image.FromFile("..\\..\\..\\Resources\\murs\\door.png")
+                        };
+                    }
+                    else if (map.GetWall(line, col))
                     {
                         grid[line, col] = placeWall(new Point(col * tileSize, line * tileSize), game.ActualGame.level, map.GetWallType(line, col)); // LEVEL
                     }
@@ -123,7 +133,6 @@ namespace pac_interface
                             SizeMode = PictureBoxSizeMode.Zoom,
                             Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Boulon.png")
                         };
-
                     }
                     pnlGame.Controls.Add(grid[line, col]);
                 }

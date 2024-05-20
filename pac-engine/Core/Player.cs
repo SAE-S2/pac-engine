@@ -72,25 +72,25 @@ namespace pac_engine.Core
                     switch (angle)
                     {
                         case 0: //Z (Haut)
-                            if (level.GetWall(pos.x - 1, pos.y)) { break; }
+                            if (level.GetWall(pos.x - 1, pos.y) && level.map[pos.x - 1, pos.y] != 6) { break; }
                             posChange = true;
                             eventPosChanged(pos, new Vector2(pos.x - 1, pos.y), indice: -1);
                             pos.x -= 1;
                             break;
                         case 1: //Q (Gauche)
-                            if (level.GetWall(pos.x, pos.y + 1)) { break; }
+                            if (level.GetWall(pos.x, pos.y + 1) && level.map[pos.x, pos.y + 1] != 6) { break; }
                             posChange = true;
                             eventPosChanged(pos, new Vector2(pos.x, pos.y + 1), indice: -1);
                             pos.y += 1;
                             break;
                         case 2: //S (Bas)
-                            if (level.GetWall(pos.x + 1, pos.y)) { break; }
+                            if (level.GetWall(pos.x + 1, pos.y) && level.map[pos.x + 1, pos.y] != 6) { break; }
                             posChange = true;
                             eventPosChanged(pos, new Vector2(pos.x + 1, pos.y), indice: -1);
                             pos.x += 1;
                             break;
                         case 3: //D (Droite)
-                            if (level.GetWall(pos.x, pos.y - 1)) { break; }
+                            if (level.GetWall(pos.x, pos.y - 1) && level.map[pos.x, pos.y - 1] != 6) { break; }
                             posChange = true;
                             eventPosChanged(pos, new Vector2(pos.x, pos.y - 1), indice: -1);
                             pos.y -= 1;

@@ -75,7 +75,7 @@ namespace pac_engine.Core
                 coinsEarn++;
                 if (coinsEarn > coinsNumber*0.75)
                 {
-                    map[door.x, door.y] = 0;
+                    map[door.x, door.y] = 6;
                     DoorOpenEvent(door);
                 }
                 return true;
@@ -89,6 +89,19 @@ namespace pac_engine.Core
             int maxY = map.GetLength(0);
             int maxX = map.GetLength(1);
             // Bordures de map
+
+            // Door
+            if (door.y == 0 || door.y == maxY - 1)
+            {
+                if (x == door.x - 1) return 14;
+                else if (x == door.x + 1) return 12;
+            }
+
+            if (door.x == 0 || door.x == maxX - 1)
+            {
+                if (y == door.y - 1) return 11;
+                else if (y == door.y + 1) return 13;
+            }
 
             // Bordure haut
             if (y == 0)
@@ -186,7 +199,7 @@ namespace pac_engine.Core
 
         public bool GetVoid(int x, int y)
         {
-            return (GetBolt(x,y) || GetCoin(x,y) || map[x,y]==0);
+            return (GetBolt(x,y) || GetCoin(x,y) || map[x,y]==0 || GetDoor(x, y));
         }
 
         public bool GetBolt(Vector2 pos)
@@ -199,24 +212,19 @@ namespace pac_engine.Core
             return (map[x, y] == 3);
         }
 
-        public bool GetCoin(Vector2 pos)
-        {
-            return (map[pos.x, pos.y] == 2);
-        }
-
         public bool GetCoin(int x, int y)
         {
             return (map[x, y] == 2);
         }
 
-        public bool GetWall(Vector2 pos)
-        {
-            return (map[pos.x, pos.y] == 1 || map[pos.x, pos.y] == 4);
-        }
-
         public bool GetWall(int x,int y)
         {
-            return (map[x,y] == 1 || map[x, y] == 4);
+            return (map[x,y] == 1 || map[x, y] == 4 || map[x,y] == 6);
+        }
+
+        public bool GetDoor(int x,int y)
+        {
+            return (map[x,y] == 4);
         }
     }
 }
