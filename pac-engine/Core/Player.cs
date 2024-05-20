@@ -51,8 +51,8 @@ namespace pac_engine.Core
         {
             if (imortal)
                 return false;
-
-            actualGame.PlayerDied();
+            if (actualGame != null)
+                actualGame.PlayerDied();
             return true;
         }
 
@@ -61,7 +61,7 @@ namespace pac_engine.Core
             bool posChange;
             await Task.Run(() =>
             {
-                while (actualGame.Playing)
+                while (actualGame != null && actualGame.Playing)
                 {
                     if (token.IsCancellationRequested)
                     {

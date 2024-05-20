@@ -61,7 +61,10 @@ namespace pac_interface
                 Invoke(new MethodInvoker(delegate { Game_FormClosed(sender, e); }));
                 return;
             }
-            Unload();
+            if (game.ActualGame != null)
+            {
+                Unload();
+            }
         }
 
         private PictureBox placeWall(Point coords, int level, int type)
@@ -311,35 +314,38 @@ namespace pac_interface
 
         private void Game_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (game.ActualGame != null && game.ActualGame.Playing)
             {
-                default:
-                    break;
-                case Keys.Z:
-                    {
-                        game.ActualGame.player.AngleChange(0); //Haut
+                switch (e.KeyCode)
+                {
+                    default:
                         break;
-                    }
-                case Keys.D:
-                    {
-                        game.ActualGame.player.AngleChange(1); //Droite
-                        break;
-                    }
-                case Keys.S:
-                    {
-                        game.ActualGame.player.AngleChange(2); //Bas
-                        break;
-                    }
-                case Keys.Q:
-                    {
-                        game.ActualGame.player.AngleChange(3); //Gauche
-                        break;
-                    }
-                case Keys.Space:
-                    {
-                        game.ActualGame.player.AngleChange(4); //Stop
-                        break;
-                    }
+                    case Keys.Z:
+                        {
+                            game.ActualGame.player.AngleChange(0); //Haut
+                            break;
+                        }
+                    case Keys.D:
+                        {
+                            game.ActualGame.player.AngleChange(1); //Droite
+                            break;
+                        }
+                    case Keys.S:
+                        {
+                            game.ActualGame.player.AngleChange(2); //Bas
+                            break;
+                        }
+                    case Keys.Q:
+                        {
+                            game.ActualGame.player.AngleChange(3); //Gauche
+                            break;
+                        }
+                    case Keys.Space:
+                        {
+                            game.ActualGame.player.AngleChange(4); //Stop
+                            break;
+                        }
+                }
             }
         }
     }
