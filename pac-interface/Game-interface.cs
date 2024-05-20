@@ -30,7 +30,6 @@ namespace pac_interface
         {
             InitializeComponent();
             this.game = game;
-            game.ActualGame.GameState += EndGame;
         }
 
         private void EndGame(object? sender, GameStateEventArgs e)
@@ -79,6 +78,7 @@ namespace pac_interface
 
         public void LoadMap()
         {
+            game.ActualGame.GameState += EndGame;
             pnlGame = new Panel();
             pnlGame.SuspendLayout();
             Map map = game.ActualGame.getMap();
@@ -146,6 +146,8 @@ namespace pac_interface
             Map map = game.ActualGame.getMap();
             map.CoinEarn -= Map_CoinEarn;
             map.DoorOpen -= Map_DoorOpen;
+            game.ActualGame.GameState -= EndGame;
+
             grid = null;
             PBenemy = null;
             PBplayer = null;
