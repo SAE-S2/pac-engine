@@ -31,21 +31,20 @@ public class Entity
             return false;
 
         Health -= damage;
-
-        if (Health <= 0.1f)
-            Kill();
-
         return true;
     }
 
     public bool Kill()
-    {
-        if (imortal)
-            return false;
+        {
+            if (imortal)
+                return false;
 
-        // Handle the killing logic here
-        return true;
-    }
+            actualGame.EnemyDie(this);
+            return true;
+        }
+
+        if (Health <= 0.1f)
+            Kill();
 
     public void Heal(float health)
     {
@@ -89,14 +88,21 @@ public class Entity
                     case 4: // Stop
                         break;
                 }
-
+              
                 if (posChange)
                 {
                     eventPosChanged(oldPos, pos, indice);
 
                     if (actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                     {
-                        actualGame.player.TakeDamage(damage);
+                        if (actualGame.player.damage > 0.1f)
+                        {
+                            TakeDamage(actualGame.player.damage);
+                        }
+                        else
+                        {
+                            actualGame.player.TakeDamage(damage);
+                        }
                     }
                 }
 

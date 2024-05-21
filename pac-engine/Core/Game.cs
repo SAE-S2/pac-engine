@@ -41,6 +41,10 @@ public class Game
                     enemies[enemiesNum].SetActualGame(this);
                     enemiesNum++;
                 }
+                else if (input == ConsoleKey.A)
+                {
+                    player.ActivePower();
+                }
             }
         }
 
@@ -49,12 +53,29 @@ public class Game
         player.pos = map.spawn;
         player.SetActualGame(this);
         player.StartMovement(map);
-
         for (int i = 0; i < enemiesNum; i++)
         {
             _ = enemies[i].Movement(map); // start the movement asynchronously
         }
         return win;
+    }
+
+    public void EnemyDie(Entity enemy)
+    {
+        for (int i = 0; i < enemiesNum; i++)
+        {
+            if (enemies[i] == enemy)
+            {
+                enemiesNum--;
+                if (i < enemiesNum)
+                {
+                    for (int j = i; j < enemiesNum; j++)
+                    {
+                        enemies[j] = enemies[j+1];
+                    }
+                }
+            }
+        }
     }
 
     public void PlayerDied()
@@ -69,6 +90,21 @@ public class Game
         win = true;
         playing = false;
         GameState?.Invoke(this, new GameStateEventArgs { win = true, level = level });
+    }
+
+
+    public (int[,], float, float, int, int) GetInfo()
+    {
+        return (map.map, player.Health, player.absorption, player.bolts, player.money);
+    }
+
+    public Entity EnemyAtPos(Vector2 pos)
+    {
+        Entity enemy = player;
+        for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
+            if (enemies[e].pos.x == pos.x && pos.y == enemies[e].pos.y)
+                enemy = enemies[e];
+        return enemy;
     }
 
     private int[,] CreateMap()
@@ -94,18 +130,5 @@ public class Game
     public (int[,], float, int, int) GetInfo()
     {
         return (map.map, player.Health, player.bolts, player.money);
-    }
-
-    public float EnemieAtPos(Vector2 pos)
-    {
-        float damage = 0.0f;
-        for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
-        {
-            if (enemies[e].pos.x == pos.x && pos.y == enemies[e].pos.y)
-            {
-                damage = enemies[e].damage;
-            }
-        }
-        return damage;
     }
 }
