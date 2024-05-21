@@ -10,7 +10,7 @@ public class Game
     }
     private Map map;
     public Player player;
-    private int enemiesNum = 0;
+    public int enemiesCount = 3;
     private Entity[] enemies = new Entity[10]; // TODO: Change 10???
     public int level;
     private bool win = false;
@@ -29,26 +29,36 @@ public class Game
     public bool Start(int level)
     {
         int[,] tempMap = CreateMap();
-        for (int i = 0; i < tempMap.GetLength(0); i++)
-        {
-            for (int j = 0; j < tempMap.GetLength(1); j++)
-            {
-                if (tempMap[i, j] == 5)
+            int k = 0;
+            for (int i = 0; i < tempMap.GetLength(0); i++)
+                for (int j = 0; j < tempMap.GetLength(1); j++)
                 {
-                    enemies[enemiesNum] = new Guard(enemiesNum);
-                    enemies[enemiesNum].angle = 3;
-                    enemies[enemiesNum].pos = new Vector2(i, j);
-                    enemies[enemiesNum].SetActualGame(this);
-                    enemiesNum++;
+                    if (tempMap[i, j] == 5)
+                    {
+                        enemies[k] = new Guard();
+                    }
+                    else if (tempMap[i, j] == 7)
+                    {
+                        enemies[k] = new ChiefGuard();
+                    }
+                    if (enemies[k] != null)
+                    {
+                        enemies[k].angle = 4;
+                        enemies[k].pos = new Vector2(i, j);
+                        enemies[k].SetActualGame(this);
+                        k++;
+                    }
                 }
-            }
-        }
 
-        map = new Map(tempMap, this);
-        this.level = level;
-        player.pos = map.spawn;
-        player.SetActualGame(this);
-        player.StartMovement(map);
+            map = new Map(tempMap, this);
+            player.pos = map.spawn;
+            player.SetActualGame(this);
+            player.Movement(map);
+
+            for (int i = 0; i < enemiesCount; i++) {
+                _ = enemies[i].Movement(map);
+            }
+          
         for (int i = 0; i < enemiesNum; i++)
         {
             _ = enemies[i].Movement(map); // start the movement asynchronously
@@ -60,7 +70,7 @@ public class Game
     {
         for (int i = 0; i < enemiesNum; i++)
         {
-            if (enemies[i] == enemy)
+          if (enemies[i] == enemy)
             {
                 enemiesNum--;
                 if (i < enemiesNum)
@@ -80,14 +90,13 @@ public class Game
         playing = false;
         GameState?.Invoke(this, new GameStateEventArgs { win = false });
     }
-
+  
     public void PlayerAtDoor()
     {
         win = true;
         playing = false;
         GameState?.Invoke(this, new GameStateEventArgs { win = true, level = level });
     }
-
 
     public (int[,], float, float, int, int) GetInfo()
     {
@@ -105,17 +114,15 @@ public class Game
 
     private int[,] CreateMap()
     {
-        // TODO: Implement algo
-        int[,] map = {
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 1, 0, 0, 0, 0, 0, 5, 0, 1 },
-            { 1, 0, 0, 1, 0, 1, 1, 0, 1 },
-            { 1, 1, 0, 3, 0, 0, 0, 5, 1 },
-            { 1, 0, 0, 1, 0, 1, 1, 0, 1 },
-            { 1, 1, 1, 1, 2, 1, 1, 1, 1 }
-        };
-
-        return map;
+        DepthFirstSearch map = new DepthFirstSearch(25,25);
+        map.Generation();
+        for (int i = 0; i < enemiesCount; i++)
+        {
+            map.GenerateChiefGuard();
+        }
+	      map.RemoveDeadEnds();
+	      map.Print();
+	      return map.getMaze();
     }
 
     public Map getMap()
