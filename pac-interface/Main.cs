@@ -1,4 +1,5 @@
-﻿using System;
+﻿using pac_engine;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -192,23 +193,28 @@ namespace pac_interface
         Game game;
         private void btnLancer_Click(object sender, EventArgs e)
         {
+            PacBot test = new PacBot("test", 1280, 720);
+            test.initializeGame();
             if (game == null)
             {
-                game = new Game();
+                game = new Game(test);
                 this.Visible = false;
                 game.Show();
+                game.WindowState = FormWindowState.Maximized;
                 game.FormClosed += Game_FormClosed;
             }
             else
             {
                 game.Activate(); 
             }
+            game.LoadMap();
+            game.LoadEntities();
         }
 
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)
         {
-            this.Visible = true;
-            //throw new NotImplementedException();
+            game = null;
+            this.Show();
         }
     }
 }
