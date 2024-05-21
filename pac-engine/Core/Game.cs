@@ -41,10 +41,6 @@ public class Game
                     enemies[enemiesNum].SetActualGame(this);
                     enemiesNum++;
                 }
-                else if (input == ConsoleKey.A)
-                {
-                    player.ActivePower();
-                }
             }
         }
 
@@ -125,10 +121,5 @@ public class Game
     public Map getMap()
     {
         return map;
-    }
-
-    public (int[,], float, int, int) GetInfo()
-    {
-        return (map.map, player.Health, player.bolts, player.money);
     }
 }

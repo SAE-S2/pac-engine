@@ -28,15 +28,15 @@ namespace pac_engine.Core
             }
         }
 
-		    public Player()
-		    {
-			      // TODO: Load from db
-			      maxHealth = 3.0f;
-			      Health = 3.0f;
-			      speed = 1.0f;
-	      		damage = 0.0f;
-		      	money = 0;
-			      bolts = 0;
+		public Player()
+		{
+	        // TODO: Load from db
+			maxHealth = 3.0f;
+		    Health = 3.0f;
+	        speed = 1.0f;
+            damage = 0.0f;
+            money = 0;
+            bolts = 0;
             lucky = 0; // %
             selectedPower = 2;
             shield = new Shield(1);
@@ -140,6 +140,11 @@ namespace pac_engine.Core
 
                     if (posChange)
                     {
+                        if (level.EarnCoin(pos))
+                            money++;
+                        else if (level.EarnBolt(pos))
+                            bolts++;
+
                         if (level.GetCoin(pos))
                         {
                             money++;
@@ -148,7 +153,7 @@ namespace pac_engine.Core
                             if (lucky > chance)
                                 money++;
                         }
-                        else if (level.GetBolts(pos))
+                        else if (level.GetBolt(pos))
                             bolts++;
 
                         Entity enemy = actualGame.EnemyAtPos(pos);
