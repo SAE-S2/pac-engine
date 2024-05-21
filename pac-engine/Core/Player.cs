@@ -7,22 +7,36 @@ namespace pac_engine.Core
         public int bolts;
         public int lucky;
         public float absorption = 0.0f;
-
         private int selectedPower = 1;
         private Shield shield;
         private Invisible invisible;
         public bool isInvisible = false;
         private Damage damagePower;
+        private CancellationTokenSource cancellationTokenSource;
 
-		public Player()
-		{
-			// TODO: Load from db
-			maxHealth = 3.0f;
-			Health = 3.0f;
-			speed = 1.0f;
-			damage = 0.0f;
-			money = 0;
-			bolts = 0;
+        public void StartMovement(Map level)
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            Movement(level, cancellationTokenSource.Token);
+        }
+
+        public void StopMovement()
+        {
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+            }
+        }
+
+		    public Player()
+		    {
+			      // TODO: Load from db
+			      maxHealth = 3.0f;
+			      Health = 3.0f;
+			      speed = 1.0f;
+	      		damage = 0.0f;
+		      	money = 0;
+			      bolts = 0;
             lucky = 0; // %
             selectedPower = 2;
             shield = new Shield(1);
@@ -76,39 +90,48 @@ namespace pac_engine.Core
         {
             if (imortal)
                 return false;
-            
-            actualGame.PlayerDied();
+            if (actualGame != null)
+                actualGame.PlayerDied();
             return true;
         }
 
-        public new async Task Movement(Map level)
+        public async Task Movement(Map level, CancellationToken token)
         {
             bool posChange;
             await Task.Run(() =>
             {
-                while (actualGame.Playing)
+                while (actualGame != null && actualGame.Playing)
                 {
+                    if (token.IsCancellationRequested)
+                    {
+                        break; // Sortir de la boucle si l'annulation est demandée
+                    }
+
                     posChange = false;
                     switch (angle)
                     {
                         case 0: //Z (Haut)
-                            if (level.GetWall(pos.x - 1, pos.y)) { break; }
+                            if (level.GetWall(pos.x - 1, pos.y) && level.map[pos.x - 1, pos.y] != 6) { break; }
                             posChange = true;
+                            eventPosChanged(pos, new Vector2(pos.x - 1, pos.y), indice: -1);
                             pos.x -= 1;
                             break;
                         case 1: //Q (Gauche)
-                            if (level.GetWall(pos.x, pos.y + 1)) { break; }
+                            if (level.GetWall(pos.x, pos.y + 1) && level.map[pos.x, pos.y + 1] != 6) { break; }
                             posChange = true;
+                            eventPosChanged(pos, new Vector2(pos.x, pos.y + 1), indice: -1);
                             pos.y += 1;
                             break;
                         case 2: //S (Bas)
-                            if (level.GetWall(pos.x + 1, pos.y)) { break; }
+                            if (level.GetWall(pos.x + 1, pos.y) && level.map[pos.x + 1, pos.y] != 6) { break; }
                             posChange = true;
+                            eventPosChanged(pos, new Vector2(pos.x + 1, pos.y), indice: -1);
                             pos.x += 1;
                             break;
                         case 3: //D (Droite)
-                            if (level.GetWall(pos.x, pos.y - 1)) { break; }
+                            if (level.GetWall(pos.x, pos.y - 1) && level.map[pos.x, pos.y - 1] != 6) { break; }
                             posChange = true;
+                            eventPosChanged(pos, new Vector2(pos.x, pos.y - 1), indice: -1);
                             pos.y -= 1;
                             break;
                         case 4: //STOP
@@ -147,7 +170,8 @@ namespace pac_engine.Core
 
                     Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
                 }
-            });
+            }, token);
         }
+
     }
 }
