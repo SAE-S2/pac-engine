@@ -31,6 +31,11 @@ public class Entity
             return false;
 
         Health -= damage;
+
+        if (Health <= 0.1f) 
+        {
+            Kill();
+        }
         return true;
     }
 
@@ -43,8 +48,6 @@ public class Entity
             return true;
         }
 
-        if (Health <= 0.1f)
-            Kill();
 
     public void Heal(float health)
     {

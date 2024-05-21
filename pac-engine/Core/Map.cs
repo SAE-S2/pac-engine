@@ -217,6 +217,11 @@ namespace pac_engine.Core
             return (map[x, y] == 2);
         }
 
+        public bool GetCoin(Vector2 pos)
+        {
+            return (map[pos.x,pos.y] == 2);
+        }
+
         public bool GetWall(int x,int y)
         {
             return (map[x,y] == 1 || map[x, y] == 4 || map[x,y] == 6);
