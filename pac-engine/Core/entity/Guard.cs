@@ -59,7 +59,7 @@ namespace pac_engine.Core
 
                     if (posChange)
                     {
-                        //eventPosChanged(oldPos, pos, indice);
+                        eventPosChanged(oldPos, pos, indice);
 
                         if (actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                         {
