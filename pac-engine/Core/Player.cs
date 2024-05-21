@@ -39,7 +39,7 @@ namespace pac_engine.Core
             return true;
         }
 
-        public new async Task Movement(Map level)
+        public override async Task Movement(Map level)
         {
             bool posChange;
             await Task.Run(() =>

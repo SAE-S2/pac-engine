@@ -27,22 +27,32 @@ namespace pac_engine.Core
             int k = 0;
             for (int i = 0; i < tempMap.GetLength(0); i++)
                 for (int j = 0; j < tempMap.GetLength(1); j++)
+                {
                     if (tempMap[i, j] == 5)
                     {
                         enemies[k] = new Guard();
+                    }
+                    else if (tempMap[i, j] == 7)
+                    {
+                        enemies[k] = new ChiefGuard();
+                    }
+                    if (enemies[k] != null)
+                    {
                         enemies[k].angle = 4;
                         enemies[k].pos = new Vector2(i, j);
                         enemies[k].SetActualGame(this);
                         k++;
                     }
+                }
 
             map = new Map(tempMap, this);
             player.pos = map.spawn;
             player.SetActualGame(this);
             player.Movement(map);
 
-            for (int i = 0; i < enemiesCount; i++)
-                enemies[i].Movement(map);
+            for (int i = 0; i < enemiesCount; i++) {
+                _ = enemies[i].Movement(map);
+            }
 
             Print();
             while (playing)
@@ -91,7 +101,7 @@ namespace pac_engine.Core
             map.Generation();
             for (int i = 0; i < enemiesCount; i++)
             {
-                map.GenerateEnemy();
+                map.GenerateChiefGuard();
             }
 	        map.RemoveDeadEnds();
 	        map.Print();

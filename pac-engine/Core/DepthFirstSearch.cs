@@ -231,7 +231,23 @@ class DepthFirstSearch
         return new Vector2();
     }
 
-    internal void GenerateEnemy()
+    internal void GenerateChiefGuard()
+    {
+        Random coords = new Random();
+        int x = coords.Next(1, sizeX - 1);
+        int y = coords.Next(1, sizeY - 1);
+        Vector2 pos = new Vector2(x, y);
+        if (maze[x, y] == 0 && pos.Distance(GetPlayerSpawn()) > 5)
+        {
+            maze[x, y] = 7;
+        }
+        else
+        {
+            GenerateChiefGuard(); // Recommence jusqu'à ce que le spawn soit sur une case vide
+        }
+    }
+
+    internal void GenerateGuard()
     {
         Random coords = new Random();
         int x = coords.Next(1, sizeX - 1);
@@ -243,7 +259,7 @@ class DepthFirstSearch
         }
         else
         {
-            GenerateEnemy(); // Recommence jusqu'à ce que le spawn soit sur une case vide
+            GenerateGuard(); // Recommence jusqu'à ce que le spawn soit sur une case vide
         }
     }
 }
