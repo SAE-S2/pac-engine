@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pac-interface", "pac-interf
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "database", "database\database.sqlproj", "{7012BB8F-0A69-4690-9550-4637937FD35C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLibrary", "DataLibrary\DataLibrary.csproj", "{1E9852D9-F4F2-44A9-A841-E7430160D5AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{7012BB8F-0A69-4690-9550-4637937FD35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7012BB8F-0A69-4690-9550-4637937FD35C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7012BB8F-0A69-4690-9550-4637937FD35C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{1E9852D9-F4F2-44A9-A841-E7430160D5AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E9852D9-F4F2-44A9-A841-E7430160D5AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E9852D9-F4F2-44A9-A841-E7430160D5AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E9852D9-F4F2-44A9-A841-E7430160D5AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

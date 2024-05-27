@@ -57,7 +57,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
-    <Folder Include="Models" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Utilisateur.sql" />
@@ -67,11 +66,26 @@
     <Build Include="Evasion.sql" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Utilisateur.cs" />
-    <Compile Include="Models\Profil.cs" />
-    <Compile Include="Models\Amelioration.cs" />
-    <Compile Include="Models\Evasion.cs" />
-    <Compile Include="Models\EquipementPossede.cs" />
-    <Compile Include="Models\ApplicationDbContext.cs" />
+    <ProjectReference Include="..\DataLibrary\DataLibrary.csproj">
+      <Name>DataLibrary</Name>
+      <Project>{1e9852d9-f4f2-44a9-a841-e7430160d5af}</Project>
+      <Private>True</Private>
+      <IsModelAware>True</IsModelAware>
+      <GenerateSqlClrDdl>True</GenerateSqlClrDdl>
+    </ProjectReference>
+    <ProjectReference Include="..\pac-engine\pac-engine.csproj">
+      <Name>pac-engine</Name>
+      <Project>{154f24d9-794c-4ecf-bbe8-1000ed44530e}</Project>
+      <Private>True</Private>
+      <IsModelAware>True</IsModelAware>
+      <GenerateSqlClrDdl>True</GenerateSqlClrDdl>
+    </ProjectReference>
+    <ProjectReference Include="..\pac-interface\pac-interface.csproj">
+      <Name>pac-interface</Name>
+      <Project>{64517cf1-67e4-4c61-ba43-ec9e403c3a75}</Project>
+      <Private>True</Private>
+      <IsModelAware>True</IsModelAware>
+      <GenerateSqlClrDdl>True</GenerateSqlClrDdl>
+    </ProjectReference>
   </ItemGroup>
 </Project>
