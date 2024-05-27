@@ -1,4 +1,4 @@
-﻿﻿using pac_engine;
+﻿using pac_engine;
 using pac_engine.Core;
 using pac_engine.Utils;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics.Eventing.Reader;
+using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
@@ -18,16 +19,17 @@ namespace pac_interface
 {
     public partial class Game : Form
     {
-        public const int tileSize = 128;
+        public int tileSize = 256;
+        public Panel? pnlGame;
+        private PacBot game;
+        private PictureBox[,]? grid;
+        private PictureBox? PBplayer;
+        private PictureBox[]? PBenemy;
+        private Entity[]? enemy;
         private int coinCount = 0;
         private Label coinCounterLabel;
         private int boltCount = 0;
         private Label boltCounterLabel;
-        private PacBot game;
-        private PictureBox[,] grid;
-        private PictureBox PBplayer;
-        private PictureBox[] PBenemy;
-        private Panel mapPanel;
         private Label levelLabel;
         private int levelCount;
         private Label scoreLabel;
@@ -177,16 +179,30 @@ namespace pac_interface
             hearthPanel.Controls.Add(hearth3);
         }
 
-        private PictureBox placeWall(Point coords, int level, int type)
+        private void EndGame(object? sender, GameStateEventArgs e)
         {
-            PictureBox pictureBox = new PictureBox()
+            if (InvokeRequired)
             {
-                Location = coords,
-                Size = new Size(tileSize, tileSize),
-                SizeMode = PictureBoxSizeMode.Zoom,
-                Image = Image.FromFile("..\\..\\..\\Resources\\murs\\Level" + level.ToString() + "\\type" + type.ToString() + ".png")
-            };
-            return pictureBox;
+                Invoke(new MethodInvoker(delegate { EndGame(sender, e); }));
+                return;
+            }
+
+            Unload();
+
+            if (e.win)
+            {
+                scoreCount += 1000;
+                UpdateScoreLabel();
+                game.StartGame(e.level + 1);
+                game.player.SetActualGame(game.ActualGame);
+                LoadMap();
+                LoadEntities();
+                pnlGame.Visible = true;
+            }
+            else
+            {
+                // TODO: retour hub
+            }
         }
 
         private void Player_DamageTaken(object? sender, DamageEventArgs e)
@@ -219,30 +235,62 @@ namespace pac_interface
             UpdateScoreLabel();
         }
 
+        private void Game_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Game_FormClosed(sender, e); }));
+                return;
+            }
+            if (game.ActualGame != null)
+            {
+                Unload();
+            }
+        }
+
+        private PictureBox placeWall(Point coords, int level, int type)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(tileSize, tileSize),
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Image.FromFile("..\\..\\..\\Resources\\murs\\Level" + level.ToString() + "\\type" + type.ToString() + ".png")
+            };
+            return pictureBox;
+        }
+
         public void LoadMap()
         {
+            game.ActualGame.GameState += EndGame;
+            pnlGame = new Panel();
+            pnlGame.SuspendLayout();
             Map map = game.ActualGame.getMap();
             map.CoinEarn += Map_CoinEarn;
-            Vector2 startpos = new Vector2(0); //TOP-LEFT corner
+            map.DoorOpen += Map_DoorOpen;
             int maxY = map.map.GetLength(0);
             int maxX = map.map.GetLength(1);
             grid = new PictureBox[maxY, maxX];
-            
-
-            mapPanel = new Panel
+            while (maxY * tileSize + 4 * tileSize > ClientSize.Height && maxX * tileSize + 4 * tileSize > ClientSize.Width)
             {
-                Location = new Point(200, 60),
-                Size = new Size(maxX * tileSize, maxY * tileSize),
-                BorderStyle = BorderStyle.FixedSingle 
-            };
-
-            Controls.Add(mapPanel);
+                tileSize -= 8;
+            }
 
             for (int line = 0; line < maxY; line++)
             {
                 for (int col = 0; col < maxX; col++)
                 {
-                    if (map.GetWall(line, col))
+                    if (map.door.x == line && map.door.y == col)
+                    {
+                        grid[line, col] = new PictureBox()
+                        {
+                            Location = new Point(col * tileSize, line * tileSize),
+                            Size = new Size(tileSize, tileSize),
+                            SizeMode = PictureBoxSizeMode.Zoom,
+                            Image = Image.FromFile("..\\..\\..\\Resources\\murs\\door.png")
+                        };
+                    }
+                    else if (map.GetWall(line, col))
                     {
                         grid[line, col] = placeWall(new Point(col * tileSize, line * tileSize), game.ActualGame.level, map.GetWallType(line, col)); // LEVEL
                     }
@@ -266,12 +314,108 @@ namespace pac_interface
                             SizeMode = PictureBoxSizeMode.Zoom,
                             Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Boulon.png")
                         };
-
                     }
-                    mapPanel.Controls.Add(grid[line, col]);
+                    pnlGame.Controls.Add(grid[line, col]);
                 }
             }
-            //Controls.Remove(grid[line, col]); -> Retirer une picturebox
+            pnlGame.AutoSize = true;
+            Controls.Add(pnlGame);
+            pnlGame.Visible = true;
+            pnlGame.Location = new Point((ClientSize.Width - pnlGame.Width) / 2, (ClientSize.Height - pnlGame.Height) / 2); // Center window
+            pnlGame.ResumeLayout();
+        }
+
+        public void Unload()
+        {
+            // Désabonnement aux events
+            game.ActualGame.player.PositionChanged -= Player_PositionChanged;
+
+            if (enemy != null)
+            {
+                foreach (var en in enemy)
+                {
+                    if (en != null)
+                    {
+                        en.PositionChanged -= Enemy_PositionChanged;
+                    }
+                }
+            }
+
+            Map map = game.ActualGame.getMap();
+            if (map != null)
+            {
+                map.CoinEarn -= Map_CoinEarn;
+                map.DoorOpen -= Map_DoorOpen;
+            }
+
+            game.ActualGame.GameState -= EndGame;
+
+            // Dispose PictureBoxes
+            if (grid != null)
+            {
+                foreach (var pictureBox in grid)
+                {
+                    if (pictureBox != null)
+                    {
+                        pictureBox.Image?.Dispose();
+                        pictureBox.Dispose();
+                    }
+                }
+            }
+
+            if (PBplayer != null)
+            {
+                PBplayer.Image?.Dispose();
+                PBplayer.Dispose();
+                PBplayer = null;
+            }
+
+            if (PBenemy != null)
+            {
+                foreach (var pb in PBenemy)
+                {
+                    if (pb != null)
+                    {
+                        pb.Image?.Dispose();
+                        pb.Dispose();
+                    }
+                }
+                PBenemy = null;
+            }
+
+            if (pnlGame != null)
+            {
+                Controls.Remove(pnlGame);
+                pnlGame.Dispose();
+                pnlGame = null;
+            }
+
+            grid = null;
+            game.player.ResetActualGame();
+            game.player.StopMovement();
+            game.ActualGame = null;
+
+            // Forcer le garbage collector pour libérer la mémoire
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        private void UpdateScoreLabel()
+        { 
+            scoreLabel.Invoke((MethodInvoker)delegate {
+                scoreLabel.Text = $"Score : {scoreCount}";
+            });
+
+            // TODO
+
+            // Pouvoirs
+            // Kill des ennemis
+        }
+
+        private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
+        {
+            grid[e.DoorPos.x, e.DoorPos.y].Image = null;
         }
 
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
@@ -300,22 +444,9 @@ namespace pac_interface
             UpdateScoreLabel();
         }
 
-        private void UpdateScoreLabel()
-        {
-            scoreLabel.Invoke((MethodInvoker)delegate {
-                scoreLabel.Text = $"Score : {scoreCount}";
-            });
-
-            // TODO
-
-            // Pouvoirs
-            // Passage de niveaux
-            // Kill des ennemis
-        }
-
         public void LoadEntities()
         {
-            Entity[] enemy = game.ActualGame.GetEnemies();
+            enemy = game.ActualGame.GetEnemies();
             Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
             game.ActualGame.player.DamageTaken += Player_DamageTaken;
@@ -327,24 +458,26 @@ namespace pac_interface
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
             };
-            mapPanel.Controls.Add(PBplayer);
+            pnlGame.Controls.Add(PBplayer);
 
             PBenemy = new PictureBox[enemy.Length];
-            int i = 0;
-             while (enemy[i] != null) 
+            foreach (var en in enemy)
             {
-                enemy[i].PositionChanged += Enemy_PositionChanged;
-                PBenemy[i] = new PictureBox()
+                if (en != null)
                 {
-                    Location = new Point(enemy[i].pos.y * tileSize, enemy[i].pos.x * tileSize),
-                    Size = new Size(tileSize, tileSize),
-                    SizeMode= PictureBoxSizeMode.Zoom,
-                    Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
-                };
-                grid[enemy[i].pos.x, enemy[i].pos.y].Visible = false;
-                mapPanel.Controls.Add(PBenemy[i]);
-                i++;
+                    en.PositionChanged += Enemy_PositionChanged;
+                    PBenemy[en.indice] = new PictureBox()
+                    {
+                        Location = new Point(en.pos.y * tileSize, en.pos.x * tileSize),
+                        Size = new Size(tileSize, tileSize),
+                        SizeMode = PictureBoxSizeMode.Zoom,
+                        Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
+                    };
+                    pnlGame.Controls.Add(PBenemy[en.indice]);
+                    PBenemy[en.indice].BringToFront();
+                }
             }
+            PBplayer.BringToFront();
         }
 
         private void Player_PositionChanged(object? sender, PositionChangedEventArgs player)
@@ -353,14 +486,6 @@ namespace pac_interface
             {
                 Invoke(new MethodInvoker(delegate { Player_PositionChanged(sender, player); }));
                 return;
-            }
-            if (grid[player.OldPos.x, player.OldPos.y] != null)
-            {
-                grid[player.OldPos.x, player.OldPos.y].Visible = true;
-            }
-            if (grid[player.NewPos.x, player.NewPos.y] != null)
-            {
-                grid[player.NewPos.x, player.NewPos.y].Visible = false;
             }
             Player_angle(game.ActualGame.player.angle);
             PBplayer.Location = new Point(player.NewPos.y * tileSize, player.NewPos.x * tileSize);
@@ -373,10 +498,7 @@ namespace pac_interface
                 Invoke(new MethodInvoker(delegate { Enemy_PositionChanged(sender, enemy); }));
                 return;
             }
-
-            grid[enemy.OldPos.x, enemy.OldPos.y].Visible = true;
-            grid[enemy.NewPos.x, enemy.NewPos.y].Visible = false;
-            PBenemy[0].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
+            PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
         private void Player_angle(int angle)
@@ -406,35 +528,38 @@ namespace pac_interface
 
         private void Game_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (game.ActualGame != null && game.ActualGame.Playing)
             {
-                default:
-                    break;
-                case Keys.Z:
-                    {
-                        game.ActualGame.player.AngleChange(0); //Haut
+                switch (e.KeyCode)
+                {
+                    default:
                         break;
-                    }
-                case Keys.D:
-                    {
-                        game.ActualGame.player.AngleChange(1); //Droite
-                        break;
-                    }
-                case Keys.S:
-                    {
-                        game.ActualGame.player.AngleChange(2); //Bas
-                        break;
-                    }
-                case Keys.Q:
-                    {
-                        game.ActualGame.player.AngleChange(3); //Gauche
-                        break;
-                    }
-                case Keys.Space:
-                    {
-                        game.ActualGame.player.AngleChange(4); //Stop
-                        break;
-                    }
+                    case Keys.Z:
+                        {
+                            game.ActualGame.player.AngleChange(0); //Haut
+                            break;
+                        }
+                    case Keys.D:
+                        {
+                            game.ActualGame.player.AngleChange(1); //Droite
+                            break;
+                        }
+                    case Keys.S:
+                        {
+                            game.ActualGame.player.AngleChange(2); //Bas
+                            break;
+                        }
+                    case Keys.Q:
+                        {
+                            game.ActualGame.player.AngleChange(3); //Gauche
+                            break;
+                        }
+                    case Keys.Space:
+                        {
+                            game.ActualGame.player.AngleChange(4); //Stop
+                            break;
+                        }
+                }
             }
         }
     }

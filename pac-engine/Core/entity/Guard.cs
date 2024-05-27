@@ -1,13 +1,20 @@
-﻿namespace pac_engine.Core
+﻿
+namespace pac_engine.Core
 {
     public class Guard : Entity
     {
-        public Guard()
+        public Guard(int indice)
         {
             this.maxHealth = 1.0f;
             this.Health = 1.0f;
             this.speed = 0.9f;
             this.damage = 1.0f;
+            this.indice = indice;
+        }
+
+        ~Guard()
+        {
+            indice--;
         }
 
         public bool CalledToPos()
