@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pac-engine", "pac-engine\pa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pac-interface", "pac-interface\pac-interface.csproj", "{64517CF1-67E4-4C61-BA43-EC9E403C3A75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "database", "database\database.csproj", "{35D27679-B162-4A6D-8A40-C06B991FDE6D}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "database", "database\database.sqlproj", "{7012BB8F-0A69-4690-9550-4637937FD35C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,12 @@ Global
 		{64517CF1-67E4-4C61-BA43-EC9E403C3A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64517CF1-67E4-4C61-BA43-EC9E403C3A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64517CF1-67E4-4C61-BA43-EC9E403C3A75}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35D27679-B162-4A6D-8A40-C06B991FDE6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35D27679-B162-4A6D-8A40-C06B991FDE6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35D27679-B162-4A6D-8A40-C06B991FDE6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35D27679-B162-4A6D-8A40-C06B991FDE6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7012BB8F-0A69-4690-9550-4637937FD35C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7012BB8F-0A69-4690-9550-4637937FD35C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7012BB8F-0A69-4690-9550-4637937FD35C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7012BB8F-0A69-4690-9550-4637937FD35C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7012BB8F-0A69-4690-9550-4637937FD35C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7012BB8F-0A69-4690-9550-4637937FD35C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
