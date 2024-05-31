@@ -413,6 +413,11 @@ namespace pac_interface
             // Kill des ennemis
         }
 
+        private void Power()
+        {
+
+        }
+
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
         {
             grid[e.DoorPos.x, e.DoorPos.y].Image = null;

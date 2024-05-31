@@ -34,8 +34,9 @@ public class Entity
         Health -= damage;
 
         if (Health <= 0.1f)
+        {
             Kill();
-
+        }
         return true;
     }
 
@@ -44,7 +45,7 @@ public class Entity
         if (imortal)
             return false;
 
-        // Handle the killing logic here
+        actualGame.EnemyDie(this);
         return true;
     }
 
@@ -53,7 +54,7 @@ public class Entity
         Health += health;
     }
 
-    public async Task Movement(Map level)
+    public virtual async Task Movement(Map level)
     {
         bool posChange;
         Random random = new Random();
@@ -97,7 +98,14 @@ public class Entity
 
                     if (actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                     {
-                        actualGame.player.TakeDamage(damage);
+                        if (actualGame.player.damage > 0.1f)
+                        {
+                            TakeDamage(actualGame.player.damage);
+                        }
+                        else
+                        {
+                            actualGame.player.TakeDamage(damage);
+                        }
                     }
                 }
 
