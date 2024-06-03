@@ -50,7 +50,11 @@ namespace pac_interface
             }
             else
             {
-                // TODO: retour hub
+                Hub hub;
+                hub = new Hub();
+                this.Visible = false;
+                hub.Show();
+                hub.WindowState = FormWindowState.Maximized;
             }
         }
 
@@ -229,6 +233,9 @@ namespace pac_interface
 
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
         {
+            if (grid[e.Pos.x, e.Pos.y] == null)
+                return;
+
             grid[e.Pos.x, e.Pos.y].Image = null;
         }
 
