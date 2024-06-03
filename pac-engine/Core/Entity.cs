@@ -48,13 +48,13 @@ public class Entity
             return true;
         }
 
-
     public void Heal(float health)
     {
         Health += health;
     }
 
-    public virtual async Task Movement(Map level)
+    // Déplacement aléatoire
+    public  virtual async Task Movement(Map level)
     {
         bool posChange;
         Random random = new Random();
@@ -95,7 +95,7 @@ public class Entity
                 if (posChange)
                 {
                     eventPosChanged(oldPos, pos, indice);
-
+                  
                     if (actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                     {
                         if (actualGame.player.damage > 0.1f)
@@ -106,18 +106,17 @@ public class Entity
                         {
                             actualGame.player.TakeDamage(damage);
                         }
-                    }
-                }
+                        Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
 
-                Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
-
-                if (i == iToGo)
-                {
-                    i = 0;
-                    angle = random.Next(0, 4);
-                    iToGo = random.Next(1, 10);
+                        if (i == iToGo)
+                        {
+                            i = 0;
+                            angle = random.Next(0, 4);
+                            iToGo = random.Next(1, 10);
+                        }
+                        i++;
+                     }
                 }
-                i++;
             }
         });
     }

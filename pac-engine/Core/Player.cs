@@ -95,7 +95,7 @@ namespace pac_engine.Core
             return true;
         }
 
-        public async Task Movement(Map level, CancellationToken token)
+        public override async Task Movement(Map level, CancellationToken token)
         {
             bool posChange;
             await Task.Run(() =>

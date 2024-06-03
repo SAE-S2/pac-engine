@@ -77,7 +77,6 @@ namespace pac_engine.Core
                             actualGame.player.TakeDamage(damage);
                     }
 
-
                     nbDeplacment++;
 
                     Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();

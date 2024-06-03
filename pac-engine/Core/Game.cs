@@ -112,6 +112,7 @@ public class Game
     private int[,] CreateMap()
     {
         DepthFirstSearch map = new DepthFirstSearch(15,25);
+
         map.Generation();
         for (int i = 0; i < enemiesCount; i++)
         {
