@@ -564,6 +564,12 @@ namespace pac_interface
                             game.ActualGame.player.AngleChange(4); //Stop
                             break;
                         }
+                    case Keys.A:
+                        {
+                            game.ActualGame.player.ActivePower();
+                            PowerUsed();
+                            break;
+                        }
                 }
             }
         }
