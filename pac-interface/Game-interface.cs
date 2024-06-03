@@ -19,7 +19,7 @@ namespace pac_interface
 {
     public partial class Game : Form
     {
-        public int tileSize = 256;
+        public int tileSize = 48;
         public Panel? pnlGame;
         private PacBot game;
         private PictureBox[,]? grid;
@@ -146,6 +146,7 @@ namespace pac_interface
 
         public void Unload()
         {
+            game.ActualGame.player.StopMovement();
             // Désabonnement aux events
             game.ActualGame.player.PositionChanged -= Player_PositionChanged;
 
@@ -211,7 +212,7 @@ namespace pac_interface
 
             grid = null;
             game.player.ResetActualGame();
-            game.player.StopMovement();
+            //game.player.StopMovement();
             game.ActualGame = null;
 
             // Forcer le garbage collector pour libérer la mémoire
@@ -234,12 +235,12 @@ namespace pac_interface
         public void LoadEntities()
         {
             enemy = game.ActualGame.GetEnemies();
-            Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
+            Vector2 playerpos = new Vector2(game.ActualGame.map.spawn.y, game.ActualGame.map.spawn.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
 
             PBplayer = new PictureBox()
             {
-                Location = new Point(playerpos.y * tileSize, playerpos.x * tileSize),
+                Location = new Point(playerpos.x * tileSize, playerpos.y * tileSize),
                 Size = new Size(tileSize, tileSize),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
