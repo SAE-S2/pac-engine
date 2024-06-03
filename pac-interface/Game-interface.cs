@@ -240,7 +240,7 @@ namespace pac_interface
 
             PBplayer = new PictureBox()
             {
-                Location = new Point(playerpos.y * tileSize, playerpos.x * tileSize),
+                Location = new Point(playerpos.x * tileSize, playerpos.y * tileSize),
                 Size = new Size(tileSize, tileSize),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
