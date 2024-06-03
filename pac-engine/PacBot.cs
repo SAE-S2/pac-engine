@@ -1,37 +1,45 @@
 ﻿using pac_engine.Utils;
 using pac_engine.Core;
+using System.Net.Security;
 
 namespace pac_engine
 {
 	public class PacBot
 	{
-		private string title;
+        private string title;
 		private Vector2 screenSize;
-        private Player player;
+        public Player player;
         public Game ActualGame;
         public string name;
         public int price;
 
 
-		public PacBot(string title, int x, int y)
+        public PacBot(string title, int x, int y)
 		{
 			this.title = title;
 			screenSize = new Vector2(x, y);
-            Console.Title = this.title;
+            //Console.Title = this.title;
             //Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
         }
 
-        public bool StartGame()
+        public bool StartGame(int level)
         {
             ActualGame = new Game(ref player);
-
-            return ActualGame.Start();
+            return ActualGame.Start(level);
         }
 
         public string[] GetProfils()
         {
             string[] profils = { "Profil 1", "Profil 2" };
             return profils;
+        }
+
+        public void initializeGame()
+        {
+            name = "profil 1";
+            player = new Player();
+            price = 0;
+            bool win = StartGame(1);
         }
 
         static void Main()
@@ -101,10 +109,10 @@ namespace pac_engine
             pacbot.price = 0;
 
             bool lose = false;
-            int level = 1;
-            while (level < 11)
+            pacbot.ActualGame.level = 1;
+            while (pacbot.ActualGame.level < 11)
             {
-                if (level == 1)
+                if (pacbot.ActualGame.level == 1)
                 {
                     Console.WriteLine("Argent: " + pacbot.player.money);
                     Console.WriteLine("Prix de sortie: " + pacbot.price);
@@ -112,7 +120,7 @@ namespace pac_engine
                     if (pacbot.player.money < pacbot.price)
                     {
                         lose = true;
-                        level = 11;
+                        pacbot.ActualGame.level = 11;
                     }
                     else
                     {
@@ -122,30 +130,28 @@ namespace pac_engine
 
                 if (!lose)
                 {
-                    bool win = pacbot.StartGame(); // TODO: Ajouter level en param pour la génération du monde
+                    bool win = pacbot.StartGame(1);
 
                     if (win)
                     {
-                        level++;
+                        pacbot.ActualGame.level++;
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine();
-                        Console.WriteLine("Passage au prochain niveau ("+level+")");
+                        Console.WriteLine("Passage au prochain niveau ("+pacbot.ActualGame.level+")");
                         Thread.Sleep(2000);
                     }
                     else
                     {
-                        level = 1;
+                        pacbot.ActualGame.level = 1;
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine("Vous êtes mort");
                         Console.WriteLine("Vous revenez en prison");
-                        pacbot.player.Heal(pacbot.player.maxHealth - pacbot.player.Health);
+                        pacbot.player.Health = pacbot.player.maxHealth;
                         if (pacbot.price == 0)
-                        {
                             pacbot.price += 10;
-                        }
                         pacbot.price += (int) Math.Floor(pacbot.price * 0.2);
                         Thread.Sleep(2000);
                     }
