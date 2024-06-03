@@ -28,7 +28,7 @@ namespace pac_engine.Core
             }
         }
 
-		public Player()
+        public Player()
 		{
 	        // TODO: Load from db
 			maxHealth = 3.0f;
