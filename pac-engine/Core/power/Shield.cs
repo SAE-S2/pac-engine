@@ -1,8 +1,4 @@
-﻿
-using pac_engine.Core.power;
-using System.Reflection.Emit;
-
-namespace pac_engine.Core
+﻿namespace pac_engine.Core
 {
     public class Shield : Power
     {

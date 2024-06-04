@@ -179,6 +179,11 @@ namespace pac_interface
             hearthPanel.Controls.Add(hearth3);
         }
 
+        private void PowerUsed()
+        {
+
+        }
+
         private void EndGame(object? sender, GameStateEventArgs e)
         {
             if (InvokeRequired)
