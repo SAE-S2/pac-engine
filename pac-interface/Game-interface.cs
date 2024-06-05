@@ -42,11 +42,16 @@ namespace pac_interface
         private PictureBox? usedInvisiblePictureBox;
         private PictureBox? damagePictureBox;
         private PictureBox? usedDamagePictureBox;
+        private System.Windows.Forms.Timer powerTimer;
 
         public Game(PacBot game)
         {
             InitializeComponent();
             this.game = game;
+
+            powerTimer = new System.Windows.Forms.Timer();
+            powerTimer.Interval = 1000;
+            powerTimer.Tick += PowerTimer_Tick;
 
             InitializeElements();
         }
@@ -221,7 +226,7 @@ namespace pac_interface
             scoreLabel = new Label()
             {
                 Location = new Point(720, 10),
-                Size = new Size(400, 30),
+                Size = new Size(300, 30),
                 Text = $"Score : {scoreCount}",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
@@ -231,9 +236,9 @@ namespace pac_interface
 
             powerLabel = new Label()
             {
-                Location = new Point(1150, 10),
-                Size = new Size(80, 30),
-                Text = "00:15",
+                Location = new Point(1110, 10),
+                Size = new Size(120, 30),
+                Text = "Press A",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.Black
@@ -258,6 +263,62 @@ namespace pac_interface
             hearthPanel.Controls.Add(hearth3);
         }
 
+        private void StartPowerTimer()
+        {
+            powerTimer.Stop();
+            powerTimer.Tag = 10; 
+            powerTimer.Start();
+        }
+
+        private void PowerTimer_Tick(object sender, EventArgs e)
+        {
+            int remainingSeconds = (int)powerTimer.Tag;
+            remainingSeconds--;
+
+            if (remainingSeconds <= 0)
+            {
+                powerTimer.Stop();
+                powerLabel.Text = "Press A";
+
+                switch (game.player.selectedPower)
+                {
+                    case 1:
+                        if (shieldPictureBox != null)
+                        {
+                            usedShieldPictureBox.Image?.Dispose();
+                            usedShieldPictureBox.Dispose();
+                            shieldPictureBox = shieldPictureBox = Shield(new Point(1230, 5));
+                            Controls.Add(shieldPictureBox);
+                        }
+                        break;
+                    case 2:
+                        if (damagePictureBox != null)
+                        {
+                            usedDamagePictureBox.Image?.Dispose();
+                            usedDamagePictureBox.Dispose();
+                            damagePictureBox = damagePictureBox = Damage(new Point(1230, 5));
+                            Controls.Add(damagePictureBox);
+                        }
+                        break;
+                    case 3:
+                        if (invisiblePictureBox != null)
+                        {
+                            usedInvisiblePictureBox.Image?.Dispose();
+                            usedInvisiblePictureBox.Dispose();
+                            invisiblePictureBox = invisiblePictureBox = Invisible(new Point(1230, 5));
+                            Controls.Add(invisiblePictureBox);
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
+                powerLabel.Text = time.ToString(@"mm\:ss"); 
+                powerTimer.Tag = remainingSeconds; 
+            }
+        }
+
         private void PowerUsed()
         {
             switch (game.player.selectedPower)
@@ -265,33 +326,36 @@ namespace pac_interface
                 case 1:
                     if (shieldPictureBox != null)
                     {
+                        StartPowerTimer();
                         shieldPictureBox.Image?.Dispose();
                         shieldPictureBox.Dispose();
                         usedShieldPictureBox = ShieldUsed(new Point(1230, 5));
                         Controls.Add(usedShieldPictureBox);
-                        scoreCount += 1000;
+                        scoreCount += 250;
                         UpdateScoreLabel();
                     }
                     break;
                 case 2:
                     if (damagePictureBox != null)
                     {
+                        StartPowerTimer();
                         damagePictureBox.Image?.Dispose();
                         damagePictureBox.Dispose();
                         usedDamagePictureBox = DamageUsed(new Point(1230, 5));
                         Controls.Add(usedDamagePictureBox);
-                        scoreCount += 1000;
+                        scoreCount += 250;
                         UpdateScoreLabel();
                     }
                     break;
                 case 3:
                     if (invisiblePictureBox != null)
                     {
+                        StartPowerTimer();
                         invisiblePictureBox.Image?.Dispose();
                         invisiblePictureBox.Dispose();
                         usedInvisiblePictureBox = InvisibleUsed(new Point(1230, 5));
-                        Controls.Add(usedInvisiblePictureBox);
-                        scoreCount += 1000;
+                        Controls.Add(usedInvisiblePictureBox);           
+                        scoreCount += 250;
                         UpdateScoreLabel();
                     }
                     break;
