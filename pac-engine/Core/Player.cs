@@ -7,7 +7,7 @@ namespace pac_engine.Core
         public int bolts;
         public int lucky;
         public float absorption = 0.0f;
-        private int selectedPower = 1;
+        public int selectedPower = 1;
         private Shield shield;
         private Invisible invisible;
         public bool isInvisible = false;

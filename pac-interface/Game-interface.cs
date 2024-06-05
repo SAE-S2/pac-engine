@@ -36,6 +36,12 @@ namespace pac_interface
         private int scoreCount;
         private Label powerLabel;
         private Panel hearthPanel;
+        private PictureBox? shieldPictureBox;
+        private PictureBox? usedShieldPictureBox;
+        private PictureBox? invisiblePictureBox;
+        private PictureBox? usedInvisiblePictureBox;
+        private PictureBox? damagePictureBox;
+        private PictureBox? usedDamagePictureBox;
 
         public Game(PacBot game)
         {
@@ -81,7 +87,7 @@ namespace pac_interface
             return pictureBox;
         }
 
-        private PictureBox Power(Point coords)
+        private PictureBox Shield(Point coords)
         {
             PictureBox pictureBox = new PictureBox()
             {
@@ -93,12 +99,85 @@ namespace pac_interface
             return pictureBox;
         }
 
+        private PictureBox ShieldUsed(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Bouclier-used.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox Invisible(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Invisible.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox InvisibleUsed(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Invisible-used.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox Damage(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Degats.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox DamageUsed(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Degats-used.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
         private void InitializeElements()
         {
             levelCount = 1;
 
-            PictureBox power = Power(new Point(1230, 5));
-            Controls.Add(power);
+            switch (game.player.selectedPower)
+            {
+                case 1:
+                    shieldPictureBox = Shield(new Point(1230, 5));
+                    Controls.Add(shieldPictureBox);
+                    break;
+                case 2:
+                    damagePictureBox = Damage(new Point(1230, 5));
+                    Controls.Add(damagePictureBox);
+                    break;
+                case 3:
+                    invisiblePictureBox = Invisible(new Point(1230, 5));
+                    Controls.Add(invisiblePictureBox);
+                    break;
+            }
 
             PictureBox coin = Coin(new Point(1555, 10));
             Controls.Add(coin);
@@ -153,7 +232,7 @@ namespace pac_interface
             powerLabel = new Label()
             {
                 Location = new Point(1150, 10),
-                Size = new Size(400, 30),
+                Size = new Size(80, 30),
                 Text = "00:15",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
@@ -181,7 +260,42 @@ namespace pac_interface
 
         private void PowerUsed()
         {
-
+            switch (game.player.selectedPower)
+            {
+                case 1:
+                    if (shieldPictureBox != null)
+                    {
+                        shieldPictureBox.Image?.Dispose();
+                        shieldPictureBox.Dispose();
+                        usedShieldPictureBox = ShieldUsed(new Point(1230, 5));
+                        Controls.Add(usedShieldPictureBox);
+                        scoreCount += 1000;
+                        UpdateScoreLabel();
+                    }
+                    break;
+                case 2:
+                    if (damagePictureBox != null)
+                    {
+                        damagePictureBox.Image?.Dispose();
+                        damagePictureBox.Dispose();
+                        usedDamagePictureBox = DamageUsed(new Point(1230, 5));
+                        Controls.Add(usedDamagePictureBox);
+                        scoreCount += 1000;
+                        UpdateScoreLabel();
+                    }
+                    break;
+                case 3:
+                    if (invisiblePictureBox != null)
+                    {
+                        invisiblePictureBox.Image?.Dispose();
+                        invisiblePictureBox.Dispose();
+                        usedInvisiblePictureBox = InvisibleUsed(new Point(1230, 5));
+                        Controls.Add(usedInvisiblePictureBox);
+                        scoreCount += 1000;
+                        UpdateScoreLabel();
+                    }
+                    break;
+            }
         }
 
         private void EndGame(object? sender, GameStateEventArgs e)
@@ -416,11 +530,6 @@ namespace pac_interface
 
             // Pouvoirs
             // Kill des ennemis
-        }
-
-        private void Power()
-        {
-
         }
 
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
