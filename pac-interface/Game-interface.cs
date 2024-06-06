@@ -171,15 +171,15 @@ namespace pac_interface
             switch (game.player.selectedPower)
             {
                 case 1:
-                    shieldPictureBox = Shield(new Point(1230, 5));
+                    shieldPictureBox = Shield(new Point(1205, 5));
                     Controls.Add(shieldPictureBox);
                     break;
                 case 2:
-                    damagePictureBox = Damage(new Point(1230, 5));
+                    damagePictureBox = Damage(new Point(1205, 5));
                     Controls.Add(damagePictureBox);
                     break;
                 case 3:
-                    invisiblePictureBox = Invisible(new Point(1230, 5));
+                    invisiblePictureBox = Invisible(new Point(1205, 5));
                     Controls.Add(invisiblePictureBox);
                     break;
             }
@@ -237,7 +237,7 @@ namespace pac_interface
             powerLabel = new Label()
             {
                 Location = new Point(1110, 10),
-                Size = new Size(120, 30),
+                Size = new Size(95, 30),
                 Text = "Press A",
                 Font = new Font("Arial", 16, FontStyle.Bold),
                 ForeColor = Color.White,
@@ -287,7 +287,7 @@ namespace pac_interface
                         {
                             usedShieldPictureBox.Image?.Dispose();
                             usedShieldPictureBox.Dispose();
-                            shieldPictureBox = shieldPictureBox = Shield(new Point(1230, 5));
+                            shieldPictureBox = shieldPictureBox = Shield(new Point(1205, 5));
                             Controls.Add(shieldPictureBox);
                         }
                         break;
@@ -296,7 +296,7 @@ namespace pac_interface
                         {
                             usedDamagePictureBox.Image?.Dispose();
                             usedDamagePictureBox.Dispose();
-                            damagePictureBox = damagePictureBox = Damage(new Point(1230, 5));
+                            damagePictureBox = damagePictureBox = Damage(new Point(1205, 5));
                             Controls.Add(damagePictureBox);
                         }
                         break;
@@ -305,7 +305,7 @@ namespace pac_interface
                         {
                             usedInvisiblePictureBox.Image?.Dispose();
                             usedInvisiblePictureBox.Dispose();
-                            invisiblePictureBox = invisiblePictureBox = Invisible(new Point(1230, 5));
+                            invisiblePictureBox = invisiblePictureBox = Invisible(new Point(1205, 5));
                             Controls.Add(invisiblePictureBox);
                         }
                         break;
@@ -321,6 +321,11 @@ namespace pac_interface
 
         private void PowerUsed()
         {
+            if (powerTimer.Enabled)
+            {
+                return;
+            }
+
             switch (game.player.selectedPower)
             {
                 case 1:
@@ -329,7 +334,7 @@ namespace pac_interface
                         StartPowerTimer();
                         shieldPictureBox.Image?.Dispose();
                         shieldPictureBox.Dispose();
-                        usedShieldPictureBox = ShieldUsed(new Point(1230, 5));
+                        usedShieldPictureBox = ShieldUsed(new Point(1205, 5));
                         Controls.Add(usedShieldPictureBox);
                         scoreCount += 250;
                         UpdateScoreLabel();
@@ -341,7 +346,7 @@ namespace pac_interface
                         StartPowerTimer();
                         damagePictureBox.Image?.Dispose();
                         damagePictureBox.Dispose();
-                        usedDamagePictureBox = DamageUsed(new Point(1230, 5));
+                        usedDamagePictureBox = DamageUsed(new Point(1205, 5));
                         Controls.Add(usedDamagePictureBox);
                         scoreCount += 250;
                         UpdateScoreLabel();
@@ -353,7 +358,7 @@ namespace pac_interface
                         StartPowerTimer();
                         invisiblePictureBox.Image?.Dispose();
                         invisiblePictureBox.Dispose();
-                        usedInvisiblePictureBox = InvisibleUsed(new Point(1230, 5));
+                        usedInvisiblePictureBox = InvisibleUsed(new Point(1205, 5));
                         Controls.Add(usedInvisiblePictureBox);           
                         scoreCount += 250;
                         UpdateScoreLabel();
