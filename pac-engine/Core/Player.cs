@@ -8,10 +8,10 @@ namespace pac_engine.Core
         public int lucky;
         public float absorption = 0.0f;
         public int selectedPower = 1;
-        private Shield shield;
-        private Invisible invisible;
+        public Shield shield;
+        public Invisible invisible;
         public bool isInvisible = false;
-        private Damage damagePower;
+        public Damage damagePower;
         private CancellationTokenSource cancellationTokenSource;
         public event EventHandler<DamageEventArgs> DamageTaken;
 
@@ -39,9 +39,9 @@ namespace pac_engine.Core
             money = 0;
             bolts = 0;
             lucky = 0; // %
-            selectedPower = 2;
-            shield = new Shield(1);
-            damagePower = new Damage(1);
+            selectedPower = 1;
+            shield = new Shield(3);
+            damagePower = new Damage(2);
             invisible = new Invisible(1);
         }
 

@@ -74,7 +74,18 @@ namespace pac_interface
             {
                 Location = coords,
                 Size = new Size(30, 30),
-                Image = Image.FromFile("..\\..\\..\\Resources\\Coeur\\Coeur1.png"),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Coeur\\Coeur2.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox HalfHearth(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Coeur\\Demi-Coeur2.png"),
                 SizeMode = PictureBoxSizeMode.Zoom
             };
             return pictureBox;
@@ -248,11 +259,16 @@ namespace pac_interface
             hearthPanel = new Panel
             {
                 Location = new Point(10, 10),
-                Size = new Size(130, 80)
+                Size = new Size(250, 80)
             };
 
             Controls.Add(hearthPanel);
 
+            InitializeHearts();
+        }
+
+        private void InitializeHearts()
+        {
             PictureBox hearth1 = Hearth(new Point(10, 10));
             hearthPanel.Controls.Add(hearth1);
 
@@ -263,10 +279,43 @@ namespace pac_interface
             hearthPanel.Controls.Add(hearth3);
         }
 
-        private void StartPowerTimer()
+        private void UpdateHearts()
+        {
+            hearthPanel.Controls.Clear(); 
+
+            int totalHearts = 3; 
+            int shieldLevel = game.player.shield.GetLevel(); 
+
+            
+            if (shieldLevel == 1 || shieldLevel == 2)
+            {
+                totalHearts += 1;
+                PictureBox hearth4 = Hearth(new Point(130, 10));
+                hearthPanel.Controls.Add(hearth4);
+            }
+            else if (shieldLevel == 3)
+            {
+                totalHearts += 1;
+                PictureBox hearth4 = Hearth(new Point(130, 10));
+                hearthPanel.Controls.Add(hearth4);
+
+                PictureBox halfHearth5 = HalfHearth(new Point(170, 10));
+                hearthPanel.Controls.Add(halfHearth5);
+            }
+
+            for (int i = 0; i < totalHearts; i++)
+            {
+                PictureBox heart = Hearth(new Point(10 + (i * 40), 10));
+                hearthPanel.Controls.Add(heart);
+            }
+        }
+
+
+
+        private void StartPowerTimer(int duration)
         {
             powerTimer.Stop();
-            powerTimer.Tag = 10; 
+            powerTimer.Tag = duration; 
             powerTimer.Start();
         }
 
@@ -279,6 +328,9 @@ namespace pac_interface
             {
                 powerTimer.Stop();
                 powerLabel.Text = "Press A";
+
+                hearthPanel.Controls.Clear();
+                InitializeHearts();
 
                 switch (game.player.selectedPower)
                 {
@@ -309,7 +361,10 @@ namespace pac_interface
                             Controls.Add(invisiblePictureBox);
                         }
                         break;
+                    default:
+                        break;
                 }
+
             }
             else
             {
@@ -326,24 +381,29 @@ namespace pac_interface
                 return;
             }
 
+            int timerDuration;
+
             switch (game.player.selectedPower)
             {
                 case 1:
                     if (shieldPictureBox != null)
                     {
-                        StartPowerTimer();
+                        timerDuration = game.player.damagePower.GetLevel() == 1 ? 180 : 240;
+                        StartPowerTimer(timerDuration);
                         shieldPictureBox.Image?.Dispose();
                         shieldPictureBox.Dispose();
                         usedShieldPictureBox = ShieldUsed(new Point(1205, 5));
                         Controls.Add(usedShieldPictureBox);
                         scoreCount += 250;
                         UpdateScoreLabel();
+                        UpdateHearts();
                     }
                     break;
                 case 2:
                     if (damagePictureBox != null)
                     {
-                        StartPowerTimer();
+                        timerDuration = game.player.invisible.GetLevel() == 1 ? 180 : 240;
+                        StartPowerTimer(timerDuration);
                         damagePictureBox.Image?.Dispose();
                         damagePictureBox.Dispose();
                         usedDamagePictureBox = DamageUsed(new Point(1205, 5));
@@ -355,7 +415,8 @@ namespace pac_interface
                 case 3:
                     if (invisiblePictureBox != null)
                     {
-                        StartPowerTimer();
+                        timerDuration = game.player.shield.GetLevel() == 1 ? 180 : 240;
+                        StartPowerTimer(timerDuration);
                         invisiblePictureBox.Image?.Dispose();
                         invisiblePictureBox.Dispose();
                         usedInvisiblePictureBox = InvisibleUsed(new Point(1205, 5));

@@ -20,5 +20,10 @@ namespace pac_engine.Core
             level++;
             return true;
         }
+
+        public int GetLevel()
+        {
+            return level;
+        }
     }
 }
