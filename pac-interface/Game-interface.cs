@@ -55,7 +55,6 @@ namespace pac_interface
             {
                 this.Visible = false;
                 hub.Show();
-                hub.WindowState = FormWindowState.Maximized;
             }
         }
 

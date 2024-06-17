@@ -446,18 +446,12 @@ namespace pac_interface
         private void Launch_Click(object sender, EventArgs e)
         {
             actualGame.initializeGame();
-            if (game == null)
-            {
-                game = new Game(this, actualGame);
-                this.Visible = false;
-                game.Show();
-                game.WindowState = FormWindowState.Maximized;
-                game.FormClosed += Game_FormClosed;
-            }
-            else
-            {
-                game.Activate();
-            }
+            game = new Game(this, actualGame);
+            this.Visible = false;
+            game.Show();
+            game.WindowState = FormWindowState.Maximized;
+            game.FormClosed += Game_FormClosed;
+
             actualGame.player.Health = actualGame.player.maxHealth;
             game.LoadMap();
             game.LoadEntities();
@@ -668,7 +662,6 @@ namespace pac_interface
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)
         {
             game = null;
-            this.Show();
         }
     }
 }
