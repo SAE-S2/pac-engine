@@ -10,7 +10,8 @@ public class Game
     }
     public Map map;
     public Player player;
-    public int enemiesCount = 3;
+    public int enemiesCount;
+    public int chiefCount;
     private Entity[] enemies = new Entity[10]; // TODO: Change 10???
     public int level;
     private bool win = false;
@@ -29,6 +30,53 @@ public class Game
     public bool Start(int level)
     {
         this.level = level;
+        switch (level)
+        {
+            default:
+                enemiesCount = 0;
+                chiefCount = 0;
+                break;
+            case 1:
+                enemiesCount = 1;
+                chiefCount = 1;
+                break;
+            case 2:
+                enemiesCount = 2;
+                chiefCount = 1;
+                break;
+            case 3:
+                enemiesCount = 2;
+                chiefCount = 2;
+                break;
+            case 4:
+                enemiesCount = 4;
+                chiefCount = 2;
+                break;
+            case 5:
+                enemiesCount = 4;
+                chiefCount = 3;
+                break;
+            case 6:
+                enemiesCount = 4;
+                chiefCount = 4;
+                break;
+            case 7:
+                enemiesCount = 5;
+                chiefCount = 3;
+                break;
+            case 8:
+                enemiesCount = 5;
+                chiefCount = 5;
+                break;
+            case 9:
+                enemiesCount = 7;
+                chiefCount = 5;
+                break;
+            case 10:
+                enemiesCount = 10;
+                chiefCount = 6;
+                break;
+        }
         int[,] tempMap = CreateMap();
         int k = 0;
         for (int i = 0; i < tempMap.GetLength(0); i++)
@@ -55,7 +103,7 @@ public class Game
         player.pos = map.spawn;
         player.SetActualGame(this);
         player.StartMovement(map);
-          
+        
         for (int i = 0; i < enemiesCount; i++)
         {
             _ = enemies[i].Movement(map); // start the movement asynchronously
@@ -114,9 +162,14 @@ public class Game
         DepthFirstSearch map = new DepthFirstSearch(15,25);
 
         map.Generation();
-        for (int i = 0; i < enemiesCount; i++)
+        for (int i = 0; i < chiefCount; i++)
         {
             map.GenerateChiefGuard();
+            
+        }
+        for (int j = 0; j < enemiesCount-chiefCount; j++)
+        {
+            map.GenerateGuard();
         }
 	      map.RemoveDeadEnds();
 	      map.Print();
