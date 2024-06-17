@@ -25,7 +25,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\database\database.sqlproj" />
-    <ProjectReference Include="..\DataLibrary\DataLibrary.csproj" />
+    <ProjectReference Include="..\pac-database\pac-database.csproj" />
   </ItemGroup>
 </Project>

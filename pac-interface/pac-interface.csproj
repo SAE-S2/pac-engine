@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\database\database.sqlproj" />
+    <ProjectReference Include="..\pac-database\pac-database.csproj" />
     <ProjectReference Include="..\pac-engine\pac-engine.csproj" />
   </ItemGroup>
 
