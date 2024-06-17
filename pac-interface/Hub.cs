@@ -162,7 +162,7 @@ namespace pac_interface
             int[] upgradesPriceS = { levelToGoHP, levelToGoSpeed, levelToGoRegen };
             upgradesPrice = upgradesPriceS;
             string[] upgradesDesc = { "Ajoute 0,5 coeur a votre vie total", "Ajoute 10% a votre vitesse de base", "Ajoute 0,5 coeur a la fin de chaque carte" };
-            string[] upgradeIcons = { "Bouclier.png", "Bouclier.png", "Bouclier.png" }; // Replace with correct paths
+            string[] upgradeIcons = { "health.png", "speed.png", "regen.png" }; // Replace with correct paths
 
             for (int i = 0; i < upgrades.Length; i++)
             {
@@ -248,7 +248,7 @@ namespace pac_interface
             int[] passivePriceS = { levelToGoPeur, levelToGoLucky };
             passivePrice = passivePriceS;
             string[] passivePowersDesc = { "Quand un ennemi est proche +10% de vitesse", "Vous avez 10% de chance d’avoir une pièce bonus quand vous en récupérez." };
-            string[] passiveIcons = { "Bouclier.png", "Bouclier.png" }; // Replace with correct paths
+            string[] passiveIcons = { "peur.png", "luck.png" }; // Replace with correct paths
 
             for (int i = 0; i < passivePowers.Length; i++)
             {
@@ -332,7 +332,7 @@ namespace pac_interface
             int[] activePriceS = { actualGame.player.shield.level + 1, actualGame.player.damagePower.level + 1, actualGame.player.invisible.level + 1 };
             activePrice = activePriceS;
             string[] activePowersDesc = { "+1 cœur pendant 30 secondes", "Tuer les ennemis au toucher pendant 10 secondes", "Invisibilité pendant 10 secondes" };
-            string[] activeIcons = { "Bouclier.png", "Bouclier.png", "Bouclier.png" }; // Replace with correct paths
+            string[] activeIcons = { "Bouclier.png", "Degats.png", "Invisible.png" }; // Replace with correct paths
 
             for (int i = 0; i < activePowers.Length; i++)
             {
