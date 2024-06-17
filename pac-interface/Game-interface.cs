@@ -43,6 +43,7 @@ namespace pac_interface
             if (e.win)
             {
                 game.StartGame(e.level + 1);
+                game.player.Heal(game.player.regen);
                 game.player.SetActualGame(game.ActualGame);
                 LoadMap();
                 LoadEntities();
@@ -51,7 +52,7 @@ namespace pac_interface
             else
             {
                 Hub hub;
-                hub = new Hub();
+                hub = new Hub(game);
                 this.Visible = false;
                 hub.Show();
                 hub.WindowState = FormWindowState.Maximized;

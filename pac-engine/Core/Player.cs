@@ -1,4 +1,5 @@
 ﻿using pac_engine.Utils;
+using System.Security.Cryptography.X509Certificates;
 namespace pac_engine.Core
 {
     public class Player : Entity
@@ -7,11 +8,13 @@ namespace pac_engine.Core
         public int bolts;
         public int lucky;
         public float absorption = 0.0f;
-        private int selectedPower = 1;
-        private Shield shield;
-        private Invisible invisible;
+        public float regen;
+        public int peureux;
+        public int selectedPower = 1;
+        public Shield shield;
+        public Invisible invisible;
         public bool isInvisible = false;
-        private Damage damagePower;
+        public Damage damagePower;
         private CancellationTokenSource cancellationTokenSource;
 
         public void StartMovement(Map level)
@@ -35,9 +38,11 @@ namespace pac_engine.Core
 		    Health = 3.0f;
 	        speed = 1.0f;
             damage = 0.0f;
+            regen = 0.0f;
             money = 0;
-            bolts = 0;
+            bolts = 20;
             lucky = 0; // %
+            peureux = 0;
             selectedPower = 2;
             shield = new Shield(1);
             damagePower = new Damage(1);

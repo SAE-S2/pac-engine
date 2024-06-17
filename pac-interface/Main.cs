@@ -190,31 +190,14 @@ namespace pac_interface
             }
         }
 
-        Game game;
         private void btnLancer_Click(object sender, EventArgs e)
         {
-            PacBot test = new PacBot("test", 1280, 720);
-            test.initializeGame();
-            if (game == null)
-            {
-                game = new Game(test);
-                this.Visible = false;
-                game.Show();
-                game.WindowState = FormWindowState.Maximized;
-                game.FormClosed += Game_FormClosed;
-            }
-            else
-            {
-                game.Activate(); 
-            }
-            game.LoadMap();
-            game.LoadEntities();
+            Hub hub;
+            hub = new Hub(null);
+            this.Visible = false;
+            hub.Show();
+            hub.WindowState = FormWindowState.Maximized;
         }
 
-        private void Game_FormClosed(object? sender, FormClosedEventArgs e)
-        {
-            game = null;
-            this.Show();
-        }
     }
 }
