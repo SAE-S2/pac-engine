@@ -656,6 +656,15 @@ namespace pac_interface
             this.Controls["boltsNB"].Text = ""+actualGame.player.bolts;
         }
 
+        private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
+        {
+            actualGame = null;
+            // Forcer le garbage collector pour libérer la mémoire
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
         private void Game_FormClosed(object? sender, FormClosedEventArgs e)
         {
             game = null;

@@ -190,17 +190,19 @@ namespace pac_interface
             }
         }
 
+        Hub hub;
         private void btnLancer_Click(object sender, EventArgs e)
         {
-            Hub hub;
             hub = new Hub(null);
             this.Visible = false;
             hub.Show();
             hub.WindowState = FormWindowState.Maximized;
             hub.FormClosed += Hub_FormClosed;
         }
+
         private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
         {
+            hub = null;
             this.Show();
         }
     }
