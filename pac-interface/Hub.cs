@@ -448,7 +448,7 @@ namespace pac_interface
             actualGame.initializeGame();
             if (game == null)
             {
-                game = new Game(actualGame);
+                game = new Game(this, actualGame);
                 this.Visible = false;
                 game.Show();
                 game.WindowState = FormWindowState.Maximized;

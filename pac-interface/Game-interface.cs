@@ -26,8 +26,10 @@ namespace pac_interface
         private PictureBox? PBplayer;
         private PictureBox[]? PBenemy;
         private Entity[]? enemy;
-        public Game(PacBot game)
+        private Hub hub;
+        public Game(Hub hub,PacBot game)
         {
+            this.hub = hub;
             InitializeComponent();
             this.game = game;
         }
@@ -51,8 +53,6 @@ namespace pac_interface
             }
             else
             {
-                Hub hub;
-                hub = new Hub(game);
                 this.Visible = false;
                 hub.Show();
                 hub.WindowState = FormWindowState.Maximized;
