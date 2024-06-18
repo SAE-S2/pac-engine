@@ -28,36 +28,33 @@ public class Game
 
     public bool Start(int level)
     {
+        this.level = level;
         int[,] tempMap = CreateMap();
-            int k = 0;
-            for (int i = 0; i < tempMap.GetLength(0); i++)
-                for (int j = 0; j < tempMap.GetLength(1); j++)
+        int k = 0;
+        for (int i = 0; i < tempMap.GetLength(0); i++)
+            for (int j = 0; j < tempMap.GetLength(1); j++)
+            {
+                if (tempMap[i, j] == 5)
                 {
-                    if (tempMap[i, j] == 5)
-                    {
-                        enemies[k] = new Guard();
-                    }
-                    else if (tempMap[i, j] == 7)
-                    {
-                        enemies[k] = new ChiefGuard();
-                    }
-                    if (enemies[k] != null)
-                    {
-                        enemies[k].angle = 4;
-                        enemies[k].pos = new Vector2(i, j);
-                        enemies[k].SetActualGame(this);
-                        k++;
-                    }
+                    enemies[k] = new Guard(k);
                 }
-
-            map = new Map(tempMap, this);
-            player.pos = map.spawn;
-            player.SetActualGame(this);
-            player.Movement(map);
-
-            for (int i = 0; i < enemiesCount; i++) {
-                _ = enemies[i].Movement(map);
+                else if (tempMap[i, j] == 7)
+                {
+                    enemies[k] = new ChiefGuard(k);
+                }
+                if (enemies[k] != null)
+                {
+                    enemies[k].angle = 4;
+                    enemies[k].pos = new Vector2(i, j);
+                    enemies[k].SetActualGame(this);
+                    k++;
+                }
             }
+
+        map = new Map(tempMap, this);
+        player.pos = map.spawn;
+        player.SetActualGame(this);
+        player.StartMovement(map);
           
         for (int i = 0; i < enemiesCount; i++)
         {
@@ -114,7 +111,8 @@ public class Game
 
     private int[,] CreateMap()
     {
-        DepthFirstSearch map = new DepthFirstSearch(25,25);
+        DepthFirstSearch map = new DepthFirstSearch(15,25);
+
         map.Generation();
         for (int i = 0; i < enemiesCount; i++)
         {

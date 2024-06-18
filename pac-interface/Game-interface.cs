@@ -19,15 +19,17 @@ namespace pac_interface
 {
     public partial class Game : Form
     {
-        public int tileSize = 256;
+        public int tileSize = 48;
         public Panel? pnlGame;
         private PacBot game;
         private PictureBox[,]? grid;
         private PictureBox? PBplayer;
         private PictureBox[]? PBenemy;
         private Entity[]? enemy;
-        public Game(PacBot game)
+        private Hub hub;
+        public Game(Hub hub,PacBot game)
         {
+            this.hub = hub;
             InitializeComponent();
             this.game = game;
         }
@@ -43,6 +45,7 @@ namespace pac_interface
             if (e.win)
             {
                 game.StartGame(e.level + 1);
+                game.player.Heal(game.player.regen);
                 game.player.SetActualGame(game.ActualGame);
                 LoadMap();
                 LoadEntities();
@@ -50,7 +53,8 @@ namespace pac_interface
             }
             else
             {
-                // TODO: retour hub
+                this.Visible = false;
+                hub.Show();
             }
         }
 
@@ -146,6 +150,7 @@ namespace pac_interface
 
         public void Unload()
         {
+            game.ActualGame.player.StopMovement();
             // Désabonnement aux events
             game.ActualGame.player.PositionChanged -= Player_PositionChanged;
 
@@ -211,7 +216,7 @@ namespace pac_interface
 
             grid = null;
             game.player.ResetActualGame();
-            game.player.StopMovement();
+            //game.player.StopMovement();
             game.ActualGame = null;
 
             // Forcer le garbage collector pour libérer la mémoire
@@ -228,18 +233,21 @@ namespace pac_interface
 
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
         {
+            if (grid[e.Pos.x, e.Pos.y] == null)
+                return;
+
             grid[e.Pos.x, e.Pos.y].Image = null;
         }
 
         public void LoadEntities()
         {
             enemy = game.ActualGame.GetEnemies();
-            Vector2 playerpos = new Vector2(game.ActualGame.player.pos.y, game.ActualGame.player.pos.x);
+            Vector2 playerpos = new Vector2(game.ActualGame.map.spawn.y, game.ActualGame.map.spawn.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
 
             PBplayer = new PictureBox()
             {
-                Location = new Point(playerpos.y * tileSize, playerpos.x * tileSize),
+                Location = new Point(playerpos.x * tileSize, playerpos.y * tileSize),
                 Size = new Size(tileSize, tileSize),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
