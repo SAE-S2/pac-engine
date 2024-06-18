@@ -32,15 +32,15 @@ namespace pac_engine.Core
         }
 
         public Player()
-		{
-	        // TODO: Load from db
-			maxHealth = 3.0f;
-		    Health = 3.0f;
-	        speed = 1.0f;
+	{
+	    // TODO: Load from db
+	    maxHealth = 3.0f;
+	    Health = 3.0f;
+	    speed = 1.0f;
             damage = 0.0f;
             regen = 0.0f;
             money = 0;
-            bolts = 20;
+            bolts = 0;
             lucky = 0; // %
             peureux = 0;
             selectedPower = 2;
