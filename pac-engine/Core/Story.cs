@@ -17,12 +17,12 @@ namespace pac_interface
 
             dialogues = new Tuple<string, string>[][] {
                 new Tuple<string, string>[] {
-                Tuple.Create("Halte-là Général !", "BasicEnnemi1-1.png"),
+                Tuple.Create("Halte-là Général !", "Dirigeant.png"),
                 Tuple.Create("Que veulent les hauts-dirigeants de l’empire à un général qui vient de démissionner ?", "Pac-Bot_dialogue1.png"),
-                Tuple.Create("Tout simplement vous faire changer d’avis avant que vous ne partiez.", "BasicEnnemi1-1.png"),
+                Tuple.Create("Tout simplement vous faire changer d’avis avant que vous ne partiez.", "Dirigeant.png"),
                 Tuple.Create("C’est un honneur que vous vous déplaciez pour moi mais vous n’arriverez pas à changer ma décision.", "Pac-Bot_dialogue1.png"),
                 Tuple.Create("Nous avons suffisamment repoussé l’humanité et nos frères robots sont hors de danger. Je me suis lassé de cette guerre et nous n’avons pas besoin d’éradiquer les derniers humains.", "Pac-Bot_dialogue1.png"),
-                Tuple.Create("Il semble en effet que vous ayez fait votre choix, et nous devons donc faire le notre. Gardes ! Arrêtez l’ex-général Pac-Bot et jetez le en prison.", "BasicEnnemi1-1.png")
+                Tuple.Create("Il semble en effet que vous ayez fait votre choix, et nous devons donc faire le notre. Gardes ! Arrêtez l’ex-général Pac-Bot et jetez le en prison.", "Dirigeant.png")
                 },
 
                 // Dialogue arrivée en prison (1)
