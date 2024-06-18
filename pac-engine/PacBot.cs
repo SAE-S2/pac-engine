@@ -34,10 +34,15 @@ namespace pac_engine
             return profils;
         }
 
+        public void LoadWithProfil(int profil)
+        {
+            // add load from db
+            name = "profil " + profil;
+            player = new Player();
+        }
+
         public void initializeGame()
         {
-            name = "profil 1";
-            player = new Player();
             price = 0;
             bool win = StartGame(1);
         }
