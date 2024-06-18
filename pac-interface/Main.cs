@@ -197,7 +197,11 @@ namespace pac_interface
             this.Visible = false;
             hub.Show();
             hub.WindowState = FormWindowState.Maximized;
+            hub.FormClosed += Hub_FormClosed;
         }
-
+        private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
+        {
+            this.Show();
+        }
     }
 }
