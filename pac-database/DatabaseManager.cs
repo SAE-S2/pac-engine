@@ -216,6 +216,38 @@ namespace PacDatabase
             }
         }
 
+        public static string GetProfil_name(int uid,int numProfil)
+        {
+            string name = null;
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string selectQuery = "SELECT NomProfil FROM Profil WHERE UID = @uid AND numProfil = @numProfil";
+                    using (var command = new SQLiteCommand(selectQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                name = reader.GetString(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return name;
+        }
+
         public static void UpdateProfil(int idProfil, int numProfil, string nomProfil, bool level10Played, bool dialogueGarde, bool dialoguePrison, bool dialogueDebut, bool dialogueInge, int totalPieces, int totalBoulons, int uid)
         {
             try
@@ -249,17 +281,18 @@ namespace PacDatabase
             }
         }
 
-        public static void DeleteProfil(int idProfil)
+        public static void DeleteProfil(int numProfil, int uid)
         {
             try
             {
                 using (var connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
-                    string deleteQuery = "DELETE FROM Profil WHERE IDProfil = @idProfil";
+                    string deleteQuery = "DELETE FROM Profil WHERE uid = @uid AND numProfil = @numProfil";
                     using (var command = new SQLiteCommand(deleteQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@idProfil", idProfil);
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
                         command.ExecuteNonQuery();
                     }
                 }
