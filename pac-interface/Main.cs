@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PacDatabase;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -19,6 +20,8 @@ namespace pac_interface
         public Main()
         {
             InitializeComponent();
+            
+            DatabaseManager.GetUtilisateur(0);
         }
 
         private void LoadPrincipal()

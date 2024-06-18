@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SQLite;
+using System.Diagnostics;
 
 namespace PacDatabase
 {
@@ -90,14 +91,31 @@ namespace PacDatabase
 
         public static void AddUtilisateur(string login, string mdpUtilisateur)
         {
-            using (var connection = new SQLiteConnection(connectionString))
+            try
             {
-                connection.Open();
-                string insertQuery = "INSERT INTO Utilisateur (login, MdpUtilisateur) VALUES (@login, @mdpUtilisateur)";
-                var command = new SQLiteCommand(insertQuery, connection);
-                command.Parameters.AddWithValue("@login", login);
-                command.Parameters.AddWithValue("@mdpUtilisateur", mdpUtilisateur);
-                command.ExecuteNonQuery();
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string insertQuery = "INSERT INTO Utilisateur (login, MdpUtilisateur) VALUES (@login, @mdpUtilisateur)";
+                    using (var command = new SQLiteCommand(insertQuery, connection))
+                    {
+                        command.Parameters.AddWithValue("@login", login);
+                        command.Parameters.AddWithValue("@mdpUtilisateur", mdpUtilisateur);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                if (ex.ResultCode == SQLiteErrorCode.Constraint && ex.Message.Contains("UNIQUE constraint failed"))
+                {
+                    Debug.WriteLine($"Erreur : Un utilisateur avec le login '{login}' existe déjà.");
+                }
+                else
+                {
+                    throw;
+                }
             }
         }
 
@@ -127,11 +145,11 @@ namespace PacDatabase
             }
         }
 
-        public static SQLiteDataReader GetUtilisateurs()
+        public static SQLiteDataReader GetUtilisateur(int uid)
         {
             var connection = new SQLiteConnection(connectionString);
             connection.Open();
-            string selectQuery = "SELECT * FROM Utilisateur";
+            string selectQuery = "SELECT * FROM Utilisateur WHERE UID = @uid";
             var command = new SQLiteCommand(selectQuery, connection);
             return command.ExecuteReader(System.Data.CommandBehavior.CloseConnection);
         }
