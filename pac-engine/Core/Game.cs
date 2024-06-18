@@ -12,7 +12,7 @@ public class Game
     public Player player;
     public int enemiesCount;
     public int chiefCount;
-    private Entity[] enemies = new Entity[10]; // TODO: Change 10???
+    private Entity[] enemies = new Entity[13]; // TODO: Change 10???
     public int level;
     private bool win = false;
     public event EventHandler<GameStateEventArgs>? GameState;
@@ -30,54 +30,65 @@ public class Game
     public bool Start(int level)
     {
         this.level = level;
+        int[,] tempMap;
         switch (level)
         {
             default:
                 enemiesCount = 0;
                 chiefCount = 0;
+                tempMap = CreateMap(15,17);
                 break;
             case 1:
                 enemiesCount = 1;
                 chiefCount = 1;
+                tempMap = CreateMap(15, 17);
                 break;
             case 2:
                 enemiesCount = 2;
                 chiefCount = 1;
+                tempMap = CreateMap(15, 17);
                 break;
             case 3:
                 enemiesCount = 2;
-                chiefCount = 2;
+                chiefCount = 1;
+                tempMap = CreateMap(15, 17);
                 break;
             case 4:
-                enemiesCount = 4;
+                enemiesCount = 2;
                 chiefCount = 2;
+                tempMap = CreateMap(15, 17);
                 break;
             case 5:
-                enemiesCount = 4;
-                chiefCount = 3;
+                enemiesCount = 3;
+                chiefCount = 2;
+                tempMap = CreateMap(15, 17);
                 break;
             case 6:
                 enemiesCount = 4;
-                chiefCount = 4;
+                chiefCount = 2;
+                tempMap = CreateMap(15, 17);
                 break;
             case 7:
                 enemiesCount = 5;
-                chiefCount = 3;
+                chiefCount = 2;
+                tempMap = CreateMap(15, 17);
                 break;
             case 8:
-                enemiesCount = 5;
-                chiefCount = 5;
+                enemiesCount = 6;
+                chiefCount = 3;
+                tempMap = CreateMap(15, 17);
                 break;
             case 9:
-                enemiesCount = 7;
+                enemiesCount = 8;
                 chiefCount = 5;
+                tempMap = CreateMap(15, 17);
                 break;
             case 10:
-                enemiesCount = 10;
-                chiefCount = 6;
+                enemiesCount = 13;
+                chiefCount = 8;
+                tempMap = CreateMap(15, 25);
                 break;
         }
-        int[,] tempMap = CreateMap();
         int k = 0;
         for (int i = 0; i < tempMap.GetLength(0); i++)
             for (int j = 0; j < tempMap.GetLength(1); j++)
@@ -157,9 +168,9 @@ public class Game
         return enemy;
     }
 
-    private int[,] CreateMap()
+    private int[,] CreateMap(int largeur, int longueur)
     {
-        DepthFirstSearch map = new DepthFirstSearch(15,25);
+        DepthFirstSearch map = new DepthFirstSearch(largeur,longueur);
 
         map.Generation();
         for (int i = 0; i < chiefCount; i++)
