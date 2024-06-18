@@ -1,4 +1,5 @@
-﻿using PacDatabase;
+using pac_engine;
+using PacDatabase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -193,26 +194,20 @@ namespace pac_interface
             }
         }
 
-        Game game;
+        Hub hub;
         private void btnLancer_Click(object sender, EventArgs e)
         {
-            if (game == null)
-            {
-                game = new Game();
-                this.Visible = false;
-                game.Show();
-                game.FormClosed += Game_FormClosed;
-            }
-            else
-            {
-                game.Activate(); 
-            }
+            hub = new Hub(null);
+            this.Visible = false;
+            hub.Show();
+            hub.WindowState = FormWindowState.Maximized;
+            hub.FormClosed += Hub_FormClosed;
         }
 
-        private void Game_FormClosed(object? sender, FormClosedEventArgs e)
+        private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
         {
-            this.Visible = true;
-            //throw new NotImplementedException();
+            hub = null;
+            this.Show();
         }
     }
 }
