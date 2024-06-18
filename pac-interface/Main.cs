@@ -1,8 +1,10 @@
-﻿using pac_engine;
+using pac_engine;
+using PacDatabase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -20,6 +22,8 @@ namespace pac_interface
         public Main()
         {
             InitializeComponent();
+            DatabaseManager.AddUtilisateur("PacMaster", "1234");
+            DatabaseManager.GetUtilisateurs();
         }
 
         private void LoadPrincipal()
