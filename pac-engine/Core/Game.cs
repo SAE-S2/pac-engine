@@ -8,7 +8,7 @@ public class Game
     {
         get { return playing; }
     }
-    private Map map;
+    public Map map;
     public Player player;
     public int enemiesCount = 3;
     private Entity[] enemies = new Entity[10]; // TODO: Change 10???
@@ -59,7 +59,7 @@ public class Game
                 _ = enemies[i].Movement(map);
             }
           
-        for (int i = 0; i < enemiesNum; i++)
+        for (int i = 0; i < enemiesCount; i++)
         {
             _ = enemies[i].Movement(map); // start the movement asynchronously
         }
@@ -68,14 +68,14 @@ public class Game
 
     public void EnemyDie(Entity enemy)
     {
-        for (int i = 0; i < enemiesNum; i++)
+        for (int i = 0; i < enemiesCount; i++)
         {
           if (enemies[i] == enemy)
             {
-                enemiesNum--;
-                if (i < enemiesNum)
+                enemiesCount--;
+                if (i < enemiesCount)
                 {
-                    for (int j = i; j < enemiesNum; j++)
+                    for (int j = i; j < enemiesCount; j++)
                     {
                         enemies[j] = enemies[j+1];
                     }
@@ -106,7 +106,7 @@ public class Game
     public Entity EnemyAtPos(Vector2 pos)
     {
         Entity enemy = player;
-        for (int e = 0; e < enemiesNum && enemiesNum != 0; e++)
+        for (int e = 0; e < enemiesCount && enemiesCount != 0; e++)
             if (enemies[e].pos.x == pos.x && pos.y == enemies[e].pos.y)
                 enemy = enemies[e];
         return enemy;
