@@ -231,6 +231,30 @@ namespace pac_interface
         Hub hub;
         private void btnLancer_Click(object sender, EventArgs e)
         {
+            switch (profil)
+            {
+                case 1:
+                    if (btnProfil1.Text == "Profil 1")
+                    {
+                        MessageBox.Show("Profil non créé");
+                        return;
+                    }
+                    break;
+                case 2:
+                    if (btnProfil2.Text == "Profil 2")
+                    {
+                        MessageBox.Show("Profil non créé");
+                        return;
+                    }
+                    break;
+                case 3:
+                    if (btnProfil3.Text == "Profil 3")
+                    {
+                        MessageBox.Show("Profil non créé");
+                        return;
+                    }
+                    break;
+            }
             hub = new Hub(null);
             this.Visible = false;
             hub.Show();
