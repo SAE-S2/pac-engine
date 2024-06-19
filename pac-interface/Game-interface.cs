@@ -44,12 +44,22 @@ namespace pac_interface
             Unload();
             if (e.win)
             {
-                game.StartGame(e.level + 1);
-                game.player.Heal(game.player.regen);
-                game.player.SetActualGame(game.ActualGame);
-                LoadMap();
-                LoadEntities();
-                pnlGame.Visible = true;
+                if (e.level == 10)
+                {
+                    this.Visible = false;
+                    //TODO : Dialogue Fin Jeu
+                    Main main = new Main();
+                    main.LoadPrincipal();
+                }
+                else
+                {
+                    game.StartGame(e.level + 1);
+                    game.player.Heal(game.player.regen);
+                    game.player.SetActualGame(game.ActualGame);
+                    LoadMap();
+                    LoadEntities();
+                    pnlGame.Visible = true;
+                }
             }
             else
             {
