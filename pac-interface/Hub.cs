@@ -35,7 +35,7 @@ namespace pac_interface
                 this.actualGame.LoadWithProfil(1);
             }
 
-        InitializeComponent();
+            InitializeComponent();
             SetupControls(); // Call the method to add custom controls
         }
 
@@ -191,7 +191,7 @@ namespace pac_interface
                 Label labelUpgrade = new Label
                 {
                     Text = $"{upgrades[i]} (lvl. {(i == 0 ? levelToGoHP - 1 : (i == 1 ? levelToGoSpeed - 1 : levelToGoRegen - 1))})",
-                    Name = "label"+i,
+                    Name = "label" + i,
                     Font = new Font("Arial", 10, FontStyle.Regular),
                     ForeColor = Color.White,
                     Location = new Point(60, 80 + i * 100),
@@ -277,7 +277,7 @@ namespace pac_interface
                 Label labelPassive = new Label
                 {
                     Text = $"{passivePowers[i]} (lvl. {(i == 0 ? levelToGoLucky - 1 : levelToGoPeur - 1)})",
-                    Name = "label"+i,
+                    Name = "label" + i,
                     Font = new Font("Arial", 10, FontStyle.Regular),
                     ForeColor = Color.White,
                     Location = new Point(60, 40 + i * 75),
@@ -289,7 +289,7 @@ namespace pac_interface
 
                 Label labelPrice = new Label
                 {
-                    Text = ""+ passivePrice[i],
+                    Text = "" + passivePrice[i],
                     Name = "price" + i,
                     Font = new Font("Arial", 9, FontStyle.Regular),
                     ForeColor = Color.White,
@@ -361,7 +361,7 @@ namespace pac_interface
                 Label labelActive = new Label
                 {
                     Text = $"{activePowers[i]} (lvl. {(i == 0 ? actualGame.player.shield.level : (i == 1 ? actualGame.player.damagePower.level : actualGame.player.invisible.level))})",
-                    Name = "label"+i,
+                    Name = "label" + i,
                     Font = new Font("Arial", 10, FontStyle.Regular),
                     ForeColor = Color.White,
                     Location = new Point(60, 35 + i * 60),
@@ -374,7 +374,7 @@ namespace pac_interface
 
                 Label labelPrice = new Label
                 {
-                    Text = ""+ activePrice[i],
+                    Text = "" + activePrice[i],
                     Name = "price" + i,
                     Font = new Font("Arial", 9, FontStyle.Regular),
                     ForeColor = Color.White,
@@ -446,7 +446,7 @@ namespace pac_interface
         private void PictureBoxIngenieur_Click(object sender, EventArgs e)
         {
             // Affichage du dialogue de l'ingénieur
-            StartDialogue(2, false);
+            StartDialogue(2, false); //TODO Gestion du bool
 
             // Show or hide the panel and the other elements
             panel.Visible = !panel.Visible;
@@ -461,7 +461,7 @@ namespace pac_interface
         private void Launch_Click(object sender, EventArgs e)
         {
             // Affichage du dialogue du garde
-            StartDialogue(3, false);
+            StartDialogue(3, false); //TODO Gestion du bool
 
             actualGame.initializeGame(1);
             game = new Game(this, actualGame);
@@ -673,7 +673,7 @@ namespace pac_interface
                     DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 8);
                     break;
             }
-            this.Controls["boltsNB"].Text = ""+actualGame.player.bolts;
+            this.Controls["boltsNB"].Text = "" + actualGame.player.bolts;
             DatabaseManager.SetTotalBoulons(Globals.UID, Globals.NumProfil, actualGame.player.bolts);
         }
 

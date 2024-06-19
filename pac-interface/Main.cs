@@ -275,7 +275,7 @@ namespace pac_interface
             
             if (false) //TODO : récupérer bool dans bdd
             {
-                //TODO : Dialogue Début Jeu
+                StartDialogue(0, true);
                 hub.actualGame.initializeGame(10);
                 game = new Game(hub, hub.actualGame);
                 game.Show();
