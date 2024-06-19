@@ -650,6 +650,21 @@ namespace pac_interface
             game.ActualGame.player.PositionChanged -= Player_PositionChanged;
             game.ActualGame.player.DamageTaken -= Player_DamageTaken;
 
+            switch (game.player.selectedPower)
+            {
+                case 0:
+                    break;
+                case 1:
+                    game.ActualGame.player.shield.PowerEnd += PowerEnd;
+                    break;
+                case 2:
+                    game.ActualGame.player.damagePower.PowerEnd += PowerEnd;
+                    break;
+                case 3:
+                    game.ActualGame.player.invisible.PowerEnd += PowerEnd;
+                    break;
+            }
+
             if (enemy != null)
             {
                 foreach (var en in enemy)
