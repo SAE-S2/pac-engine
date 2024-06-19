@@ -441,11 +441,6 @@ namespace pac_interface
         }
         private void PowerUsed()
         {
-            if (powerTimer.Enabled)
-            {
-                return;
-            }
-
             int timerDuration;
 
             switch (game.player.selectedPower)
@@ -748,6 +743,20 @@ namespace pac_interface
             Vector2 playerpos = new Vector2(game.ActualGame.map.spawn.y, game.ActualGame.map.spawn.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
             game.ActualGame.player.DamageTaken += Player_DamageTaken;
+            switch (game.player.selectedPower)
+            {
+                case 0:
+                    break;
+                case 1:
+                    game.ActualGame.player.shield.PowerEnd += PowerEnd;
+                    break;
+                case 2:
+                    game.ActualGame.player.damagePower.PowerEnd += PowerEnd;
+                    break;
+                case 3:
+                    game.ActualGame.player.invisible.PowerEnd += PowerEnd;
+                    break;
+            }
 
             PBplayer = new PictureBox()
             {
@@ -799,6 +808,17 @@ namespace pac_interface
             }
             PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
+
+        private void PowerEnd(object? sender, NothingsEventArgs _)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { PowerEnd(sender, _); }));
+                return;
+            }
+            PowerUsed();
+        }
+
         private void Enemy_Killed(object? sender, KilledEventArgs enemy)
         {
             if (InvokeRequired)
@@ -811,7 +831,12 @@ namespace pac_interface
 
         private void Player_angle(int angle)
         {
-            Image image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\Pac-bot1.png");
+            Image image;
+            if (game.player.isInvisible)
+                image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\Pac-bot1-inv.png");
+            else
+                image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\Pac-bot1.png");
+
             switch (angle)
             {
                 default:
@@ -869,10 +894,12 @@ namespace pac_interface
                         }
                     case Keys.A:
                         {
-                            if (game.ActualGame.player.selectedPower != 0)
+                            if (game.ActualGame.player.selectedPower != 0 && !powerTimer.Enabled)
                             {
+                                if (game.ActualGame.player.selectedPower == 3)
+                                    PBplayer.Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1-inv.png");
+
                                 game.ActualGame.player.ActivePower();
-                                PowerUsed();
                             }
                             break;
                         }

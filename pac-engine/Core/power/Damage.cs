@@ -1,4 +1,7 @@
-﻿namespace pac_engine.Core
+﻿using System;
+using pac_engine.Utils;
+
+namespace pac_engine.Core
 {
     public class Damage : Power
     {
@@ -9,10 +12,7 @@
 
         public async Task Active(Player player)
         {
-            if (!CanActive())
-                return;
-
-            cooldown = true;
+            active = true;
             player.imortal = true;
             player.damage = 10f;
 
@@ -33,13 +33,8 @@
 
                 player.imortal = false;
                 player.damage = 0f;
-
-                if (level == 3)
-                    Thread.Sleep(180000);
-                else
-                    Thread.Sleep(240000);
-
-                cooldown = false;
+                active = false;
+                PowerFinish();
             });
         }
     }
