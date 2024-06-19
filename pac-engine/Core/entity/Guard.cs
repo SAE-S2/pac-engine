@@ -2,9 +2,8 @@
 
 namespace pac_engine.Core
 {
-    public class Guard : Entity
-    {
-        public Guard()
+    public class Guard : Entity {
+        public Guard(int indice)
         {
             this.maxHealth = 1.0f;
             this.Health = 1.0f;

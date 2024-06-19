@@ -238,11 +238,10 @@ namespace pac_interface
             return sb.ToString().Trim();
         }
 
-        private void Dialogue(int numDialogue, bool isFirstTime)
+        public void Dialogue(int numDialogue, bool isFirstTime)
         {
-            this.numDialogue = numDialogue;  // Initialisez les variables d'instance
+            this.numDialogue = numDialogue;
             this.isFirstTime = isFirstTime;
-            // Réinitialisation de currentLineIndex à 0
             currentLineIndex = 0;
 
             dialogueManager = new DialogueManager(numDialogue, isFirstTime);
@@ -292,27 +291,19 @@ namespace pac_interface
             DialogueText.Click += Dialogue_Click;
 
             AdjustSizesAndPositions();
-
-            // Initial call to display the first dialogue line
             ShowCurrentDialogueLine(numDialogue, isFirstTime);
-
             Dialogues.Resize += (s, e) => AdjustSizesAndPositions();
         }
 
         private void Dialogue_Click(object sender, EventArgs e)
         {
-            // Vérifie si le dialogue n'est pas terminé
             if (currentLineIndex < dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
             {
-                // Incrémentation de currentLineIndex
                 currentLineIndex++;
-
-                // Affichage de la ligne de dialogue suivante
                 ShowCurrentDialogueLine(numDialogue, isFirstTime);
             }
             else
             {
-                // Fin du dialogue, nettoyage
                 Controls.Remove(Dialogues);
                 Dialogues.Dispose();
             }
@@ -324,14 +315,13 @@ namespace pac_interface
             DialogueText.Text = WrapText(currentDialogue.Item1, 48);
             if (currentDialogue.Item2 == "Voix off")
             {
-
+                Character.Image = null;
             }
             else
             {
                 Character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
             }
         }
-
 
         private void AdjustSizesAndPositions()
         {
