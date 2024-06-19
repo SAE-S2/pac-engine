@@ -13,7 +13,7 @@ namespace pac_interface
         private Label labelGarde;
         private Label labelIngenieur;
         private ToolTip toolTip;
-        private PacBot actualGame;
+        public PacBot actualGame;
         private int[] upgradesPrice;
         private int[] passivePrice;
         private int[] activePrice;
@@ -463,7 +463,7 @@ namespace pac_interface
             // Affichage du dialogue du garde
             StartDialogue(3, false);
 
-            actualGame.initializeGame();
+            actualGame.initializeGame(1);
             game = new Game(this, actualGame);
             this.Visible = false;
             game.Show();
@@ -686,7 +686,7 @@ namespace pac_interface
             GC.Collect();
         }
 
-        private void Game_FormClosed(object? sender, FormClosedEventArgs e)
+        public void Game_FormClosed(object? sender, FormClosedEventArgs e)
         {
             game = null;
         }
