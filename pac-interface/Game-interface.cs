@@ -646,91 +646,94 @@ namespace pac_interface
 
         public void Unload()
         {
-            game.ActualGame.player.StopMovement();
-            // Désabonnement aux events
-            game.ActualGame.player.PositionChanged -= Player_PositionChanged;
-            game.ActualGame.player.DamageTaken -= Player_DamageTaken;
-
-            switch (game.player.selectedPower)
+            if (game.ActualGame != null)
             {
-                case 0:
-                    break;
-                case 1:
-                    game.ActualGame.player.shield.PowerEnd += PowerEnd;
-                    break;
-                case 2:
-                    game.ActualGame.player.damagePower.PowerEnd += PowerEnd;
-                    break;
-                case 3:
-                    game.ActualGame.player.invisible.PowerEnd += PowerEnd;
-                    break;
-            }
+                game.ActualGame.player.StopMovement();
+                // Désabonnement aux events
+                game.ActualGame.player.PositionChanged -= Player_PositionChanged;
+                game.ActualGame.player.DamageTaken -= Player_DamageTaken;
 
-            if (enemy != null)
-            {
-                foreach (var en in enemy)
+                switch (game.player.selectedPower)
                 {
-                    if (en != null)
+                    case 0:
+                        break;
+                    case 1:
+                        game.ActualGame.player.shield.PowerEnd += PowerEnd;
+                        break;
+                    case 2:
+                        game.ActualGame.player.damagePower.PowerEnd += PowerEnd;
+                        break;
+                    case 3:
+                        game.ActualGame.player.invisible.PowerEnd += PowerEnd;
+                        break;
+                }
+
+                if (enemy != null)
+                {
+                    foreach (var en in enemy)
                     {
-                        en.PositionChanged -= Enemy_PositionChanged;
-                        en.Killed -= Enemy_Killed;
+                        if (en != null)
+                        {
+                            en.PositionChanged -= Enemy_PositionChanged;
+                            en.Killed -= Enemy_Killed;
+                        }
                     }
                 }
-            }
 
-            Map map = game.ActualGame.getMap();
-            if (map != null)
-            {
-                map.CoinEarn -= Map_CoinEarn;
-                map.DoorOpen -= Map_DoorOpen;
-            }
-
-            game.ActualGame.GameState -= EndGame;
-
-            // Dispose PictureBoxes
-            if (grid != null)
-            {
-                foreach (var pictureBox in grid)
+                Map map = game.ActualGame.getMap();
+                if (map != null)
                 {
-                    if (pictureBox != null)
+                    map.CoinEarn -= Map_CoinEarn;
+                    map.DoorOpen -= Map_DoorOpen;
+                }
+
+                game.ActualGame.GameState -= EndGame;
+
+                // Dispose PictureBoxes
+                if (grid != null)
+                {
+                    foreach (var pictureBox in grid)
                     {
-                        pictureBox.Image?.Dispose();
-                        pictureBox.Dispose();
+                        if (pictureBox != null)
+                        {
+                            pictureBox.Image?.Dispose();
+                            pictureBox.Dispose();
+                        }
                     }
                 }
-            }
 
-            if (PBplayer != null)
-            {
-                PBplayer.Image?.Dispose();
-                PBplayer.Dispose();
-                PBplayer = null;
-            }
-
-            if (PBenemy != null)
-            {
-                foreach (var pb in PBenemy)
+                if (PBplayer != null)
                 {
-                    if (pb != null)
-                    {
-                        pb.Image?.Dispose();
-                        pb.Dispose();
-                    }
+                    PBplayer.Image?.Dispose();
+                    PBplayer.Dispose();
+                    PBplayer = null;
                 }
-                PBenemy = null;
-            }
 
-            if (pnlGame != null)
-            {
-                Controls.Remove(pnlGame);
-                pnlGame.Dispose();
-                pnlGame = null;
-            }
+                if (PBenemy != null)
+                {
+                    foreach (var pb in PBenemy)
+                    {
+                        if (pb != null)
+                        {
+                            pb.Image?.Dispose();
+                            pb.Dispose();
+                        }
+                    }
+                    PBenemy = null;
+                }
 
-            grid = null;
-            game.player.ResetActualGame();
-            //game.player.StopMovement();
-            game.ActualGame = null;
+                if (pnlGame != null)
+                {
+                    Controls.Remove(pnlGame);
+                    pnlGame.Dispose();
+                    pnlGame = null;
+                }
+
+                grid = null;
+                game.player.ResetActualGame();
+                //game.player.StopMovement();
+                game.ActualGame = null;
+            }
 
             // Forcer le garbage collector pour libérer la mémoire
             GC.Collect();
