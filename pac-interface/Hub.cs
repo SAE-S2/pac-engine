@@ -14,14 +14,13 @@ namespace pac_interface
         private int[] upgradesPrice;
         private int[] passivePrice;
         private int[] activePrice;
-        private int currentLineIndex = 0;
         private DialogueManager dialogueManager;
-        private Panel Dialogues;
-        private PictureBox Boite;
-        private PictureBox Character;
-        private Label DialogueText;
-        private int numDialogue;
-        private bool isFirstTime;
+        private bool dialogueInProgress;
+        private int currentLineIndex;
+        private Panel dialoguesPanel;
+        private PictureBox boite;
+        private PictureBox character;
+        private Label dialogueText;
 
         public Hub(PacBot? game)
         {
@@ -444,7 +443,7 @@ namespace pac_interface
         private void PictureBoxIngenieur_Click(object sender, EventArgs e)
         {
             // Affichage du dialogue de l'ingénieur
-            Dialogue(2, false);
+            StartDialogue(2, false);
 
             // Show or hide the panel and the other elements
             panel.Visible = !panel.Visible;
@@ -459,7 +458,8 @@ namespace pac_interface
         private void Launch_Click(object sender, EventArgs e)
         {
             // Affichage du dialogue du garde
-            Dialogue(3, false);
+            StartDialogue(3, false);
+
             actualGame.initializeGame();
             game = new Game(this, actualGame);
             this.Visible = false;
@@ -679,7 +679,124 @@ namespace pac_interface
             game = null;
         }
 
-        private string WrapText(string text, int maxCharsPerLine) //Gestion du passage à la ligne
+        // Méthode pour démarrer le dialogue
+        private void StartDialogue(int numDialogue, bool isFirstTime)
+        {
+            dialogueInProgress = true; // Indicateur pour savoir si le dialogue est en cours
+            currentLineIndex = 0;
+
+            dialogueManager = new DialogueManager(numDialogue, isFirstTime);
+
+            // Initialisation des contrôles pour afficher le dialogue
+            dialoguesPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.Transparent
+            };
+
+            boite = new PictureBox
+            {
+                BackColor = Color.Transparent,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Image.FromFile("..\\..\\..\\Resources\\Bulle_dialogue.png"),
+                Anchor = AnchorStyles.Bottom,
+                Cursor = Cursors.Hand
+            };
+
+            character = new PictureBox
+            {
+                BackColor = Color.Transparent,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
+            };
+
+            dialogueText = new Label
+            {
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.White,
+                BackColor = Color.Transparent,
+                Font = new Font("Segoe UI", 16, FontStyle.Regular),
+                AutoEllipsis = true,
+                Padding = new Padding(10),
+                Enabled = true
+            };
+
+            boite.Controls.Add(dialogueText);
+            Controls.Add(dialoguesPanel);
+            dialoguesPanel.Controls.Add(boite);
+            dialoguesPanel.Controls.Add(character);
+            character.BringToFront();
+            dialoguesPanel.BringToFront();
+
+            dialogueText.Click += Dialogue_Click;
+
+            AdjustSizesAndPositions();
+
+            // Afficher la première ligne de dialogue
+            ShowCurrentDialogueLine(numDialogue, isFirstTime);
+
+            // Boucle pour attendre la fin du dialogue
+            while (dialogueInProgress)
+            {
+                Application.DoEvents(); // Permet à l'application de traiter les événements
+                // Vous pouvez aussi utiliser Thread.Sleep(100) pour réduire l'utilisation du CPU
+            }
+
+            // Dialogue terminé, nettoyage ou actions après le dialogue
+            Controls.Remove(dialoguesPanel);
+            dialoguesPanel.Dispose();
+        }
+
+        // Méthode pour afficher la ligne de dialogue courante
+        private void ShowCurrentDialogueLine(int numDialogue, bool isFirstTime)
+        {
+            var currentDialogue = dialogueManager.GetDialogueLine(numDialogue, isFirstTime, currentLineIndex);
+            dialogueText.Text = WrapText(currentDialogue.Item1, 48);
+
+            if (currentDialogue.Item2 == "Voix off" || currentDialogue.Item2 == "")
+            {
+                character.Image = null; // Aucune image pour "Voix off"
+            }
+            else
+            {
+                character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
+            }
+
+            // Vérifier si c'est la dernière ligne de dialogue
+            if (currentLineIndex >= dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
+            {
+                dialogueInProgress = false; // Fin du dialogue
+            }
+        }
+
+        // Méthode appelée lorsqu'un clic sur le dialogue se produit
+        private void Dialogue_Click(object sender, EventArgs e)
+        {
+            // Vérifier si le dialogue n'est pas terminé
+            if (dialogueInProgress && currentLineIndex < dialogueManager.GetDialogueLength(dialogueManager.dialogueIndex, dialogueManager.isFirstTime))
+            {
+                currentLineIndex++; // Passer à la ligne suivante
+                ShowCurrentDialogueLine(dialogueManager.dialogueIndex, dialogueManager.isFirstTime); // Afficher la nouvelle ligne
+            }
+        }
+
+        // Méthode pour ajuster les tailles et positions des contrôles de dialogue
+        private void AdjustSizesAndPositions()
+        {
+            boite.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.8), (int)(dialoguesPanel.ClientSize.Height * 0.5));
+            character.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.3), (int)(dialoguesPanel.ClientSize.Height * 0.8));
+
+            character.Location = new Point(0, dialoguesPanel.ClientSize.Height - character.Height);
+            boite.Location = new Point(dialoguesPanel.ClientSize.Width - boite.Width, dialoguesPanel.ClientSize.Height - boite.Height);
+
+            dialogueText.Size = new Size(boite.Width - 20, boite.Height - 20);
+            dialogueText.Location = new Point((boite.Width - dialogueText.Width) / 2, (boite.Height - dialogueText.Height) / 2);
+        }
+
+        // Méthode pour découper le texte en lignes avec un nombre maximal de caractères par ligne
+        private string WrapText(string text, int maxCharsPerLine)
         {
             StringBuilder sb = new StringBuilder();
             string[] words = text.Split(' ');
@@ -700,103 +817,6 @@ namespace pac_interface
             }
 
             return sb.ToString().Trim();
-        }
-
-        public void Dialogue(int numDialogue, bool isFirstTime)
-        {
-            this.numDialogue = numDialogue;
-            this.isFirstTime = isFirstTime;
-            currentLineIndex = 0;
-
-            dialogueManager = new DialogueManager(numDialogue, isFirstTime);
-
-            Dialogues = new Panel
-            {
-                Dock = DockStyle.Fill,
-                BorderStyle = BorderStyle.FixedSingle,
-                BackColor = Color.Transparent
-            };
-
-            Boite = new PictureBox
-            {
-                BackColor = Color.Transparent,
-                SizeMode = PictureBoxSizeMode.Zoom,
-                Image = Image.FromFile("..\\..\\..\\Resources\\Bulle_dialogue.png"),
-                Anchor = AnchorStyles.Bottom,
-                Cursor = Cursors.Hand
-            };
-
-            Character = new PictureBox
-            {
-                BackColor = Color.Transparent,
-                SizeMode = PictureBoxSizeMode.Zoom,
-                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
-            };
-
-            DialogueText = new Label
-            {
-                AutoSize = false,
-                TextAlign = ContentAlignment.MiddleCenter,
-                ForeColor = Color.White,
-                BackColor = Color.Transparent,
-                Font = new Font("Segoe UI", 16, FontStyle.Regular),
-                AutoEllipsis = true,
-                Padding = new Padding(10),
-                Enabled = true
-            };
-
-            Boite.Controls.Add(DialogueText);
-            Controls.Add(Dialogues);
-            Dialogues.Controls.Add(Boite);
-            Dialogues.Controls.Add(Character);
-            Character.BringToFront();
-            Dialogues.BringToFront();
-
-            DialogueText.Click += Dialogue_Click;
-
-            AdjustSizesAndPositions();
-            ShowCurrentDialogueLine(numDialogue, isFirstTime);
-            Dialogues.Resize += (s, e) => AdjustSizesAndPositions();
-        }
-
-        private void Dialogue_Click(object sender, EventArgs e)
-        {
-            if (currentLineIndex < dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
-            {
-                currentLineIndex++;
-                ShowCurrentDialogueLine(numDialogue, isFirstTime);
-            }
-            else
-            {
-                Controls.Remove(Dialogues);
-                Dialogues.Dispose();
-            }
-        }
-
-        private void ShowCurrentDialogueLine(int numDialogue, bool isFirstTime)
-        {
-            var currentDialogue = dialogueManager.GetDialogueLine(numDialogue, isFirstTime, currentLineIndex);
-            DialogueText.Text = WrapText(currentDialogue.Item1, 48);
-            if (currentDialogue.Item2 == "Voix off")
-            {
-                Character.Image = null;
-            }
-            else
-            {
-                Character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
-            }
-        }
-
-        private void AdjustSizesAndPositions()
-        {
-            Boite.Size = new Size((int)(Dialogues.ClientSize.Width * 0.8), (int)(Dialogues.ClientSize.Height * 0.5));
-            Character.Size = new Size((int)(Dialogues.ClientSize.Width * 0.3), (int)(Dialogues.ClientSize.Height * 0.8));
-
-            Character.Location = new Point(0, Dialogues.ClientSize.Height - Character.Height);
-            Boite.Location = new Point(Dialogues.ClientSize.Width - Boite.Width, Dialogues.ClientSize.Height - Boite.Height);
-
-            DialogueText.Size = new Size(Boite.Width - 20, Boite.Height - 20);
-            DialogueText.Location = new Point((Boite.Width - DialogueText.Width) / 2, (Boite.Height - DialogueText.Height) / 2);
         }
     }
 }
