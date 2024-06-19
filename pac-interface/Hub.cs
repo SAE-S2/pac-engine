@@ -446,7 +446,8 @@ namespace pac_interface
         private void PictureBoxIngenieur_Click(object sender, EventArgs e)
         {
             // Affichage du dialogue de l'ingénieur
-            StartDialogue(2, false);
+            StartDialogue(2, !DatabaseManager.GetDialogueInge(Globals.UID, Globals.NumProfil));
+            DatabaseManager.SetDialogueInge(Globals.UID, Globals.NumProfil, true);
 
             // Show or hide the panel and the other elements
             panel.Visible = !panel.Visible;
@@ -461,7 +462,8 @@ namespace pac_interface
         private void Launch_Click(object sender, EventArgs e)
         {
             // Affichage du dialogue du garde
-            StartDialogue(3, false);
+            StartDialogue(3, !DatabaseManager.GetDialogueGarde(Globals.UID, Globals.NumProfil));
+            DatabaseManager.SetDialogueGarde(Globals.UID, Globals.NumProfil, true);
 
             actualGame.initializeGame();
             game = new Game(this, actualGame);
