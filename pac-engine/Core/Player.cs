@@ -10,7 +10,7 @@ namespace pac_engine.Core
         public float absorption = 0.0f;
         public float regen;
         public int peureux;
-        public int selectedPower = 1;
+        public int selectedPower = 0;
         public Shield shield;
         public Invisible invisible;
         public bool isInvisible = false;
@@ -41,7 +41,7 @@ namespace pac_engine.Core
             regen = 0.0f + (float)(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 3) * 0.5);
             peureux = 0 + (DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 4) * 10); // pourcentage
             lucky = 0 + (DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 5) * 10); // pourcentage
-            selectedPower = 2;
+            selectedPower = 0;
             shield = new Shield(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 6));
             damagePower = new Damage(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 7));
             invisible = new Invisible(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 8));

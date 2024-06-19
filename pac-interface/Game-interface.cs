@@ -175,6 +175,8 @@ namespace pac_interface
             levelCount = 1;
             switch (game.player.selectedPower)
             {
+                case 0:
+                    break;
                 case 1:
                     shieldPictureBox = Shield(new Point(1205, 5));
                     Controls.Add(shieldPictureBox);
@@ -232,16 +234,19 @@ namespace pac_interface
                 BackColor = Color.Black
             };
             Controls.Add(scoreLabel);
-            powerLabel = new Label()
+            if (game.player.selectedPower > 0)
             {
-                Location = new Point(1110, 10),
-                Size = new Size(95, 30),
-                Text = "Press A",
-                Font = new Font("Arial", 16, FontStyle.Bold),
-                ForeColor = Color.White,
-                BackColor = Color.Black
-            };
-            Controls.Add(powerLabel);
+                powerLabel = new Label()
+                {
+                    Location = new Point(1110, 10),
+                    Size = new Size(95, 30),
+                    Text = "Press A",
+                    Font = new Font("Arial", 16, FontStyle.Bold),
+                    ForeColor = Color.White,
+                    BackColor = Color.Black
+                };
+                Controls.Add(powerLabel);
+            }
             HeartPanel = new Panel
             {
                 Location = new Point(10, 10),
@@ -646,7 +651,10 @@ namespace pac_interface
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
         {
             Map map = game.ActualGame.getMap();
-            grid[e.Pos.x, e.Pos.y].Image = null;
+
+            if (grid[e.Pos.x, e.Pos.y] != null)
+                grid[e.Pos.x, e.Pos.y].Image = null;
+
             if (map.GetCoin(e.Pos.x, e.Pos.y))
             {
                 coinCount += 1;
@@ -782,8 +790,11 @@ namespace pac_interface
                         }
                     case Keys.A:
                         {
-                            game.ActualGame.player.ActivePower();
-                            PowerUsed();
+                            if (game.ActualGame.player.selectedPower != 0)
+                            {
+                                game.ActualGame.player.ActivePower();
+                                PowerUsed();
+                            }
                             break;
                         }
                 }
