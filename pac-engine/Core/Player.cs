@@ -90,7 +90,7 @@ namespace pac_engine.Core
                 if (Health <= 0.1f)
                     Kill();
             }
-            DamageTaken?.Invoke(this, new DamageEventArgs { playerHP = Health });
+            DamageTaken?.Invoke(this, new DamageEventArgs { playerHP = Health }); // Invoque l'evenement DamageTaken si un gestionnaire est attache
             return true;
         }
 
