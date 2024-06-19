@@ -849,7 +849,8 @@ namespace pac_interface
                 Invoke(new MethodInvoker(delegate { Enemy_PositionChanged(sender, enemy); }));
                 return;
             }
-            PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
+            if (PBenemy[enemy.indice] != null)
+                PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
         private void PowerEnd(object? sender, NothingsEventArgs _)
