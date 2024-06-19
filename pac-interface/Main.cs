@@ -19,8 +19,10 @@ namespace pac_interface
 
     public partial class Main : Form
     {
-        int profil = 0;
-        int menu = 0;
+        int profil = 0; // Représente le profil séléctionné (1,2 ou 3)
+        int menu = 0; // Représente le menu chargé
+
+        //Attributs pour les dialogues
         private int currentLineIndex = 0;
         private DialogueManager dialogueManager;
         private Panel dialoguesPanel;
@@ -36,6 +38,7 @@ namespace pac_interface
             InitializeComponent();
         }
 
+        //Chargement du menu principal
         public void LoadPrincipal()
         {
             pnlCreation.Visible = false;
@@ -46,6 +49,7 @@ namespace pac_interface
             menu = 0;
         }
 
+        // Chargement du menu profil
         private void LoadProfile()
         {
             pnlLancement.Visible = false;
@@ -56,6 +60,8 @@ namespace pac_interface
             btnProfil1.ForeColor = Color.White;
             btnProfil2.ForeColor = Color.White;
             btnProfil3.ForeColor = Color.White;
+
+            //Récupération du nom du profil dans la base de données
             if (DatabaseManager.GetProfil_name(1, 1) != null)
                 btnProfil1.Text = DatabaseManager.GetProfil_name(1, 1);
             if (DatabaseManager.GetProfil_name(1, 2) != null)
@@ -63,6 +69,7 @@ namespace pac_interface
             if (DatabaseManager.GetProfil_name(1, 3) != null)
                 btnProfil3.Text = DatabaseManager.GetProfil_name(1, 3);
 
+            //Change en jaune la couleur du bouton séléctionné
             switch (profil)
             {
                 case 1:
@@ -80,6 +87,7 @@ namespace pac_interface
             menu = 1;
         }
 
+        //Chargement du menu de lancement (Nouveau, Supprimer, Lancer)
         private void LoadLancement()
         {
             LoadProfile();
@@ -89,6 +97,7 @@ namespace pac_interface
             menu = 2;
         }
 
+        //Chargement du menu de création de profil
         private void LoadNew()
         {
             pnlProfil.Visible = false;
@@ -134,14 +143,15 @@ namespace pac_interface
             profil = 3;
         }
 
+        //Evenement clic sur bouton de création de profil
         private void btnNew_Click(object sender, EventArgs e)
         {
             switch (profil)
             {
                 case 1:
-                    if (btnProfil1.Text == "Profil 1")
+                    if (btnProfil1.Text == "Profil 1") //Si non existant créer, sinon MessageBox
                         LoadNew();
-                    else
+                    else 
                         MessageBox.Show("Profil déjà existant");
                     break;
                 case 2:
@@ -159,6 +169,7 @@ namespace pac_interface
             }
         }
 
+        //Evenement clic sur bouton de validation de création de profil
         private void btnValider_Click(object sender, EventArgs e)
         {
             Font txtfont;
@@ -178,27 +189,27 @@ namespace pac_interface
             {
                 btnProfil1.Font = txtfont;
                 btnProfil1.Text = txtPseudo.Text;
-                DatabaseManager.AddProfil(1, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
-                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = txtfont;
                 btnProfil2.Text = txtPseudo.Text;
-                DatabaseManager.AddProfil(2, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
-                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             else
             {
                 btnProfil3.Font = txtfont;
                 btnProfil3.Text = txtPseudo.Text;
-                DatabaseManager.AddProfil(3, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
-                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
+
+            //Création dans la base de donnée
+            DatabaseManager.AddProfil(profil, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+            DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
+
             txtPseudo.Text = "";
             LoadLancement();
         }
 
+        //Evenement clic sur bouton de suppression de profil
         private void btnSupp_Click(object sender, EventArgs e)
         {
             DialogResult rep = MessageBox.Show("Voulez vous vraiment supprimer ?", "Supprimer le profil", MessageBoxButtons.YesNo);
@@ -221,10 +232,14 @@ namespace pac_interface
                 btnProfil3.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil3.Text = "Profil 3";
             }
+
+            //Suppression du profil dans la base de données
             DatabaseManager.DeleteStuff(DatabaseManager.GetIDProfil(1, profil));
             DatabaseManager.DeleteProfil(profil, 1);
         }
 
+        //Evenement clic sur le bouton de retour en arrière
+        //Charge le menu précédent
         private void btnBack_Click(object sender, EventArgs e)
         {
             switch (menu)
@@ -244,10 +259,13 @@ namespace pac_interface
             }
         }
 
+
+        //Evenement de clic sur le bouton Lancer la partie
         Hub hub;
         Game game;
         private void btnLancer_Click(object sender, EventArgs e)
         {
+            //Vérification profil existant
             switch (profil)
             {
                 case 1:
@@ -272,11 +290,14 @@ namespace pac_interface
                     }
                     break;
             }
+            //Garde les données importantes pour la base dans le code
             Globals.UID = 1;
             Globals.NumProfil = profil;
             Globals.IDProfil = DatabaseManager.GetIDProfil(Globals.UID, Globals.NumProfil);
+
             hub = new Hub(null);
             
+            //Histoire
             if (!DatabaseManager.GetDialogueDebut(Globals.UID, Globals.NumProfil))
             {
                 StartDialogue(0, true);
