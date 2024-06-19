@@ -1,6 +1,7 @@
 ﻿namespace pac_engine.Core
 {
-	public class Power
+    public class Power
+
     {
         public int level;
         public int levelMax = 3;
@@ -19,6 +20,11 @@
             level++;
             return true;
         }
+
+
+        public int GetLevel()
+        {
+            return level;
+        }
     }
 }
-

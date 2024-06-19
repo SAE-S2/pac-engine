@@ -1,8 +1,9 @@
-﻿using pac_engine.Utils;
+using pac_engine.Utils;
 
 namespace pac_engine.Core
 {
-    public class Guard : Entity {
+    public class Guard : Entity
+    {
         public Guard(int indice)
         {
             this.maxHealth = 1.0f;
@@ -11,6 +12,7 @@ namespace pac_engine.Core
             this.damage = 1.0f;
             this.indice = indice;
         }  
+
 
         ~Guard()
         {

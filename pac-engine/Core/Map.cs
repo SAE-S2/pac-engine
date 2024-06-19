@@ -31,15 +31,15 @@ namespace pac_engine.Core
 
             for (int i = 0; i < map.GetLength(0); i++)
                 for (int j = 0; j < map.GetLength(1); j++)
-                    if (map[i, j] == 0 || map[i, j] == 5 || map[i, j ] == 7)
+                    if (map[i, j] == 0 || map[i, j] == 5 || map[i, j] == 7)
                     {
                         int isBolts = random.Next(1, 25);
-                        if (isBolts == 5 && BoltCount<=3)
+                        if (isBolts == 5 && BoltCount <= 3)
                         {
                             map[i, j] = 3;
                             BoltCount++;
                         }
-                        else 
+                        else
                         {
                             coinsNumber++;
                             map[i, j] = 2;
@@ -75,7 +75,7 @@ namespace pac_engine.Core
                 CoinEarnEvent(pos);
                 map[pos.x, pos.y] = 0;
                 coinsEarn++;
-                if (coinsEarn > coinsNumber*0.75)
+                if (coinsEarn > coinsNumber * 0.75)
                 {
                     map[door.x, door.y] = 6;
                     DoorOpenEvent(door);
@@ -201,7 +201,7 @@ namespace pac_engine.Core
 
         public bool GetVoid(int x, int y)
         {
-            return (GetBolt(x,y) || GetCoin(x,y) || map[x,y]==0 || GetDoor(x, y));
+            return (GetBolt(x, y) || GetCoin(x, y) || map[x, y] == 0 || GetDoor(x, y));
         }
 
         public bool GetBolt(Vector2 pos)
@@ -221,17 +221,17 @@ namespace pac_engine.Core
 
         public bool GetCoin(Vector2 pos)
         {
-            return (map[pos.x,pos.y] == 2);
+            return (map[pos.x, pos.y] == 2);
         }
 
-        public bool GetWall(int x,int y)
+        public bool GetWall(int x, int y)
         {
-            return (map[x,y] == 1 || map[x, y] == 4 || map[x,y] == 6);
+            return (map[x, y] == 1 || map[x, y] == 4 || map[x, y] == 6);
         }
 
-        public bool GetDoor(int x,int y)
+        public bool GetDoor(int x, int y)
         {
-            return (map[x,y] == 4);
+            return (map[x, y] == 4);
         }
     }
 }

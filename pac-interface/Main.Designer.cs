@@ -1,4 +1,5 @@
-﻿namespace pac_interface
+﻿
+namespace pac_interface
 {
     partial class Main
     {

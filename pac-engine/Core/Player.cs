@@ -1,5 +1,4 @@
-﻿using pac_engine.Utils;
-using System.Security.Cryptography.X509Certificates;
+﻿﻿using pac_engine.Utils;
 namespace pac_engine.Core
 {
     public class Player : Entity
@@ -8,14 +7,13 @@ namespace pac_engine.Core
         public int bolts;
         public int lucky;
         public float absorption = 0.0f;
-        public float regen;
-        public int peureux;
         public int selectedPower = 1;
         public Shield shield;
         public Invisible invisible;
         public bool isInvisible = false;
         public Damage damagePower;
         private CancellationTokenSource cancellationTokenSource;
+        public event EventHandler<DamageEventArgs> DamageTaken;
 
         public void StartMovement(Map level)
         {
@@ -32,26 +30,25 @@ namespace pac_engine.Core
         }
 
         public Player()
-	    {
-	        // TODO: Load from db
-	        maxHealth = 3.0f;
-	        Health = 3.0f;
-	        speed = 1.0f;
+        {
+            // TODO: Load from db
+            maxHealth = 3.0f;
+            Health = 3.0f;
+            speed = 1.0f;
             damage = 0.0f;
-            regen = 0.0f;
             money = 0;
             bolts = 0;
             lucky = 0; // %
-            peureux = 0;
-            selectedPower = 2;
-            shield = new Shield(1);
-            damagePower = new Damage(1);
+            selectedPower = 1;
+            shield = new Shield(3);
+            damagePower = new Damage(2);
             invisible = new Invisible(1);
         }
 
         public void ActivePower()
         {
-            switch (selectedPower) {
+            switch (selectedPower)
+            {
                 case 1:
                     shield.Active(this);
                     break;
@@ -84,6 +81,7 @@ namespace pac_engine.Core
                 }
 
                 Health -= damage;
+                DamageTaken?.Invoke(this, new DamageEventArgs { playerHP = Health });
 
                 if (Health <= 0.1f)
                     Kill();
@@ -99,7 +97,7 @@ namespace pac_engine.Core
                 actualGame.PlayerDied();
             return true;
         }
-        
+
         public async Task Movement(Map level, CancellationToken token)
         {
             bool posChange;

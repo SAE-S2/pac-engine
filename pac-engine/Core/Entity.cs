@@ -32,7 +32,7 @@ public class Entity
 
         Health -= damage;
 
-        if (Health <= 0.1f) 
+        if (Health <= 0.1f)
         {
             Kill();
         }
@@ -40,21 +40,20 @@ public class Entity
     }
 
     public bool Kill()
-        {
-            if (imortal)
-                return false;
+    {
+        if (imortal)
+            return false;
 
-            actualGame.EnemyDie(this);
-            return true;
-        }
+        actualGame.EnemyDie(this);
+        return true;
+    }
 
     public void Heal(float health)
     {
         Health += health;
     }
 
-    // Déplacement aléatoire
-    public  virtual async Task Movement(Map level)
+    public virtual async Task Movement(Map level)
     {
         bool posChange;
         Random random = new Random();
@@ -117,6 +116,7 @@ public class Entity
                         i++;
                      }
                 }
+
             }
         });
     }

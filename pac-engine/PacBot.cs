@@ -1,23 +1,26 @@
-﻿using pac_engine.Utils;
+﻿
+using pac_engine.Utils;
 using pac_engine.Core;
 using System.Net.Security;
 
 namespace pac_engine
 {
-	public class PacBot
-	{
+
+    public class PacBot
+    {
         private string title;
-		private Vector2 screenSize;
+        private Vector2 screenSize;
         public Player player;
         public Game ActualGame;
+        public Game scoreCount;
         public string name;
         public int price;
 
 
         public PacBot(string title, int x, int y)
-		{
-			this.title = title;
-			screenSize = new Vector2(x, y);
+        {
+            this.title = title;
+            screenSize = new Vector2(x, y);
             //Console.Title = this.title;
             //Console.SetWindowSize(width: (int)this.screenSize.x, height: (int)this.screenSize.y);
         }
@@ -143,7 +146,7 @@ namespace pac_engine
                         Console.WriteLine();
                         Console.WriteLine();
                         Console.WriteLine();
-                        Console.WriteLine("Passage au prochain niveau ("+pacbot.ActualGame.level+")");
+                        Console.WriteLine("Passage au prochain niveau (" + pacbot.ActualGame.level + ")");
                         Thread.Sleep(2000);
                     }
                     else
@@ -157,7 +160,8 @@ namespace pac_engine
                         pacbot.player.Health = pacbot.player.maxHealth;
                         if (pacbot.price == 0)
                             pacbot.price += 10;
-                        pacbot.price += (int) Math.Floor(pacbot.price * 0.2);
+                        }
+                        pacbot.price += (int)Math.Floor(pacbot.price * 0.2);
                         Thread.Sleep(2000);
                     }
                 }
