@@ -15,6 +15,11 @@ namespace pac_engine.Utils
         public Vector2 Pos { get; set;}
     }
 
+    public class DamageEventArgs
+    {
+        public float playerHP { get; set; }
+    }
+
     public class DoorOpenEventArgs
     {
         public Vector2 DoorPos { get; set;}

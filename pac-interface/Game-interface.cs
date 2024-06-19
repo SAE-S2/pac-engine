@@ -26,13 +26,388 @@ namespace pac_interface
         private PictureBox? PBplayer;
         private PictureBox[]? PBenemy;
         private Entity[]? enemy;
+        private int coinCount = 0;
+        private Label coinCounterLabel;
+        private int boltCount = 0;
+        private Label boltCounterLabel;
+        private Label levelLabel;
+        private int levelCount;
+        private Label scoreLabel;
+        private int scoreCount;
+        private Label powerLabel;
+        private Panel HeartPanel;
+        private PictureBox? shieldPictureBox;
+        private PictureBox? usedShieldPictureBox;
+        private PictureBox? invisiblePictureBox;
+        private PictureBox? usedInvisiblePictureBox;
+        private PictureBox? damagePictureBox;
+        private PictureBox? usedDamagePictureBox;
+        private System.Windows.Forms.Timer powerTimer;
         private Hub hub;
         public Game(Hub hub,PacBot game)
         {
             this.hub = hub;
             InitializeComponent();
             this.game = game;
+
+            powerTimer = new System.Windows.Forms.Timer();
+            powerTimer.Interval = 1000;
+            powerTimer.Tick += PowerTimer_Tick;
+            InitializeElements();
         }
+
+        private PictureBox Coin(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Coin.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox Heart(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Coeur\\Coeur2.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox HalfHeart(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Coeur\\Demi-Coeur2.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private PictureBox Bolt(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(30, 30),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Monnaies\\Boulon.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox Shield(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Bouclier.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox ShieldUsed(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Bouclier-used.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox Invisible(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Invisible.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox InvisibleUsed(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Invisible-used.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox Damage(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Degats.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+        private PictureBox DamageUsed(Point coords)
+        {
+            PictureBox pictureBox = new PictureBox()
+            {
+                Location = coords,
+                Size = new Size(50, 50),
+                Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Degats-used.png"),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            return pictureBox;
+        }
+
+        private void InitializeElements()
+        {
+            levelCount = 1;
+            switch (game.player.selectedPower)
+            {
+                case 1:
+                    shieldPictureBox = Shield(new Point(1205, 5));
+                    Controls.Add(shieldPictureBox);
+                    break;
+                case 2:
+                    damagePictureBox = Damage(new Point(1205, 5));
+                    Controls.Add(damagePictureBox);
+                    break;
+                case 3:
+                    invisiblePictureBox = Invisible(new Point(1205, 5));
+                    Controls.Add(invisiblePictureBox);
+                    break;
+            }
+            PictureBox coin = Coin(new Point(1555, 10));
+            Controls.Add(coin);
+            PictureBox bolt = Bolt(new Point(1490, 10));
+            Controls.Add(bolt);
+            coinCounterLabel = new Label()
+            {
+                Location = new Point(1527, 10),
+                Size = new Size(50, 30),
+                Text = $"{coinCount}",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(coinCounterLabel);
+            boltCounterLabel = new Label()
+            {
+                Location = new Point(1462, 10),
+                Size = new Size(50, 30),
+                Text = "0",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(boltCounterLabel);
+            levelLabel = new Label()
+            {
+                Location = new Point(400, 10),
+                Size = new Size(275, 30),
+                Text = $"Niveau {levelCount}",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(levelLabel);
+            scoreLabel = new Label()
+            {
+                Location = new Point(720, 10),
+                Size = new Size(300, 30),
+                Text = $"Score : {scoreCount}",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(scoreLabel);
+            powerLabel = new Label()
+            {
+                Location = new Point(1110, 10),
+                Size = new Size(95, 30),
+                Text = "Press A",
+                Font = new Font("Arial", 16, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Black
+            };
+            Controls.Add(powerLabel);
+            HeartPanel = new Panel
+            {
+                Location = new Point(10, 10),
+                Size = new Size(250, 80)
+            };
+            Controls.Add(HeartPanel);
+
+            InitializeHearts();
+        }
+
+        private void InitializeHearts()
+        {
+            PictureBox Heart1 = Heart(new Point(10, 10));
+            HeartPanel.Controls.Add(Heart1);
+
+            PictureBox Heart2 = Heart(new Point(50, 10));
+            HeartPanel.Controls.Add(Heart2);
+            PictureBox Heart3 = Heart(new Point(90, 10));
+            HeartPanel.Controls.Add(Heart3);
+        }
+
+        private void UpdateHearts()
+        {
+            HeartPanel.Controls.Clear();
+
+            int totalHearts = 3;
+            int shieldLevel = game.player.shield.GetLevel();
+
+
+            if (shieldLevel == 1 || shieldLevel == 2)
+            {
+                totalHearts += 1;
+                PictureBox Heart4 = Heart(new Point(130, 10));
+                HeartPanel.Controls.Add(Heart4);
+            }
+            else if (shieldLevel == 3)
+            {
+                totalHearts += 1;
+                PictureBox Heart4 = Heart(new Point(130, 10));
+                HeartPanel.Controls.Add(Heart4);
+
+                PictureBox halfHeart5 = HalfHeart(new Point(170, 10));
+                HeartPanel.Controls.Add(halfHeart5);
+            }
+
+            for (int i = 0; i < totalHearts; i++)
+            {
+                PictureBox heart = Heart(new Point(10 + (i * 40), 10));
+                HeartPanel.Controls.Add(heart);
+            }
+        }
+
+        private void StartPowerTimer(int duration)
+        {
+            powerTimer.Stop();
+            powerTimer.Tag = duration;
+            powerTimer.Start();
+        }
+
+        private void PowerTimer_Tick(object sender, EventArgs e)
+        {
+            int remainingSeconds = (int)powerTimer.Tag;
+            remainingSeconds--;
+            if (remainingSeconds <= 0)
+            {
+                powerTimer.Stop();
+                powerLabel.Text = "Press A";
+
+                HeartPanel.Controls.Clear();
+                InitializeHearts();
+
+                switch (game.player.selectedPower)
+                {
+                    case 1:
+                        if (shieldPictureBox != null)
+                        {
+                            usedShieldPictureBox.Image?.Dispose();
+                            usedShieldPictureBox.Dispose();
+                            shieldPictureBox = shieldPictureBox = Shield(new Point(1205, 5));
+                            Controls.Add(shieldPictureBox);
+                        }
+                        break;
+                    case 2:
+                        if (damagePictureBox != null)
+                        {
+                            usedDamagePictureBox.Image?.Dispose();
+                            usedDamagePictureBox.Dispose();
+                            damagePictureBox = damagePictureBox = Damage(new Point(1205, 5));
+                            Controls.Add(damagePictureBox);
+                        }
+                        break;
+                    case 3:
+                        if (invisiblePictureBox != null)
+                        {
+                            usedInvisiblePictureBox.Image?.Dispose();
+                            usedInvisiblePictureBox.Dispose();
+                            invisiblePictureBox = invisiblePictureBox = Invisible(new Point(1205, 5));
+                            Controls.Add(invisiblePictureBox);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+            else
+            {
+                TimeSpan time = TimeSpan.FromSeconds(remainingSeconds);
+                powerLabel.Text = time.ToString(@"mm\:ss");
+                powerTimer.Tag = remainingSeconds;
+            }
+        }
+        private void PowerUsed()
+        {
+            if (powerTimer.Enabled)
+            {
+                return;
+            }
+
+            int timerDuration;
+
+            switch (game.player.selectedPower)
+            {
+                case 1:
+                    if (shieldPictureBox != null)
+                    {
+                        timerDuration = game.player.damagePower.GetLevel() == 1 ? 180 : 240;
+                        StartPowerTimer(timerDuration);
+                        shieldPictureBox.Image?.Dispose();
+                        shieldPictureBox.Dispose();
+                        usedShieldPictureBox = ShieldUsed(new Point(1205, 5));
+                        Controls.Add(usedShieldPictureBox);
+                        scoreCount += 250;
+                        UpdateScoreLabel();
+                        UpdateHearts();
+                    }
+                    break;
+                case 2:
+                    if (damagePictureBox != null)
+                    {
+                        timerDuration = game.player.invisible.GetLevel() == 1 ? 180 : 240;
+                        StartPowerTimer(timerDuration);
+                        damagePictureBox.Image?.Dispose();
+                        damagePictureBox.Dispose();
+                        usedDamagePictureBox = DamageUsed(new Point(1205, 5));
+                        Controls.Add(usedDamagePictureBox);
+                        scoreCount += 250;
+                        UpdateScoreLabel();
+                    }
+                    break;
+                case 3:
+                    if (invisiblePictureBox != null)
+                    {
+                        timerDuration = game.player.shield.GetLevel() == 1 ? 180 : 240;
+                        StartPowerTimer(timerDuration);
+                        invisiblePictureBox.Image?.Dispose();
+                        invisiblePictureBox.Dispose();
+                        usedInvisiblePictureBox = InvisibleUsed(new Point(1205, 5));
+                        Controls.Add(usedInvisiblePictureBox);
+                        scoreCount += 250;
+                        UpdateScoreLabel();
+                    }
+                    break;
+            }
+        }
+
 
         private void EndGame(object? sender, GameStateEventArgs e)
         {
@@ -44,6 +419,8 @@ namespace pac_interface
             Unload();
             if (e.win)
             {
+                scoreCount += 1000;
+                UpdateScoreLabel();
                 game.StartGame(e.level + 1);
                 game.player.Heal(game.player.regen);
                 game.player.SetActualGame(game.ActualGame);
@@ -56,6 +433,31 @@ namespace pac_interface
                 this.Visible = false;
                 hub.Show();
             }
+        }
+
+        private void Player_DamageTaken(object? sender, DamageEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(() => Player_DamageTaken(sender, e)));
+                return;
+            }
+            float playerHP = e.playerHP;
+            int heartsToRemove = 0;
+            if (playerHP >= 0)
+            {
+                heartsToRemove = 1;
+                scoreCount -= 300;
+            }
+            for (int i = 0; i < heartsToRemove; i++)
+            {
+                int lastIndex = HeartPanel.Controls.Count - 1;
+                if (lastIndex >= 0)
+                {
+                    HeartPanel.Controls.RemoveAt(lastIndex);
+                }
+            }
+            UpdateScoreLabel();
         }
 
         private void Game_FormClosed(object sender, FormClosedEventArgs e)
@@ -225,6 +627,16 @@ namespace pac_interface
             GC.Collect();
         }
 
+        private void UpdateScoreLabel()
+        {
+            scoreLabel.Invoke((MethodInvoker)delegate {
+                scoreLabel.Text = $"Score : {scoreCount}";
+            });
+            // TODO
+            // Pouvoirs
+            // Kill des ennemis
+        }
+
 
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
         {
@@ -233,10 +645,25 @@ namespace pac_interface
 
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
         {
-            if (grid[e.Pos.x, e.Pos.y] == null)
-                return;
-
+            Map map = game.ActualGame.getMap();
             grid[e.Pos.x, e.Pos.y].Image = null;
+            if (map.GetCoin(e.Pos.x, e.Pos.y))
+            {
+                coinCount += 1;
+                scoreCount += 10;
+                coinCounterLabel.Invoke((MethodInvoker)delegate {
+                    coinCounterLabel.Text = coinCount.ToString();
+                });
+            }
+            else if (map.GetBolt(e.Pos.x, e.Pos.y))
+            {
+                boltCount += 1;
+                scoreCount += 100;
+                boltCounterLabel.Invoke((MethodInvoker)delegate {
+                    boltCounterLabel.Text = boltCount.ToString();
+                });
+            }
+            UpdateScoreLabel();
         }
 
         public void LoadEntities()
@@ -354,10 +781,11 @@ namespace pac_interface
                             break;
                         }
                     case Keys.A:
-                    {
-                        game.ActualGame.player.ActivePower();
-                        break;
-                    }
+                        {
+                            game.ActualGame.player.ActivePower();
+                            PowerUsed();
+                            break;
+                        }
                 }
             }
         }

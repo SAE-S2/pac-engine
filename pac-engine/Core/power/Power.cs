@@ -19,6 +19,11 @@
             level++;
             return true;
         }
+
+        public int GetLevel()
+        {
+            return level;
+        }
     }
 }
 
