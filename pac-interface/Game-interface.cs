@@ -635,6 +635,7 @@ namespace pac_interface
                     if (en != null)
                     {
                         en.PositionChanged -= Enemy_PositionChanged;
+                        en.Killed -= Enemy_Killed;
                     }
                 }
             }
@@ -763,6 +764,7 @@ namespace pac_interface
                 if (en != null)
                 {
                     en.PositionChanged += Enemy_PositionChanged;
+                    en.Killed += Enemy_Killed;
                     PBenemy[en.indice] = new PictureBox()
                     {
                         Location = new Point(en.pos.y * tileSize, en.pos.x * tileSize),
@@ -796,6 +798,15 @@ namespace pac_interface
                 return;
             }
             PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
+        }
+        private void Enemy_Killed(object? sender, KilledEventArgs enemy)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Enemy_Killed(sender, enemy); }));
+                return;
+            }
+            PBenemy[enemy.id].Dispose();
         }
 
         private void Player_angle(int angle)

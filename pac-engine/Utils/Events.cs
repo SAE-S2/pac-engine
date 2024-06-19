@@ -9,6 +9,10 @@ namespace pac_engine.Utils
         public Vector2 OldPos { get; set; }
         public int indice { get; set; }
     }
+    public class KilledEventArgs
+    {
+        public int id { get; set; }
+    }
 
     public class EarnCoinEventArgs 
     {
