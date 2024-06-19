@@ -31,7 +31,7 @@ namespace pac_engine.Core
                 {
                     if (nbDeplacment >= (7 + varR) || stupidMove == true)
                     {
-                        if (pos.Distance(actualGame.player.pos) > 12)
+                        if (actualGame.player.isInvisible || pos.Distance(actualGame.player.pos) > 10)
                         {
                             stupidMove = true;
                         }

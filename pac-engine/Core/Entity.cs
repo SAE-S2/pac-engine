@@ -19,6 +19,7 @@ public class Entity
     public Game? actualGame;
     public int indice;
     public event EventHandler<PositionChangedEventArgs>? PositionChanged;
+    public event EventHandler<KilledEventArgs> Killed;
 
     protected void eventPosChanged(Vector2 oldPos, Vector2 newPos, int indice)
     {
@@ -35,6 +36,7 @@ public class Entity
         if (Health <= 0.1f) 
         {
             Kill();
+            Killed?.Invoke(this, new KilledEventArgs { id = indice });
         }
         return true;
     }

@@ -1,6 +1,5 @@
 ﻿using pac_engine.Utils;
 using PacDatabase;
-using System.Security.Cryptography.X509Certificates;
 namespace pac_engine.Core
 {
     public class Player : Entity
@@ -11,12 +10,13 @@ namespace pac_engine.Core
         public float absorption = 0.0f;
         public float regen;
         public int peureux;
-        public int selectedPower = 1;
+        public int selectedPower = 0;
         public Shield shield;
         public Invisible invisible;
         public bool isInvisible = false;
         public Damage damagePower;
         private CancellationTokenSource cancellationTokenSource;
+        public event EventHandler<DamageEventArgs> DamageTaken;
 
         public void StartMovement(Map level)
         {
@@ -42,7 +42,7 @@ namespace pac_engine.Core
             regen = 0.0f + (float)(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 3) * 0.5);
             peureux = 0 + (DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 4) * 10); // pourcentage
             lucky = 0 + (DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 5) * 10); // pourcentage
-            selectedPower = 2;
+            selectedPower = 0;
             shield = new Shield(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 6));
             damagePower = new Damage(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 7));
             invisible = new Invisible(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 8));
@@ -90,6 +90,7 @@ namespace pac_engine.Core
                 if (Health <= 0.1f)
                     Kill();
             }
+            DamageTaken?.Invoke(this, new DamageEventArgs { playerHP = Health });
             return true;
         }
 
