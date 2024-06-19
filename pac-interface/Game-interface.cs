@@ -849,7 +849,7 @@ namespace pac_interface
                 Invoke(new MethodInvoker(delegate { Enemy_PositionChanged(sender, enemy); }));
                 return;
             }
-            if (PBenemy[enemy.indice] != null)
+            if (PBenemy != null && PBenemy[enemy.indice] != null)
                 PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
