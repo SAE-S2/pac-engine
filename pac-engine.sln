@@ -5,7 +5,9 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pac-engine", "pac-engine\pac-engine.csproj", "{154F24D9-794C-4ECF-BBE8-1000ED44530E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pac-interface", "pac-interface\pac-interface.csproj", "{64517CF1-67E4-4C61-BA43-EC9E403C3A75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pac-interface", "pac-interface\pac-interface.csproj", "{64517CF1-67E4-4C61-BA43-EC9E403C3A75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pac-database", "pac-database\pac-database.csproj", "{7D992395-5D8C-4DFA-B499-DFBB6DFC3786}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{64517CF1-67E4-4C61-BA43-EC9E403C3A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64517CF1-67E4-4C61-BA43-EC9E403C3A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64517CF1-67E4-4C61-BA43-EC9E403C3A75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D992395-5D8C-4DFA-B499-DFBB6DFC3786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D992395-5D8C-4DFA-B499-DFBB6DFC3786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D992395-5D8C-4DFA-B499-DFBB6DFC3786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D992395-5D8C-4DFA-B499-DFBB6DFC3786}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

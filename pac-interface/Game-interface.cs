@@ -26,8 +26,10 @@ namespace pac_interface
         private PictureBox? PBplayer;
         private PictureBox[]? PBenemy;
         private Entity[]? enemy;
-        public Game(PacBot game)
+        private Hub hub;
+        public Game(Hub hub,PacBot game)
         {
+            this.hub = hub;
             InitializeComponent();
             this.game = game;
         }
@@ -43,6 +45,7 @@ namespace pac_interface
             if (e.win)
             {
                 game.StartGame(e.level + 1);
+                game.player.Heal(game.player.regen);
                 game.player.SetActualGame(game.ActualGame);
                 LoadMap();
                 LoadEntities();
@@ -50,7 +53,8 @@ namespace pac_interface
             }
             else
             {
-                // TODO: retour hub
+                this.Visible = false;
+                hub.Show();
             }
         }
 
@@ -229,6 +233,9 @@ namespace pac_interface
 
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
         {
+            if (grid[e.Pos.x, e.Pos.y] == null)
+                return;
+
             grid[e.Pos.x, e.Pos.y].Image = null;
         }
 
