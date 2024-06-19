@@ -2,7 +2,7 @@
 using System.Text;
 using pac_engine.Utils;
 using PacDatabase;
-using System.Data.Entity;
+
 namespace pac_interface
 {
     public partial class Hub : Form

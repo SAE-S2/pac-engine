@@ -201,6 +201,7 @@ namespace pac_interface
                     Controls.Add(invisiblePictureBox);
                     break;
             }
+
             PictureBox coin = Coin(new Point(1555, 10));
             Controls.Add(coin);
             PictureBox bolt = Bolt(new Point(1490, 10));
@@ -938,6 +939,20 @@ namespace pac_interface
                         {
                             if (game.ActualGame.player.selectedPower != 0 && !powerTimer.Enabled)
                             {
+                                switch (game.player.selectedPower)
+                                {
+                                    case 1:
+                                        shieldPictureBox.Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Bouclier-inuse.png");
+                                        break;
+                                    case 2:
+                                        damagePictureBox.Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Degats-inuse.png");
+                                        break;
+                                    case 3:
+                                        invisiblePictureBox.Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Invisible-inuse.png");
+                                        break;
+                                }
+                                powerLabel.Text = "";
+
                                 if (game.ActualGame.player.selectedPower == 3)
                                     PBplayer.Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1-inv.png");
 
