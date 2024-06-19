@@ -276,11 +276,12 @@ namespace pac_interface
             Globals.NumProfil = profil;
             Globals.IDProfil = DatabaseManager.GetIDProfil(Globals.UID, Globals.NumProfil);
             hub = new Hub(null);
-            this.Visible = false;
             
-            if (false) //TODO : récupérer bool dans bdd
+            if (!DatabaseManager.GetDialogueDebut(Globals.UID, Globals.NumProfil))
             {
                 StartDialogue(0, true);
+                this.Visible = false;
+                DatabaseManager.SetDialogueDebut(Globals.UID, Globals.NumProfil, true);
                 hub.actualGame.initializeGame(10);
                 game = new Game(hub, hub.actualGame);
                 game.Show();
@@ -293,6 +294,7 @@ namespace pac_interface
             }
             else
             {
+                this.Visible = false;
                 hub.Show();
                 hub.WindowState = FormWindowState.Maximized;
                 hub.FormClosed += Hub_FormClosed;

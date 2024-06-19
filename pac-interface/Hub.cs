@@ -465,7 +465,7 @@ namespace pac_interface
             StartDialogue(3, !DatabaseManager.GetDialogueGarde(Globals.UID, Globals.NumProfil));
             DatabaseManager.SetDialogueGarde(Globals.UID, Globals.NumProfil, true);
 
-            actualGame.initializeGame();
+            actualGame.initializeGame(1);
             game = new Game(this, actualGame);
             this.Visible = false;
             game.Show();
