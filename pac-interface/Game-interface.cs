@@ -509,6 +509,8 @@ namespace pac_interface
                 return;
             }
             Unload();
+            DatabaseManager.SetTotalBoulons(Globals.UID,Globals.NumProfil, game.player.bolts + boltCount);
+            DatabaseManager.SetTotalPieces(Globals.UID, Globals.NumProfil, game.player.money + coinCount);
             if (e.win)
             {
                 if (e.level == 10)
