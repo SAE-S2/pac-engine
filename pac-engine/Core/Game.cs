@@ -27,6 +27,7 @@ public class Game
         return enemies;
     }
 
+    //Chargement du niveau passé en paramère (de 1 à 10)
     public bool Start(int level)
     {
         this.level = level;
@@ -89,6 +90,8 @@ public class Game
                 tempMap = CreateMap(15, 25);
                 break;
         }
+
+        //Initialisation des ennemis (guard ou chiefguard) dans un tableau
         int k = 0;
         for (int i = 0; i < tempMap.GetLength(0); i++)
             for (int j = 0; j < tempMap.GetLength(1); j++)
@@ -110,6 +113,7 @@ public class Game
                 }
             }
 
+        //Démarre le mouvements des entités
         map = new Map(tempMap, this);
         player.pos = map.spawn;
         player.SetActualGame(this);
@@ -117,7 +121,7 @@ public class Game
         
         for (int i = 0; i < enemiesCount; i++)
         {
-            _ = enemies[i].Movement(map); // start the movement asynchronously
+            _ = enemies[i].Movement(map);
         }
         return win;
     }
@@ -142,19 +146,9 @@ public class Game
 
     public void PlayerDied()
     {
-        if (false) //TODO : récupérer bool dans bdd
-        {
-            //Appel dialogue
-            win = false;
-            playing = false;
-            GameState?.Invoke(this, new GameStateEventArgs { win = false });
-        }
-        else
-        {
-            win = false;
-            playing = false;
-            GameState?.Invoke(this, new GameStateEventArgs { win = false });
-        }
+        win = false;
+        playing = false;
+        GameState?.Invoke(this, new GameStateEventArgs { win = false });
     }
   
     public void PlayerAtDoor()
@@ -178,6 +172,7 @@ public class Game
         return enemy;
     }
 
+    //Crée le labyrinthe aléatoirement
     private int[,] CreateMap(int largeur, int longueur)
     {
         DepthFirstSearch map = new DepthFirstSearch(largeur,longueur);
