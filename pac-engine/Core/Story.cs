@@ -10,7 +10,7 @@ namespace pac_interface
         public bool isFirstTime;
         private Tuple<string, string>[][] dialogues;
 
-        public DialogueManager(int index, bool firstTime)
+        public DialogueManager(int index, bool firstTime)//Gestion des dialogues
         {
             dialogueIndex = index;
             isFirstTime = firstTime;
@@ -71,7 +71,7 @@ namespace pac_interface
             };
         }
 
-        public Tuple<string, string> GetDialogueLine(int index, bool isFirstTime, int lineIndex)
+        public Tuple<string, string> GetDialogueLine(int index, bool isFirstTime, int lineIndex) //Retourne la bonne ligne du dialogue
         {
             if (!isFirstTime && index == 2)
             {
@@ -84,7 +84,7 @@ namespace pac_interface
             return dialogues[index][lineIndex];
         }
 
-        public int GetDialogueLength(int index, bool isFirstTime)
+        public int GetDialogueLength(int index, bool isFirstTime) //Retourne la longueur du dialogue
         {
             if (!isFirstTime && index == 2)
             {

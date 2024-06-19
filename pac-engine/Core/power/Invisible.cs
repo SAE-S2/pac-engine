@@ -9,12 +9,7 @@
 
         public async Task Active(Player player)
         {
-            if (!CanActive())
-                return;
-
-            cooldown = true;
             player.isInvisible = true;
-
             await Task.Run(() =>
             {
                 switch (level)
@@ -31,13 +26,8 @@
                 }
 
                 player.isInvisible = false;
-
-                if (level == 3)
-                    Thread.Sleep(180000);
-                else
-                    Thread.Sleep(240000);
-
-                cooldown = false;
+                active = false;
+                PowerFinish();
             });
         }
     }

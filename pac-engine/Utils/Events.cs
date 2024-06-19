@@ -10,9 +10,23 @@ namespace pac_engine.Utils
         public int indice { get; set; }
     }
 
+    public class KilledEventArgs
+    {
+        public int id { get; set; }
+    }
+    
+    public class NothingsEventArgs
+    {
+    }
+
     public class EarnCoinEventArgs 
     {
         public Vector2 Pos { get; set;}
+    }
+
+    public class DamageEventArgs
+    {
+        public float playerHP { get; set; }
     }
 
     public class DoorOpenEventArgs
