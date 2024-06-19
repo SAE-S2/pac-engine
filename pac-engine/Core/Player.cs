@@ -101,7 +101,7 @@ namespace pac_engine.Core
                 actualGame.PlayerDied();
             return true;
         }
-
+        
         public async Task Movement(Map level, CancellationToken token)
         {
             bool posChange;
