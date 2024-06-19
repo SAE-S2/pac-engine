@@ -16,6 +16,8 @@ namespace pac_interface
             isFirstTime = firstTime;
 
             dialogues = new Tuple<string, string>[][] {
+                // Dialogue début de jeu (0)
+
                 new Tuple<string, string>[] {
                     Tuple.Create("Halte-là Général !", "Dirigeant.png"),
                     Tuple.Create("Que veulent les hauts-dirigeants de l’empire à un général qui vient de démissionner ?", "Pac-Bot_dialogue1.png"),

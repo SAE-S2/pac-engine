@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -27,6 +28,15 @@ namespace pac_interface
         private PictureBox[]? PBenemy;
         private Entity[]? enemy;
         private Hub hub;
+        private int currentLineIndex = 0;
+        private DialogueManager dialogueManager;
+        private Panel dialoguesPanel;
+        private PictureBox boite;
+        private PictureBox character;
+        private Label dialogueText;
+        private int numDialogue;
+        private bool isFirstTime;
+        private bool dialogueInProgress;
         public Game(Hub hub,PacBot game)
         {
             this.hub = hub;
@@ -44,15 +54,29 @@ namespace pac_interface
             Unload();
             if (e.win)
             {
-                game.StartGame(e.level + 1);
-                game.player.Heal(game.player.regen);
-                game.player.SetActualGame(game.ActualGame);
-                LoadMap();
-                LoadEntities();
-                pnlGame.Visible = true;
+                if (e.level == 10)
+                {
+                    this.Visible = false;
+                    StartDialogue(4, true);
+                    Main main = new Main();
+                    main.LoadPrincipal();
+                }
+                else
+                {
+                    game.StartGame(e.level + 1);
+                    game.player.Heal(game.player.regen);
+                    game.player.SetActualGame(game.ActualGame);
+                    LoadMap();
+                    LoadEntities();
+                    pnlGame.Visible = true;
+                }
             }
             else
             {
+                if (false)
+                {
+                    StartDialogue(1, true);
+                }
                 this.Visible = false;
                 hub.Show();
             }
@@ -360,6 +384,144 @@ namespace pac_interface
                     }
                 }
             }
+        }
+        private void StartDialogue(int numDialogue, bool isFirstTime)
+        {
+            dialogueInProgress = true; // Indicateur pour savoir si le dialogue est en cours
+            currentLineIndex = 0;
+
+            dialogueManager = new DialogueManager(numDialogue, isFirstTime);
+
+            // Initialisation des contrÃ´les pour afficher le dialogue
+            dialoguesPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.Transparent
+            };
+
+            boite = new PictureBox
+            {
+                BackColor = Color.Transparent,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Image = Image.FromFile("..\\..\\..\\Resources\\Bulle_dialogue.png"),
+                Anchor = AnchorStyles.Bottom,
+                Cursor = Cursors.Hand
+            };
+
+            character = new PictureBox
+            {
+                BackColor = Color.Transparent,
+                SizeMode = PictureBoxSizeMode.Zoom,
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
+            };
+
+            dialogueText = new Label
+            {
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleCenter,
+                ForeColor = Color.White,
+                BackColor = Color.Transparent,
+                Font = new Font("Segoe UI", 16, FontStyle.Regular),
+                AutoEllipsis = true,
+                Padding = new Padding(10),
+                Enabled = true
+            };
+
+            boite.Controls.Add(dialogueText);
+            Controls.Add(dialoguesPanel);
+            dialoguesPanel.Controls.Add(boite);
+            dialoguesPanel.Controls.Add(character);
+            character.BringToFront();
+            dialoguesPanel.BringToFront();
+
+            dialogueText.Click += Dialogue_Click;
+
+            AdjustSizesAndPositions();
+
+            // Afficher la premiÃ¨re ligne de dialogue
+            ShowCurrentDialogueLine(numDialogue, isFirstTime);
+
+            // Boucle pour attendre la fin du dialogue
+            while (dialogueInProgress)
+            {
+                Application.DoEvents(); // Permet Ã  l'application de traiter les Ã©vÃ©nements
+                // Vous pouvez aussi utiliser Thread.Sleep(100) pour rÃ©duire l'utilisation du CPU
+            }
+
+            // Dialogue terminÃ©, nettoyage ou actions aprÃ¨s le dialogue
+            Controls.Remove(dialoguesPanel);
+            dialoguesPanel.Dispose();
+        }
+
+        // MÃ©thode pour afficher la ligne de dialogue courante
+        private void ShowCurrentDialogueLine(int numDialogue, bool isFirstTime)
+        {
+            var currentDialogue = dialogueManager.GetDialogueLine(numDialogue, isFirstTime, currentLineIndex);
+            dialogueText.Text = WrapText(currentDialogue.Item1, 48);
+
+            if (currentDialogue.Item2 == "Voix off")
+            {
+                character.Image = null; // Aucune image pour "Voix off"
+            }
+            else
+            {
+                character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
+            }
+
+            // VÃ©rifier si c'est la derniÃ¨re ligne de dialogue
+            if (currentLineIndex >= dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
+            {
+                dialogueInProgress = false; // Fin du dialogue
+            }
+        }
+
+        // MÃ©thode appelÃ©e lorsqu'un clic sur le dialogue se produit
+        private void Dialogue_Click(object sender, EventArgs e)
+        {
+            // VÃ©rifier si le dialogue n'est pas terminÃ©
+            if (dialogueInProgress && currentLineIndex < dialogueManager.GetDialogueLength(dialogueManager.dialogueIndex, dialogueManager.isFirstTime))
+            {
+                currentLineIndex++; // Passer Ã  la ligne suivante
+                ShowCurrentDialogueLine(dialogueManager.dialogueIndex, dialogueManager.isFirstTime); // Afficher la nouvelle ligne
+            }
+        }
+
+        // MÃ©thode pour ajuster les tailles et positions des contrÃ´les de dialogue
+        private void AdjustSizesAndPositions()
+        {
+            boite.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.8), (int)(dialoguesPanel.ClientSize.Height * 0.5));
+            character.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.3), (int)(dialoguesPanel.ClientSize.Height * 0.8));
+
+            character.Location = new Point(0, dialoguesPanel.ClientSize.Height - character.Height);
+            boite.Location = new Point(dialoguesPanel.ClientSize.Width - boite.Width, dialoguesPanel.ClientSize.Height - boite.Height);
+
+            dialogueText.Size = new Size(boite.Width - 20, boite.Height - 20);
+            dialogueText.Location = new Point((boite.Width - dialogueText.Width) / 2, (boite.Height - dialogueText.Height) / 2);
+        }
+
+        // MÃ©thode pour dÃ©couper le texte en lignes avec un nombre maximal de caractÃ¨res par ligne
+        private string WrapText(string text, int maxCharsPerLine)
+        {
+            StringBuilder sb = new StringBuilder();
+            string[] words = text.Split(' ');
+            int currentLineLength = 0;
+
+            foreach (string word in words)
+            {
+                if (currentLineLength + word.Length + 1 > maxCharsPerLine)
+                {
+                    sb.Append("\n" + word + " ");
+                    currentLineLength = word.Length + 1;
+                }
+                else
+                {
+                    sb.Append(word + " ");
+                    currentLineLength += word.Length + 1;
+                }
+            }
+
+            return sb.ToString().Trim();
         }
     }
 }

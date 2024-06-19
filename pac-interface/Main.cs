@@ -36,7 +36,7 @@ namespace pac_interface
             InitializeComponent();
         }
 
-        private void LoadPrincipal()
+        public void LoadPrincipal()
         {
             pnlCreation.Visible = false;
             pnlLancement.Visible = false;
@@ -245,6 +245,7 @@ namespace pac_interface
         }
 
         Hub hub;
+        Game game;
         private void btnLancer_Click(object sender, EventArgs e)
         {
             switch (profil)
@@ -276,9 +277,26 @@ namespace pac_interface
             Globals.IDProfil = DatabaseManager.GetIDProfil(Globals.UID, Globals.NumProfil);
             hub = new Hub(null);
             this.Visible = false;
-            hub.Show();
-            hub.WindowState = FormWindowState.Maximized;
-            hub.FormClosed += Hub_FormClosed;
+            
+            if (false) //TODO : récupérer bool dans bdd
+            {
+                StartDialogue(0, true);
+                hub.actualGame.initializeGame(10);
+                game = new Game(hub, hub.actualGame);
+                game.Show();
+                game.WindowState = FormWindowState.Maximized;
+                game.FormClosed += hub.Game_FormClosed;
+
+                hub.actualGame.player.Health = hub.actualGame.player.maxHealth;
+                game.LoadMap();
+                game.LoadEntities();
+            }
+            else
+            {
+                hub.Show();
+                hub.WindowState = FormWindowState.Maximized;
+                hub.FormClosed += Hub_FormClosed;
+            }
         }
 
         private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
