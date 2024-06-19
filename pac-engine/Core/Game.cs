@@ -142,9 +142,19 @@ public class Game
 
     public void PlayerDied()
     {
-        win = false;
-        playing = false;
-        GameState?.Invoke(this, new GameStateEventArgs { win = false });
+        if (false) //TODO : récupérer bool dans bdd
+        {
+            //Appel dialogue
+            win = false;
+            playing = false;
+            GameState?.Invoke(this, new GameStateEventArgs { win = false });
+        }
+        else
+        {
+            win = false;
+            playing = false;
+            GameState?.Invoke(this, new GameStateEventArgs { win = false });
+        }
     }
   
     public void PlayerAtDoor()
