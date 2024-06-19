@@ -24,6 +24,7 @@ namespace pac_interface
         private PictureBox boite;
         private PictureBox character;
         private Label dialogueText;
+        private int prixEvasion = 5;
 
         public Hub(PacBot? game)
         {
@@ -461,20 +462,35 @@ namespace pac_interface
         Game game;
         private void Launch_Click(object sender, EventArgs e)
         {
+            prixEvasion = prixEvasion * 2;
             // Affichage du dialogue du garde
             StartDialogue(3, !DatabaseManager.GetDialogueGarde(Globals.UID, Globals.NumProfil));
+            DialogResult rep = MessageBox.Show($"Vous avez {actualGame.player.money} pièces. Voulez-vous dépenser {prixEvasion} pièces pour vous évader ?", "S'évader", MessageBoxButtons.YesNo);
             DatabaseManager.SetDialogueGarde(Globals.UID, Globals.NumProfil, true);
 
-            actualGame.initializeGame();
-            game = new Game(this, actualGame);
-            this.Visible = false;
-            game.Show();
-            game.WindowState = FormWindowState.Maximized;
-            game.FormClosed += Game_FormClosed;
+            if (rep == DialogResult.Yes)
+            {
+                if (prixEvasion > actualGame.player.money) 
+                {
+                    MessageBox.Show("Vous n'avez pas Assez d'argent : GAME OVER");
+                    return;
+                }
+                else
+                {
+                    actualGame.player.money -= prixEvasion;
+                    DatabaseManager.SetTotalPieces(Globals.UID, Globals.NumProfil, actualGame.player.money);
+                    actualGame.initializeGame(1);
+                    game = new Game(this, actualGame);
+                    this.Visible = false;
+                    game.Show();
+                    game.WindowState = FormWindowState.Maximized;
+                    game.FormClosed += Game_FormClosed;
 
-            actualGame.player.Health = actualGame.player.maxHealth;
-            game.LoadMap();
-            game.LoadEntities();
+                    actualGame.player.Health = actualGame.player.maxHealth;
+                    game.LoadMap();
+                    game.LoadEntities();
+                }
+            }
         }
 
         private void CloseButton_Click(object sender, EventArgs e)

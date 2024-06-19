@@ -1,6 +1,7 @@
 ﻿using pac_engine;
 using pac_engine.Core;
 using pac_engine.Utils;
+using PacDatabase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -73,11 +74,13 @@ namespace pac_interface
             }
             else
             {
-                if (false)
+                if (!DatabaseManager.GetLevel10Played(Globals.UID,Globals.NumProfil))
                 {
                     StartDialogue(1, true);
+                    DatabaseManager.SetLevel10Played(Globals.UID, Globals.NumProfil, true);
                 }
                 this.Visible = false;
+                hub.WindowState = FormWindowState.Maximized;
                 hub.Show();
             }
         }

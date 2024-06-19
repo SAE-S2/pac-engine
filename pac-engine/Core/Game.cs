@@ -12,7 +12,7 @@ public class Game
     public Player player;
     public int enemiesCount;
     public int chiefCount;
-    private Entity[] enemies = new Entity[13]; // TODO: Change 10???
+    private Entity[] enemies = new Entity[14];
     public int level;
     private bool win = false;
     public event EventHandler<GameStateEventArgs>? GameState;
