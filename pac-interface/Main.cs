@@ -34,9 +34,6 @@ namespace pac_interface
         public Main()
         {
             InitializeComponent();
-            DatabaseManager.AddUtilisateur("PacMaster", "1234");
-            DatabaseManager.GetProfils();
-            DatabaseManager.GetUtilisateurs();
         }
 
         private void LoadPrincipal()
@@ -182,18 +179,21 @@ namespace pac_interface
                 btnProfil1.Font = txtfont;
                 btnProfil1.Text = txtPseudo.Text;
                 DatabaseManager.AddProfil(1, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = txtfont;
                 btnProfil2.Text = txtPseudo.Text;
                 DatabaseManager.AddProfil(2, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             else
             {
                 btnProfil3.Font = txtfont;
                 btnProfil3.Text = txtPseudo.Text;
                 DatabaseManager.AddProfil(3, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             txtPseudo.Text = "";
             LoadLancement();
@@ -210,20 +210,19 @@ namespace pac_interface
             {
                 btnProfil1.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil1.Text = "Profil 1";
-                DatabaseManager.DeleteProfil(1, 1);
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil2.Text = "Profil 2";
-                DatabaseManager.DeleteProfil(2, 1);
             }
             else
             {
                 btnProfil3.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil3.Text = "Profil 3";
-                DatabaseManager.DeleteProfil(3, 1);
             }
+            DatabaseManager.DeleteStuff(DatabaseManager.GetIDProfil(1, profil));
+            DatabaseManager.DeleteProfil(profil, 1);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -274,6 +273,7 @@ namespace pac_interface
             }
             Globals.UID = 1;
             Globals.NumProfil = profil;
+            Globals.IDProfil = DatabaseManager.GetIDProfil(Globals.UID, Globals.NumProfil);
             hub = new Hub(null);
             this.Visible = false;
             hub.Show();
