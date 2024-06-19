@@ -67,6 +67,7 @@ namespace pac_interface
             InitializeElements();
         }
 
+        // Creation des controles
         private PictureBox Coin(Point coords)
         {
             PictureBox pictureBox = new PictureBox()
@@ -181,6 +182,8 @@ namespace pac_interface
             return pictureBox;
         }
 
+
+        // Methode permettant d'intialiser les differents controles
         private void InitializeElements()
         {
             levelCount = 1;
@@ -269,6 +272,8 @@ namespace pac_interface
             InitializeHearts(game.player.maxHealth);
         }
 
+        // Creation des PictureBox pour la vie du joueur
+
         PictureBox Heart0p5;
         PictureBox Heart1;
         PictureBox Heart1p5;
@@ -282,6 +287,8 @@ namespace pac_interface
         PictureBox Heart5p5;
         PictureBox Heart6;
         PictureBox Heart6p5;
+
+        // Methode permettant de gerer l'affichage des controles de vie
         private void InitializeHearts(float health)
         {
 
@@ -345,6 +352,7 @@ namespace pac_interface
                 Heart6p5.Visible = false;
         }
 
+        // Methode permettant de gerer l'actualisation des coeurs de vies
         private void UpdateHearts()
         {
             float health = game.player.Health + game.player.absorption;
@@ -391,6 +399,7 @@ namespace pac_interface
                 Heart6p5.Visible = false;
         }
 
+        // Methodes permettant de gerer le timer de cooldown des pouvoirs
         private void StartPowerTimer(int duration)
         {
             powerTimer.Stop();
@@ -451,6 +460,8 @@ namespace pac_interface
                 powerTimer.Tag = remainingSeconds;
             }
         }
+
+        // Methode permettant de gerer l'utilisation des pouvoirs
         private void PowerUsed()
         {
             int timerDuration;
@@ -500,7 +511,7 @@ namespace pac_interface
             }
         }
 
-
+        // Methode permettant de gerer la fin de partie
         private void EndGame(object? sender, GameStateEventArgs e)
         {
             if (InvokeRequired)
@@ -543,6 +554,7 @@ namespace pac_interface
             }
         }
 
+        // Methode permettant de gerer les degats reçus 
         private void Player_DamageTaken(object? sender, DamageEventArgs e)
         {
             if (InvokeRequired)
@@ -554,6 +566,7 @@ namespace pac_interface
             UpdateScoreLabel();
         }
 
+        // Methode permettant de gérer la fin de jeu
         private void Game_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (InvokeRequired)
@@ -579,6 +592,7 @@ namespace pac_interface
             return pictureBox;
         }
 
+        // Methode permettant de generer la map
         public void LoadMap()
         {
             game.ActualGame.GameState += EndGame;
@@ -738,6 +752,7 @@ namespace pac_interface
             GC.Collect();
         }
 
+        // Methode qui gere le score
         private void UpdateScoreLabel()
         {
             scoreLabel.Invoke((MethodInvoker)delegate {
@@ -748,12 +763,13 @@ namespace pac_interface
             // Kill des ennemis
         }
 
-
+        // Methode pour gerer l'evenement de porte ouverte sur la carte
         private void Map_DoorOpen(object? sender, DoorOpenEventArgs e)
         {
             grid[e.DoorPos.x, e.DoorPos.y].Image = null;
         }
 
+        // Methode pour gérer l'evenement de monnaie ramassee sur la carte
         private void Map_CoinEarn(object? sender, EarnCoinEventArgs e)
         {
             Map map = game.ActualGame.getMap();
@@ -780,12 +796,14 @@ namespace pac_interface
             UpdateScoreLabel();
         }
 
+        // Méthode permettant de créer les ennemis
         public void LoadEntities()
         {
             enemy = game.ActualGame.GetEnemies();
             Vector2 playerpos = new Vector2(game.ActualGame.map.spawn.y, game.ActualGame.map.spawn.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
             game.ActualGame.player.DamageTaken += Player_DamageTaken;
+            
             switch (game.player.selectedPower)
             {
                 case 0:
@@ -800,6 +818,8 @@ namespace pac_interface
                     game.ActualGame.player.invisible.PowerEnd += PowerEnd;
                     break;
             }
+
+            // Création du controle PBplayer
 
             PBplayer = new PictureBox()
             {
@@ -831,6 +851,7 @@ namespace pac_interface
             PBplayer.BringToFront();
         }
 
+        // Methode permettant de recuperer la position du joueur
         private void Player_PositionChanged(object? sender, PositionChangedEventArgs player)
         {
             if (InvokeRequired)
@@ -842,6 +863,7 @@ namespace pac_interface
             PBplayer.Location = new Point(player.NewPos.y * tileSize, player.NewPos.x * tileSize);
         }
 
+        // Methode permettant de recuperer la position de l'ennemi
         private void Enemy_PositionChanged(object? sender, PositionChangedEventArgs enemy)
         {
             if (InvokeRequired)
@@ -853,6 +875,7 @@ namespace pac_interface
                 PBenemy[enemy.indice].Location = new Point(enemy.NewPos.y * tileSize, enemy.NewPos.x * tileSize);
         }
 
+        // Methode permettant de mettre fin au pouvoir lorsque sa durée d'activation est finie
         private void PowerEnd(object? sender, NothingsEventArgs _)
         {
             if (InvokeRequired)
@@ -863,6 +886,7 @@ namespace pac_interface
             PowerUsed();
         }
 
+        // Methode permettant de supprimer de la pictureBox de l'ennemi lorsque celui-ci est mort
         private void Enemy_Killed(object? sender, KilledEventArgs enemy)
         {
             if (InvokeRequired)
@@ -873,6 +897,7 @@ namespace pac_interface
             PBenemy[enemy.id].Dispose();
         }
 
+        // Methode permettant de gerer l'angle de la pictureBox du joueur
         private void Player_angle(int angle)
         {
             Image image;
@@ -903,6 +928,7 @@ namespace pac_interface
             }
         }
 
+        // Methode permettant de gerer les différents controles clavier
         private void Game_KeyDown(object sender, KeyEventArgs e)
         {
             if (game.ActualGame != null && game.ActualGame.Playing)
@@ -940,7 +966,7 @@ namespace pac_interface
                         {
                             if (game.ActualGame.player.selectedPower != 0 && !powerTimer.Enabled)
                             {
-                                switch (game.player.selectedPower)
+                                switch (game.player.selectedPower) // Affichage de la PictureBox adaptée selon le pouvoir choisi
                                 {
                                     case 1:
                                         shieldPictureBox.Image = Image.FromFile("..\\..\\..\\Resources\\Pouvoirs\\Bouclier-inuse.png");
