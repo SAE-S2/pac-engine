@@ -35,7 +35,6 @@ namespace pac_interface
                 this.actualGame = new PacBot("test", 1280, 720);
                 this.actualGame.LoadWithProfil(1);
             }
-
             InitializeComponent();
             SetupControls(); // Call the method to add custom controls
         }
@@ -698,6 +697,7 @@ namespace pac_interface
         private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
         {
             actualGame = null;
+            Application.OpenForms[0].Show();
             // Forcer le garbage collector pour libérer la mémoire
             GC.Collect();
             GC.WaitForPendingFinalizers();
