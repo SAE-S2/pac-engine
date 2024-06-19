@@ -822,13 +822,26 @@ namespace pac_interface
                 {
                     en.PositionChanged += Enemy_PositionChanged;
                     en.Killed += Enemy_Killed;
-                    PBenemy[en.indice] = new PictureBox()
+                    if (en.chief)
                     {
-                        Location = new Point(en.pos.y * tileSize, en.pos.x * tileSize),
-                        Size = new Size(tileSize, tileSize),
-                        SizeMode = PictureBoxSizeMode.Zoom,
-                        Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
-                    };
+                        PBenemy[en.indice] = new PictureBox()
+                        {
+                            Location = new Point(en.pos.y * tileSize, en.pos.x * tileSize),
+                            Size = new Size(tileSize, tileSize),
+                            SizeMode = PictureBoxSizeMode.Zoom,
+                            Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi1-1.png")
+                        };
+                    }
+                    else
+                    {
+                        PBenemy[en.indice] = new PictureBox()
+                        {
+                            Location = new Point(en.pos.y * tileSize, en.pos.x * tileSize),
+                            Size = new Size(tileSize, tileSize),
+                            SizeMode = PictureBoxSizeMode.Zoom,
+                            Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\BasicEnnemi2.png")
+                        };
+                    }
                     pnlGame.Controls.Add(PBenemy[en.indice]);
                     PBenemy[en.indice].BringToFront();
                 }

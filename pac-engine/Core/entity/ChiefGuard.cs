@@ -6,6 +6,7 @@ namespace pac_engine.Core
     {
         public ChiefGuard(int indice)
         {
+            this.chief = true;
             this.maxHealth = 1.0f;
             this.Health = 1.0f;
             this.speed = 0.75f;
@@ -34,6 +35,7 @@ namespace pac_engine.Core
                         if (actualGame.player.isInvisible || pos.Distance(actualGame.player.pos) > 10)
                         {
                             stupidMove = true;
+
                         }
                         else
                         {
@@ -127,11 +129,6 @@ namespace pac_engine.Core
                     Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
                 }
             });
-        }
-            public bool CallToPos()
-        {
-            // TODO: Call other guard
-            return false;
         }
     }
 }

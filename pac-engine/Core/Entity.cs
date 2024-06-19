@@ -10,6 +10,7 @@ public class Entity
         set { health = (value <= maxHealth) ? value : maxHealth; }
     }
 
+    public bool chief = false;
     public float maxHealth;
     public float speed;
     public float damage;
@@ -56,7 +57,7 @@ public class Entity
     }
 
     // Déplacement aléatoire
-    public  virtual async Task Movement(Map level)
+    public virtual async Task Movement(Map level)
     {
         bool posChange;
         Random random = new Random();
