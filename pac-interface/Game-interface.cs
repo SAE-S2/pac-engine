@@ -254,49 +254,129 @@ namespace pac_interface
             };
             Controls.Add(HeartPanel);
 
-            InitializeHearts();
+            InitializeHearts(game.player.maxHealth);
         }
 
-        private void InitializeHearts()
+        PictureBox Heart0p5;
+        PictureBox Heart1;
+        PictureBox Heart1p5;
+        PictureBox Heart2;
+        PictureBox Heart2p5;
+        PictureBox Heart3;
+        PictureBox Heart3p5;
+        PictureBox Heart4;
+        PictureBox Heart4p5;
+        PictureBox Heart5;
+        PictureBox Heart5p5;
+        PictureBox Heart6;
+        PictureBox Heart6p5;
+        private void InitializeHearts(float health)
         {
-            PictureBox Heart1 = Heart(new Point(10, 10));
-            HeartPanel.Controls.Add(Heart1);
 
-            PictureBox Heart2 = Heart(new Point(50, 10));
+            Heart1 = Heart(new Point(10, 10));
+            HeartPanel.Controls.Add(Heart1);
+            if (health < 0.9f)
+                Heart1.Visible = false;
+            Heart0p5 = HalfHeart(new Point(10, 10));
+            HeartPanel.Controls.Add(Heart0p5);
+            if (health < 0.4f)
+                Heart0p5.Visible = false;
+
+            Heart2 = Heart(new Point(50, 10));
             HeartPanel.Controls.Add(Heart2);
-            PictureBox Heart3 = Heart(new Point(90, 10));
+            if (health < 1.9f)
+                Heart2.Visible = false;
+            Heart1p5 = HalfHeart(new Point(50, 10));
+            HeartPanel.Controls.Add(Heart1p5);
+            if (health < 1.4f)
+                Heart1p5.Visible = false;
+
+            Heart3 = Heart(new Point(90, 10));
             HeartPanel.Controls.Add(Heart3);
+            if (health < 2.9f)
+                Heart3.Visible = false;
+            Heart2p5 = HalfHeart(new Point(90, 10));
+            HeartPanel.Controls.Add(Heart2p5);
+            if (health < 2.4f)
+                Heart2p5.Visible = false;
+
+            Heart4 = Heart(new Point(130, 10));
+            HeartPanel.Controls.Add(Heart4);
+            if (health < 3.9f)
+                Heart4.Visible = false;
+            Heart3p5 = HalfHeart(new Point(130, 10));
+            HeartPanel.Controls.Add(Heart3p5);
+            if (health < 3.4f)
+                Heart3p5.Visible = false;
+
+            Heart5 = Heart(new Point(170, 10));
+            HeartPanel.Controls.Add(Heart5);
+            if (health < 4.9f)
+                Heart5.Visible = false;
+            Heart4p5 = HalfHeart(new Point(170, 10));
+            HeartPanel.Controls.Add(Heart4p5);
+            if (health < 4.4f)
+                Heart4p5.Visible = false;
+
+            Heart6 = Heart(new Point(210, 10));
+            HeartPanel.Controls.Add(Heart6);
+            if (health < 5.9f)
+                Heart6.Visible = false;
+            Heart5p5 = HalfHeart(new Point(210, 10));
+            HeartPanel.Controls.Add(Heart5p5);
+            if (health < 5.4f)
+                Heart5p5.Visible = false;
+
+            Heart6p5 = Heart(new Point(250, 10));
+            HeartPanel.Controls.Add(Heart6p5);
+            if (health < 6.4f)
+                Heart6p5.Visible = false;
         }
 
         private void UpdateHearts()
         {
-            HeartPanel.Controls.Clear();
+            float health = game.player.Health + game.player.absorption;
 
-            int totalHearts = 3;
-            int shieldLevel = game.player.shield.GetLevel();
+            Heart0p5.Visible = true;
+            Heart1.Visible = true;
+            Heart1p5.Visible = true;
+            Heart2.Visible = true;
+            Heart2p5.Visible = true;
+            Heart3.Visible = true;
+            Heart3p5.Visible = true;
+            Heart4.Visible = true;
+            Heart4p5.Visible = true;
+            Heart5.Visible = true;
+            Heart5p5.Visible = true;
+            Heart6.Visible = true;
+            Heart6p5.Visible = true;
 
-
-            if (shieldLevel == 1 || shieldLevel == 2)
-            {
-                totalHearts += 1;
-                PictureBox Heart4 = Heart(new Point(130, 10));
-                HeartPanel.Controls.Add(Heart4);
-            }
-            else if (shieldLevel == 3)
-            {
-                totalHearts += 1;
-                PictureBox Heart4 = Heart(new Point(130, 10));
-                HeartPanel.Controls.Add(Heart4);
-
-                PictureBox halfHeart5 = HalfHeart(new Point(170, 10));
-                HeartPanel.Controls.Add(halfHeart5);
-            }
-
-            for (int i = 0; i < totalHearts; i++)
-            {
-                PictureBox heart = Heart(new Point(10 + (i * 40), 10));
-                HeartPanel.Controls.Add(heart);
-            }
+            if (health < 0.4f)
+                Heart0p5.Visible = false;
+            if (health < 0.9f)
+                Heart1.Visible = false;
+            if (health < 1.4f)
+                Heart1p5.Visible = false;
+            if (health < 1.9f)
+                Heart2.Visible = false;
+            if (health < 2.4f)
+                Heart2p5.Visible = false;
+            if (health < 2.9f)
+                Heart3.Visible = false;
+            if (health < 3.4f)
+                Heart3p5.Visible = false;
+            if (health < 3.9f)
+                Heart4.Visible = false;
+            if (health < 4.4f)
+                Heart4p5.Visible = false;
+            if (health < 4.9f)
+                Heart5.Visible = false;
+            if (health < 5.4f)
+                Heart5p5.Visible = false;
+            if (health < 5.9f)
+                Heart6.Visible = false;
+            if (health < 6.4f)
+                Heart6p5.Visible = false;
         }
 
         private void StartPowerTimer(int duration)
@@ -316,7 +396,7 @@ namespace pac_interface
                 powerLabel.Text = "Press A";
 
                 HeartPanel.Controls.Clear();
-                InitializeHearts();
+                InitializeHearts(game.player.Health);
 
                 switch (game.player.selectedPower)
                 {
@@ -447,21 +527,7 @@ namespace pac_interface
                 Invoke(new MethodInvoker(() => Player_DamageTaken(sender, e)));
                 return;
             }
-            float playerHP = e.playerHP;
-            int heartsToRemove = 0;
-            if (playerHP >= 0)
-            {
-                heartsToRemove = 1;
-                scoreCount -= 300;
-            }
-            for (int i = 0; i < heartsToRemove; i++)
-            {
-                int lastIndex = HeartPanel.Controls.Count - 1;
-                if (lastIndex >= 0)
-                {
-                    HeartPanel.Controls.RemoveAt(lastIndex);
-                }
-            }
+            UpdateHearts();
             UpdateScoreLabel();
         }
 
@@ -560,6 +626,7 @@ namespace pac_interface
             game.ActualGame.player.StopMovement();
             // Désabonnement aux events
             game.ActualGame.player.PositionChanged -= Player_PositionChanged;
+            game.ActualGame.player.DamageTaken -= Player_DamageTaken;
 
             if (enemy != null)
             {
@@ -679,6 +746,7 @@ namespace pac_interface
             enemy = game.ActualGame.GetEnemies();
             Vector2 playerpos = new Vector2(game.ActualGame.map.spawn.y, game.ActualGame.map.spawn.x);
             game.ActualGame.player.PositionChanged += Player_PositionChanged;
+            game.ActualGame.player.DamageTaken += Player_DamageTaken;
 
             PBplayer = new PictureBox()
             {

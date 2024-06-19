@@ -16,6 +16,7 @@ namespace pac_engine.Core
         public bool isInvisible = false;
         public Damage damagePower;
         private CancellationTokenSource cancellationTokenSource;
+        public event EventHandler<DamageEventArgs> DamageTaken;
 
         public void StartMovement(Map level)
         {
@@ -89,6 +90,7 @@ namespace pac_engine.Core
                 if (Health <= 0.1f)
                     Kill();
             }
+            DamageTaken?.Invoke(this, new DamageEventArgs { playerHP = Health });
             return true;
         }
 
