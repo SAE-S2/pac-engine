@@ -1,8 +1,11 @@
-ï»¿using pac_engine;
+using pac_engine;
+using pac_engine.Utils;
+using PacDatabase;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Linq;
@@ -31,6 +34,9 @@ namespace pac_interface
         public Main()
         {
             InitializeComponent();
+            DatabaseManager.AddUtilisateur("PacMaster", "1234");
+            DatabaseManager.GetProfils();
+            DatabaseManager.GetUtilisateurs();
         }
 
         private void LoadPrincipal()
@@ -53,6 +59,13 @@ namespace pac_interface
             btnProfil1.ForeColor = Color.White;
             btnProfil2.ForeColor = Color.White;
             btnProfil3.ForeColor = Color.White;
+            if (DatabaseManager.GetProfil_name(1, 1) != null)
+                btnProfil1.Text = DatabaseManager.GetProfil_name(1, 1);
+            if (DatabaseManager.GetProfil_name(1, 2) != null)
+                btnProfil2.Text = DatabaseManager.GetProfil_name(1, 2);
+            if (DatabaseManager.GetProfil_name(1, 3) != null)
+                btnProfil3.Text = DatabaseManager.GetProfil_name(1, 3);
+
             switch (profil)
             {
                 case 1:
@@ -126,7 +139,27 @@ namespace pac_interface
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            LoadNew();
+            switch (profil)
+            {
+                case 1:
+                    if (btnProfil1.Text == "Profil 1")
+                        LoadNew();
+                    else
+                        MessageBox.Show("Profil déjà existant");
+                    break;
+                case 2:
+                    if (btnProfil2.Text == "Profil 2")
+                        LoadNew();
+                    else
+                        MessageBox.Show("Profil déjà existant");
+                    break;
+                case 3:
+                    if (btnProfil3.Text == "Profil 3")
+                        LoadNew();
+                    else
+                        MessageBox.Show("Profil déjà existant");
+                    break;
+            }
         }
 
         private void btnValider_Click(object sender, EventArgs e)
@@ -148,16 +181,19 @@ namespace pac_interface
             {
                 btnProfil1.Font = txtfont;
                 btnProfil1.Text = txtPseudo.Text;
+                DatabaseManager.AddProfil(1, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = txtfont;
                 btnProfil2.Text = txtPseudo.Text;
+                DatabaseManager.AddProfil(2, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
             }
             else
             {
                 btnProfil3.Font = txtfont;
                 btnProfil3.Text = txtPseudo.Text;
+                DatabaseManager.AddProfil(3, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
             }
             txtPseudo.Text = "";
             LoadLancement();
@@ -169,16 +205,19 @@ namespace pac_interface
             {
                 btnProfil1.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil1.Text = "Profil 1";
+                DatabaseManager.DeleteProfil(1, 1);
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil2.Text = "Profil 2";
+                DatabaseManager.DeleteProfil(2, 1);
             }
             else
             {
                 btnProfil3.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil3.Text = "Profil 3";
+                DatabaseManager.DeleteProfil(3, 1);
             }
         }
 
@@ -204,6 +243,32 @@ namespace pac_interface
         Hub hub;
         private void btnLancer_Click(object sender, EventArgs e)
         {
+            switch (profil)
+            {
+                case 1:
+                    if (btnProfil1.Text == "Profil 1")
+                    {
+                        MessageBox.Show("Profil non créé");
+                        return;
+                    }
+                    break;
+                case 2:
+                    if (btnProfil2.Text == "Profil 2")
+                    {
+                        MessageBox.Show("Profil non créé");
+                        return;
+                    }
+                    break;
+                case 3:
+                    if (btnProfil3.Text == "Profil 3")
+                    {
+                        MessageBox.Show("Profil non créé");
+                        return;
+                    }
+                    break;
+            }
+            Globals.UID = 1;
+            Globals.NumProfil = profil;
             hub = new Hub(null);
             this.Visible = false;
             hub.Show();

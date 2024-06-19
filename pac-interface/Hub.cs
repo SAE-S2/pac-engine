@@ -1,5 +1,8 @@
 ﻿using pac_engine;
 using System.Text;
+using pac_engine.Utils;
+using PacDatabase;
+using System.Data.Entity;
 namespace pac_interface
 {
     public partial class Hub : Form
@@ -541,6 +544,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["UP"].Controls["label0"].Text = Text = $"+0,5 coeur (lvl. {upgradesPrice[0] - 1})";
                     actualGame.player.maxHealth += 0.5f;
                     actualGame.player.Health += 0.5f;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 1);
                     break;
                 case "+10% de vitesse":
                     if (upgradesPrice[1] > actualGame.player.bolts)
@@ -558,6 +562,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["UP"].Controls["price1"].Text = "" + upgradesPrice[1];
                     this.Controls["panel"].Controls["UP"].Controls["label1"].Text = Text = $"+10% de vitesse (lvl. {upgradesPrice[1] - 1})";
                     actualGame.player.speed += 0.1f;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 2);
                     break;
                 case "+0,5 régenération":
                     if (upgradesPrice[2] > actualGame.player.bolts)
@@ -575,6 +580,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["UP"].Controls["price2"].Text = "" + upgradesPrice[2];
                     this.Controls["panel"].Controls["UP"].Controls["label2"].Text = Text = $"+0,5 régenération (lvl. {upgradesPrice[2] - 1})";
                     actualGame.player.regen += 0.5f;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 3);
                     break;
                 case "PEUREUX":
                     if (passivePrice[0] > actualGame.player.bolts)
@@ -592,6 +598,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["PS"].Controls["price0"].Text = "" + passivePrice[0];
                     this.Controls["panel"].Controls["PS"].Controls["label0"].Text = Text = $"PEUREUX (lvl. {passivePrice[0] - 1})";
                     actualGame.player.peureux += 10;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 4);
                     break;
                 case "CHANCEUX":
                     if (passivePrice[1] > actualGame.player.bolts)
@@ -609,6 +616,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["PS"].Controls["price1"].Text = "" + passivePrice[1];
                     this.Controls["panel"].Controls["PS"].Controls["label1"].Text = Text = $"CHANCEUX (lvl. {passivePrice[1] - 1})";
                     actualGame.player.lucky += 10;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 5);
                     break;
                 case "Bouclier":
                     if (activePrice[0] > actualGame.player.bolts)
@@ -626,6 +634,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["PA"].Controls["price0"].Text = "" + activePrice[0];
                     this.Controls["panel"].Controls["PA"].Controls["label0"].Text = Text = $"Bouclier (lvl. {activePrice[0] - 1})";
                     actualGame.player.shield.level += 1;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 6);
                     break;
                 case "Dégats":
                     if (activePrice[1] > actualGame.player.bolts)
@@ -643,6 +652,7 @@ namespace pac_interface
                     this.Controls["panel"].Controls["PA"].Controls["price1"].Text = "" + activePrice[1];
                     this.Controls["panel"].Controls["PA"].Controls["label1"].Text = Text = $"Dégats (lvl. {activePrice[1] - 1})";
                     actualGame.player.damagePower.level += 1;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 7);
                     break;
                 case "Invisibilité":
                     if (activePrice[2] > actualGame.player.bolts)
@@ -660,9 +670,11 @@ namespace pac_interface
                     this.Controls["panel"].Controls["PA"].Controls["price2"].Text = "" + activePrice[2];
                     this.Controls["panel"].Controls["PA"].Controls["label2"].Text = Text = $"Invisibilité (lvl. {activePrice[2] - 1})";
                     actualGame.player.invisible.level += 1;
+                    DatabaseManager.IncrementNiveauAmelioration(Globals.UID, Globals.NumProfil, 8);
                     break;
             }
             this.Controls["boltsNB"].Text = ""+actualGame.player.bolts;
+            DatabaseManager.SetTotalBoulons(Globals.UID, Globals.NumProfil, actualGame.player.bolts);
         }
 
         private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
