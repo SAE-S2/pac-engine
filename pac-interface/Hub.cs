@@ -709,15 +709,14 @@ namespace pac_interface
             game = null;
         }
 
-        // Méthode pour démarrer le dialogue
-        private void StartDialogue(int numDialogue, bool isFirstTime)
+        private void StartDialogue(int numDialogue, bool isFirstTime)// Methode pour lancer un dialogue
         {
             dialogueInProgress = true; // Indicateur pour savoir si le dialogue est en cours
             currentLineIndex = 0;
 
             dialogueManager = new DialogueManager(numDialogue, isFirstTime);
 
-            // Initialisation des contrôles pour afficher le dialogue
+            // Initialisation des controles pour afficher le dialogue
             dialoguesPanel = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -764,28 +763,25 @@ namespace pac_interface
 
             AdjustSizesAndPositions();
 
-            // Afficher la première ligne de dialogue
+            // Afficher la premiere ligne de dialogue
             ShowCurrentDialogueLine(numDialogue, isFirstTime);
 
             // Boucle pour attendre la fin du dialogue
             while (dialogueInProgress)
             {
-                Application.DoEvents(); // Permet à l'application de traiter les événements
-                // Vous pouvez aussi utiliser Thread.Sleep(100) pour réduire l'utilisation du CPU
+                Application.DoEvents();
             }
-
-            // Dialogue terminé, nettoyage ou actions après le dialogue
             Controls.Remove(dialoguesPanel);
             dialoguesPanel.Dispose();
         }
 
-        // Méthode pour afficher la ligne de dialogue courante
+        // Methode pour afficher la ligne de dialogue
         private void ShowCurrentDialogueLine(int numDialogue, bool isFirstTime)
         {
             var currentDialogue = dialogueManager.GetDialogueLine(numDialogue, isFirstTime, currentLineIndex);
             dialogueText.Text = WrapText(currentDialogue.Item1, 48);
 
-            if (currentDialogue.Item2 == "Voix off" || currentDialogue.Item2 == "")
+            if (currentDialogue.Item2 == "Voix off")
             {
                 character.Image = null; // Aucune image pour "Voix off"
             }
@@ -794,25 +790,25 @@ namespace pac_interface
                 character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
             }
 
-            // Vérifier si c'est la dernière ligne de dialogue
+            // Verifier si c'est la derniere ligne de dialogue
             if (currentLineIndex >= dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
             {
                 dialogueInProgress = false; // Fin du dialogue
             }
         }
 
-        // Méthode appelée lorsqu'un clic sur le dialogue se produit
+        // Methode appelee lorsqu'un clic sur le dialogue se produit
         private void Dialogue_Click(object sender, EventArgs e)
         {
-            // Vérifier si le dialogue n'est pas terminé
+            // Verifier si le dialogue n'est pas termine
             if (dialogueInProgress && currentLineIndex < dialogueManager.GetDialogueLength(dialogueManager.dialogueIndex, dialogueManager.isFirstTime))
             {
-                currentLineIndex++; // Passer à la ligne suivante
+                currentLineIndex++; // Passer a la ligne suivante
                 ShowCurrentDialogueLine(dialogueManager.dialogueIndex, dialogueManager.isFirstTime); // Afficher la nouvelle ligne
             }
         }
 
-        // Méthode pour ajuster les tailles et positions des contrôles de dialogue
+        // Methode pour ajuster les tailles et positions des controles de dialogue
         private void AdjustSizesAndPositions()
         {
             boite.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.8), (int)(dialoguesPanel.ClientSize.Height * 0.5));
@@ -825,7 +821,7 @@ namespace pac_interface
             dialogueText.Location = new Point((boite.Width - dialogueText.Width) / 2, (boite.Height - dialogueText.Height) / 2);
         }
 
-        // Méthode pour découper le texte en lignes avec un nombre maximal de caractères par ligne
+        // Methode pour decouper le texte en lignes avec un nombre maximal de caracteres par ligne
         private string WrapText(string text, int maxCharsPerLine)
         {
             StringBuilder sb = new StringBuilder();

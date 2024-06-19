@@ -963,14 +963,14 @@ namespace pac_interface
                 }
             }
         }
-        private void StartDialogue(int numDialogue, bool isFirstTime)
+        private void StartDialogue(int numDialogue, bool isFirstTime)// Methode pour lancer un dialogue
         {
             dialogueInProgress = true; // Indicateur pour savoir si le dialogue est en cours
             currentLineIndex = 0;
 
             dialogueManager = new DialogueManager(numDialogue, isFirstTime);
 
-            // Initialisation des contrÃ´les pour afficher le dialogue
+            // Initialisation des controles pour afficher le dialogue
             dialoguesPanel = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -1017,22 +1017,19 @@ namespace pac_interface
 
             AdjustSizesAndPositions();
 
-            // Afficher la premiÃ¨re ligne de dialogue
+            // Afficher la premiere ligne de dialogue
             ShowCurrentDialogueLine(numDialogue, isFirstTime);
 
             // Boucle pour attendre la fin du dialogue
             while (dialogueInProgress)
             {
-                Application.DoEvents(); // Permet Ã  l'application de traiter les Ã©vÃ©nements
-                // Vous pouvez aussi utiliser Thread.Sleep(100) pour rÃ©duire l'utilisation du CPU
+                Application.DoEvents();
             }
-
-            // Dialogue terminÃ©, nettoyage ou actions aprÃ¨s le dialogue
             Controls.Remove(dialoguesPanel);
             dialoguesPanel.Dispose();
         }
 
-        // MÃ©thode pour afficher la ligne de dialogue courante
+        // Methode pour afficher la ligne de dialogue
         private void ShowCurrentDialogueLine(int numDialogue, bool isFirstTime)
         {
             var currentDialogue = dialogueManager.GetDialogueLine(numDialogue, isFirstTime, currentLineIndex);
@@ -1047,25 +1044,25 @@ namespace pac_interface
                 character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
             }
 
-            // VÃ©rifier si c'est la derniÃ¨re ligne de dialogue
+            // Verifier si c'est la derniere ligne de dialogue
             if (currentLineIndex >= dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
             {
                 dialogueInProgress = false; // Fin du dialogue
             }
         }
 
-        // MÃ©thode appelÃ©e lorsqu'un clic sur le dialogue se produit
+        // Methode appelee lorsqu'un clic sur le dialogue se produit
         private void Dialogue_Click(object sender, EventArgs e)
         {
-            // VÃ©rifier si le dialogue n'est pas terminÃ©
+            // Verifier si le dialogue n'est pas termine
             if (dialogueInProgress && currentLineIndex < dialogueManager.GetDialogueLength(dialogueManager.dialogueIndex, dialogueManager.isFirstTime))
             {
-                currentLineIndex++; // Passer Ã  la ligne suivante
+                currentLineIndex++; // Passer a la ligne suivante
                 ShowCurrentDialogueLine(dialogueManager.dialogueIndex, dialogueManager.isFirstTime); // Afficher la nouvelle ligne
             }
         }
 
-        // MÃ©thode pour ajuster les tailles et positions des contrÃ´les de dialogue
+        // Methode pour ajuster les tailles et positions des controles de dialogue
         private void AdjustSizesAndPositions()
         {
             boite.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.8), (int)(dialoguesPanel.ClientSize.Height * 0.5));
@@ -1078,7 +1075,7 @@ namespace pac_interface
             dialogueText.Location = new Point((boite.Width - dialogueText.Width) / 2, (boite.Height - dialogueText.Height) / 2);
         }
 
-        // MÃ©thode pour dÃ©couper le texte en lignes avec un nombre maximal de caractÃ¨res par ligne
+        // Methode pour decouper le texte en lignes avec un nombre maximal de caracteres par ligne
         private string WrapText(string text, int maxCharsPerLine)
         {
             StringBuilder sb = new StringBuilder();
