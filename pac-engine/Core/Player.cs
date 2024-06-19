@@ -1,4 +1,5 @@
 ﻿using pac_engine.Utils;
+using PacDatabase;
 using System.Security.Cryptography.X509Certificates;
 namespace pac_engine.Core
 {
@@ -33,20 +34,21 @@ namespace pac_engine.Core
 
         public Player()
 	    {
-	        // TODO: Load from db
-	        maxHealth = 3.0f;
-	        Health = 3.0f;
-	        speed = 1.0f;
+            // Améliorations
+            maxHealth = 3.0f + (float)(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 1) * 0.5);
+	        Health = maxHealth;
+	        speed = 1.0f + (float)(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 2) * 0.1);
             damage = 0.0f;
-            regen = 0.0f;
-            money = 0;
-            bolts = 0;
-            lucky = 0; // %
-            peureux = 0;
+            regen = 0.0f + (float)(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 3) * 0.5);
+            peureux = 0 + (DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 4) * 10); // pourcentage
+            lucky = 0 + (DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 5) * 10); // pourcentage
             selectedPower = 2;
-            shield = new Shield(1);
-            damagePower = new Damage(1);
-            invisible = new Invisible(1);
+            shield = new Shield(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 6));
+            damagePower = new Damage(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 7));
+            invisible = new Invisible(DatabaseManager.GetNiveauAmelioration(Globals.UID, Globals.NumProfil, 8));
+
+            money = DatabaseManager.GetTotalPieces(Globals.UID, Globals.NumProfil);
+            bolts = DatabaseManager.GetTotalBoulons(Globals.UID, Globals.NumProfil);
         }
 
         public void ActivePower()

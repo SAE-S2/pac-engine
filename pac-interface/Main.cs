@@ -1,4 +1,5 @@
 using pac_engine;
+using pac_engine.Utils;
 using PacDatabase;
 using System;
 using System.Collections.Generic;
@@ -255,6 +256,8 @@ namespace pac_interface
                     }
                     break;
             }
+            Globals.UID = 1;
+            Globals.NumProfil = profil;
             hub = new Hub(null);
             this.Visible = false;
             hub.Show();

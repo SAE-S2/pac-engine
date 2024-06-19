@@ -331,6 +331,113 @@ namespace PacDatabase
             return profils;
         }
 
+        public static int GetTotalPieces(int uid, int numProfil)
+        {
+            int totalPieces = 0;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT TotalPieces FROM Profil WHERE UID = @uid AND NumProfil = @numProfil";
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                totalPieces = reader.GetInt32(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return totalPieces;
+        }
+
+
+        public static int GetTotalBoulons(int uid, int numProfil)
+        {
+            int totalBoulons = 0;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = "SELECT TotalBoulons FROM Profil WHERE UID = @uid AND NumProfil = @numProfil";
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                totalBoulons = reader.GetInt32(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return totalBoulons;
+        }
+
+        public static void SetTotalBoulons(int uid, int numProfil, int totalBoulons)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Requête pour mettre à jour le nombre de boulons
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET TotalBoulons = @totalBoulons 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@totalBoulons", totalBoulons);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Total de boulons mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
+
+
         // Méthodes pour la table Amelioration
         public static void AddAmelioration(int rarete, string nomAmelioration, string description, bool estEquipable)
         {
@@ -532,6 +639,94 @@ namespace PacDatabase
 
             return equipements;
         }
+
+        public static int GetNiveauAmelioration(int uid, int numProfil, int numAmelioration)
+        {
+            int niveauAmelioration = 0;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                SELECT NiveauAmelioration 
+                FROM Equipement_Possede 
+                WHERE IDProfil = (
+                    SELECT IDProfil 
+                    FROM Profil 
+                    WHERE UID = @uid AND NumProfil = @numProfil
+                ) AND NumAmelioration = @numAmelioration";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+                        command.Parameters.AddWithValue("@numAmelioration", numAmelioration);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                niveauAmelioration = reader.GetInt32(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return niveauAmelioration;
+        }
+
+
+        public static void IncrementNiveauAmelioration(int uid, int numProfil, int numAmelioration)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Requête pour mettre à jour le niveau actuel en l'incrémentant de 1
+                    string updateQuery = @"
+                UPDATE Equipement_Possede 
+                SET NiveauAmelioration = NiveauAmelioration + 1
+                WHERE IDProfil = (
+                    SELECT IDProfil 
+                    FROM Profil 
+                    WHERE UID = @uid AND NumProfil = @numProfil
+                ) AND NumAmelioration = @numAmelioration";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+                        updateCommand.Parameters.AddWithValue("@numAmelioration", numAmelioration);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Debug.WriteLine("Niveau d'amélioration incrémenté avec succès.");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
+
 
         // Méthodes pour la table Evasion
         public static void AddEvasion(int utilisationPouvoirs, int hpPerdus, int ennemisTues, int nbPiece, int niveauEvasion, int nbBoulon, int numAmelioration, int idProfil)
