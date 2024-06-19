@@ -19,6 +19,7 @@ namespace pac_interface
 {
     public partial class Game : Form
     {
+
         public int tileSize = 256;
         public Panel? pnlGame;
         private PacBot game;
@@ -46,6 +47,7 @@ namespace pac_interface
 
         public Game(PacBot game)
         {
+            this.hub = hub;
             InitializeComponent();
             this.game = game;
 
@@ -497,6 +499,43 @@ namespace pac_interface
             }
         }
 
+        private void EndGame(object? sender, GameStateEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { EndGame(sender, e); }));
+                return;
+            }
+            Unload();
+            if (e.win)
+            {
+                game.StartGame(e.level + 1);
+                game.player.Heal(game.player.regen);
+                game.player.SetActualGame(game.ActualGame);
+                LoadMap();
+                LoadEntities();
+                pnlGame.Visible = true;
+            }
+            else
+            {
+                this.Visible = false;
+                hub.Show();
+            }
+        }
+
+        private void Game_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new MethodInvoker(delegate { Game_FormClosed(sender, e); }));
+                return;
+            }
+            if (game.ActualGame != null)
+            {
+                Unload();
+            }
+        }
+
         private PictureBox placeWall(Point coords, int level, int type)
         {
             PictureBox pictureBox = new PictureBox()
@@ -570,12 +609,14 @@ namespace pac_interface
             pnlGame.AutoSize = true;
             Controls.Add(pnlGame);
             pnlGame.Visible = true;
-            pnlGame.Location = new Point((ClientSize.Width - pnlGame.Width) / 2, (ClientSize.Height - pnlGame.Height) / 2); // Center window
+
+            pnlGame.Location = new Point( (ClientSize.Width - pnlGame.Width) / 2, (ClientSize.Height - pnlGame.Height) / 2); // Center window
             pnlGame.ResumeLayout();
         }
 
         public void Unload()
         {
+            game.ActualGame.player.StopMovement();
             // Désabonnement aux events
             game.ActualGame.player.PositionChanged -= Player_PositionChanged;
 
@@ -702,7 +743,7 @@ namespace pac_interface
 
             PBplayer = new PictureBox()
             {
-                Location = new Point(playerpos.y * tileSize, playerpos.x * tileSize),
+                Location = new Point(playerpos.x * tileSize, playerpos.y * tileSize),
                 Size = new Size(tileSize, tileSize),
                 SizeMode = PictureBoxSizeMode.Zoom,
                 Image = Image.FromFile("..\\..\\..\\Resources\\Entity\\Pac-bot1.png")
@@ -710,7 +751,7 @@ namespace pac_interface
             pnlGame.Controls.Add(PBplayer);
 
             PBenemy = new PictureBox[enemy.Length];
-            foreach (var en in enemy)
+            foreach(var en in enemy)
             {
                 if (en != null)
                 {

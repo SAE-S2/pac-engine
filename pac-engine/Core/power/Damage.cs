@@ -1,4 +1,3 @@
-﻿
 namespace pac_engine.Core
 {
     public class Damage : Power

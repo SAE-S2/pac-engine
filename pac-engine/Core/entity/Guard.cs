@@ -1,4 +1,3 @@
-﻿
 using pac_engine.Utils;
 
 namespace pac_engine.Core
@@ -12,7 +11,8 @@ namespace pac_engine.Core
             this.speed = 0.9f;
             this.damage = 1.0f;
             this.indice = indice;
-        }
+        }  
+
 
         ~Guard()
         {

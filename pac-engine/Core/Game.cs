@@ -1,5 +1,4 @@
-﻿
-using pac_engine.Core;
+﻿using pac_engine.Core;
 using pac_engine.Utils;
 
 public class Game
@@ -56,7 +55,7 @@ public class Game
         player.pos = map.spawn;
         player.SetActualGame(this);
         player.StartMovement(map);
-
+          
         for (int i = 0; i < enemiesCount; i++)
         {
             _ = enemies[i].Movement(map); // start the movement asynchronously
@@ -68,14 +67,14 @@ public class Game
     {
         for (int i = 0; i < enemiesCount; i++)
         {
-            if (enemies[i] == enemy)
+          if (enemies[i] == enemy)
             {
                 enemiesCount--;
                 if (i < enemiesCount)
                 {
                     for (int j = i; j < enemiesCount; j++)
                     {
-                        enemies[j] = enemies[j + 1];
+                        enemies[j] = enemies[j+1];
                     }
                 }
             }
@@ -88,7 +87,7 @@ public class Game
         playing = false;
         GameState?.Invoke(this, new GameStateEventArgs { win = false });
     }
-
+  
     public void PlayerAtDoor()
     {
         win = true;
@@ -112,15 +111,16 @@ public class Game
 
     private int[,] CreateMap()
     {
-        DepthFirstSearch map = new DepthFirstSearch(15, 25);
+        DepthFirstSearch map = new DepthFirstSearch(15,25);
+
         map.Generation();
         for (int i = 0; i < enemiesCount; i++)
         {
             map.GenerateChiefGuard();
         }
-        map.RemoveDeadEnds();
-        map.Print();
-        return map.getMaze();
+	      map.RemoveDeadEnds();
+	      map.Print();
+	      return map.getMaze();
     }
 
     public Map getMap()

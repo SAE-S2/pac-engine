@@ -1,6 +1,6 @@
 ﻿namespace pac_interface
 {
-    partial class Game
+    partial class Hub
     {
         /// <summary>
         /// Required designer variable.
@@ -28,20 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            SuspendLayout();
-            // 
-            // Game
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.Black;
-            ClientSize = new Size(700, 338);
-            Margin = new Padding(3, 2, 3, 2);
-            Name = "Game";
-            Text = "Game";
-            FormClosed += Game_FormClosed;
-            KeyDown += Game_KeyDown;
-            ResumeLayout(false);
+            this.components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.FormClosed += Hub_FormClosed;
+            this.Text = "Hub";
         }
 
         #endregion

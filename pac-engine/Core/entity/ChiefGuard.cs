@@ -1,5 +1,5 @@
-﻿
 using pac_engine.Utils;
+
 
 namespace pac_engine.Core
 {
@@ -14,7 +14,7 @@ namespace pac_engine.Core
             this.indice = indice;
         }
 
-        // Déplacement intelligent
+        // DÃ©placement intelligent
         public override async Task Movement(Map level)
         {
             bool posChange;
@@ -78,13 +78,13 @@ namespace pac_engine.Core
                             actualGame.player.TakeDamage(damage);
                     }
 
-
                     nbDeplacment++;
 
                     Task.Delay((int)(Globals.ENTITY_SPEED * speed)).Wait();
                 }
             });
         }
+
         public bool CallToPos()
         {
             // TODO: Call other guard

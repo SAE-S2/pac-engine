@@ -5,6 +5,7 @@ using System.Net.Security;
 
 namespace pac_engine
 {
+
     public class PacBot
     {
         private string title;
@@ -36,10 +37,15 @@ namespace pac_engine
             return profils;
         }
 
+        public void LoadWithProfil(int profil)
+        {
+            // add load from db
+            name = "profil " + profil;
+            player = new Player();
+        }
+
         public void initializeGame()
         {
-            name = "profil 1";
-            player = new Player();
             price = 0;
             bool win = StartGame(1);
         }
@@ -151,9 +157,8 @@ namespace pac_engine
                         Console.WriteLine();
                         Console.WriteLine("Vous êtes mort");
                         Console.WriteLine("Vous revenez en prison");
-                        pacbot.player.Heal(pacbot.player.maxHealth - pacbot.player.Health);
+                        pacbot.player.Health = pacbot.player.maxHealth;
                         if (pacbot.price == 0)
-                        {
                             pacbot.price += 10;
                         }
                         pacbot.price += (int)Math.Floor(pacbot.price * 0.2);

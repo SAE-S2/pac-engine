@@ -1,4 +1,3 @@
-
 using pac_engine.Core;
 using pac_engine.Utils;
 
@@ -91,11 +90,11 @@ public class Entity
                     case 4: // Stop
                         break;
                 }
-
+              
                 if (posChange)
                 {
                     eventPosChanged(oldPos, pos, indice);
-
+                  
                     if (actualGame.player.pos.x == pos.x && actualGame.player.pos.y == pos.y)
                     {
                         if (actualGame.player.damage > 0.1f)
@@ -106,18 +105,18 @@ public class Entity
                         {
                             actualGame.player.TakeDamage(damage);
                         }
-                    }
+                        Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
+
+                        if (i == iToGo)
+                        {
+                            i = 0;
+                            angle = random.Next(0, 4);
+                            iToGo = random.Next(1, 10);
+                        }
+                        i++;
+                     }
                 }
 
-                Task.Delay((int)(Globals.ENTITY_SPEED / speed)).Wait();
-
-                if (i == iToGo)
-                {
-                    i = 0;
-                    angle = random.Next(0, 4);
-                    iToGo = random.Next(1, 10);
-                }
-                i++;
             }
         });
     }
