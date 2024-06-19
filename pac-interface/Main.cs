@@ -201,6 +201,11 @@ namespace pac_interface
 
         private void btnSupp_Click(object sender, EventArgs e)
         {
+            DialogResult rep = MessageBox.Show("Voulez vous vraiment supprimer ?", "Supprimer le profil", MessageBoxButtons.YesNo);
+            if (rep == DialogResult.No)
+            {
+                return;
+            }
             if (profil == 1)
             {
                 btnProfil1.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);

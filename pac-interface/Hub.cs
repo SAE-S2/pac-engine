@@ -35,7 +35,7 @@ namespace pac_interface
                 this.actualGame.LoadWithProfil(1);
             }
 
-        InitializeComponent();
+            InitializeComponent();
             SetupControls(); // Call the method to add custom controls
         }
 
