@@ -12,7 +12,7 @@ public class Game
     public Player player;
     public int enemiesCount;
     public int chiefCount;
-    private Entity[] enemies = new Entity[13]; // TODO: Change 10???
+    private Entity[] enemies = new Entity[14];
     public int level;
     private bool win = false;
     public event EventHandler<GameStateEventArgs>? GameState;
@@ -142,9 +142,19 @@ public class Game
 
     public void PlayerDied()
     {
-        win = false;
-        playing = false;
-        GameState?.Invoke(this, new GameStateEventArgs { win = false });
+        if (false) //TODO : récupérer bool dans bdd
+        {
+            //Appel dialogue
+            win = false;
+            playing = false;
+            GameState?.Invoke(this, new GameStateEventArgs { win = false });
+        }
+        else
+        {
+            win = false;
+            playing = false;
+            GameState?.Invoke(this, new GameStateEventArgs { win = false });
+        }
     }
   
     public void PlayerAtDoor()

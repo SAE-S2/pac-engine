@@ -34,12 +34,9 @@ namespace pac_interface
         public Main()
         {
             InitializeComponent();
-            DatabaseManager.AddUtilisateur("PacMaster", "1234");
-            DatabaseManager.GetProfils();
-            DatabaseManager.GetUtilisateurs();
         }
 
-        private void LoadPrincipal()
+        public void LoadPrincipal()
         {
             pnlCreation.Visible = false;
             pnlLancement.Visible = false;
@@ -145,19 +142,19 @@ namespace pac_interface
                     if (btnProfil1.Text == "Profil 1")
                         LoadNew();
                     else
-                        MessageBox.Show("Profil d�j� existant");
+                        MessageBox.Show("Profil déjà existant");
                     break;
                 case 2:
                     if (btnProfil2.Text == "Profil 2")
                         LoadNew();
                     else
-                        MessageBox.Show("Profil d�j� existant");
+                        MessageBox.Show("Profil déjà existant");
                     break;
                 case 3:
                     if (btnProfil3.Text == "Profil 3")
                         LoadNew();
                     else
-                        MessageBox.Show("Profil d�j� existant");
+                        MessageBox.Show("Profil déjà existant");
                     break;
             }
         }
@@ -182,18 +179,21 @@ namespace pac_interface
                 btnProfil1.Font = txtfont;
                 btnProfil1.Text = txtPseudo.Text;
                 DatabaseManager.AddProfil(1, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = txtfont;
                 btnProfil2.Text = txtPseudo.Text;
                 DatabaseManager.AddProfil(2, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             else
             {
                 btnProfil3.Font = txtfont;
                 btnProfil3.Text = txtPseudo.Text;
                 DatabaseManager.AddProfil(3, txtPseudo.Text, false, false, false, false, false, 0, 0, 1);
+                DatabaseManager.InitializeEquipementPossede(DatabaseManager.GetIDProfil(1, profil));
             }
             txtPseudo.Text = "";
             LoadLancement();
@@ -201,24 +201,28 @@ namespace pac_interface
 
         private void btnSupp_Click(object sender, EventArgs e)
         {
+            DialogResult rep = MessageBox.Show("Voulez vous vraiment supprimer ?", "Supprimer le profil", MessageBoxButtons.YesNo);
+            if (rep == DialogResult.No)
+            {
+                return;
+            }
             if (profil == 1)
             {
                 btnProfil1.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil1.Text = "Profil 1";
-                DatabaseManager.DeleteProfil(1, 1);
             }
             else if (profil == 2)
             {
                 btnProfil2.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil2.Text = "Profil 2";
-                DatabaseManager.DeleteProfil(2, 1);
             }
             else
             {
                 btnProfil3.Font = new Font("Segoe UI", (float)26.5, FontStyle.Bold);
                 btnProfil3.Text = "Profil 3";
-                DatabaseManager.DeleteProfil(3, 1);
             }
+            DatabaseManager.DeleteStuff(DatabaseManager.GetIDProfil(1, profil));
+            DatabaseManager.DeleteProfil(profil, 1);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -241,6 +245,7 @@ namespace pac_interface
         }
 
         Hub hub;
+        Game game;
         private void btnLancer_Click(object sender, EventArgs e)
         {
             switch (profil)
@@ -248,32 +253,52 @@ namespace pac_interface
                 case 1:
                     if (btnProfil1.Text == "Profil 1")
                     {
-                        MessageBox.Show("Profil non cr��");
+                        MessageBox.Show("Profil non créé");
                         return;
                     }
                     break;
                 case 2:
                     if (btnProfil2.Text == "Profil 2")
                     {
-                        MessageBox.Show("Profil non cr��");
+                        MessageBox.Show("Profil non créé");
                         return;
                     }
                     break;
                 case 3:
                     if (btnProfil3.Text == "Profil 3")
                     {
-                        MessageBox.Show("Profil non cr��");
+                        MessageBox.Show("Profil non créé");
                         return;
                     }
                     break;
             }
             Globals.UID = 1;
             Globals.NumProfil = profil;
+            Globals.IDProfil = DatabaseManager.GetIDProfil(Globals.UID, Globals.NumProfil);
             hub = new Hub(null);
-            this.Visible = false;
-            hub.Show();
-            hub.WindowState = FormWindowState.Maximized;
-            hub.FormClosed += Hub_FormClosed;
+            
+            if (!DatabaseManager.GetDialogueDebut(Globals.UID, Globals.NumProfil))
+            {
+                StartDialogue(0, true);
+                this.Visible = false;
+                DatabaseManager.SetDialogueDebut(Globals.UID, Globals.NumProfil, true);
+                hub.actualGame.initializeGame(10);
+                game = new Game(hub, hub.actualGame);
+                game.Show();
+                game.WindowState = FormWindowState.Maximized;
+                game.FormClosed += hub.Game_FormClosed;
+
+                hub.actualGame.player.Health = hub.actualGame.player.maxHealth;
+                game.LoadMap();
+                game.LoadEntities();
+            }
+            else
+            {
+                this.Visible = false;
+                hub.Show();
+                hub.WindowState = FormWindowState.Maximized;
+                hub.FormClosed += Hub_FormClosed;
+            }
         }
 
         private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
@@ -282,7 +307,7 @@ namespace pac_interface
             this.Show();
         }
 
-        // Méthode pour démarrer le dialogue
+        // MÃ©thode pour dÃ©marrer le dialogue
         private void StartDialogue(int numDialogue, bool isFirstTime)
         {
             dialogueInProgress = true; // Indicateur pour savoir si le dialogue est en cours
@@ -290,7 +315,7 @@ namespace pac_interface
 
             dialogueManager = new DialogueManager(numDialogue, isFirstTime);
 
-            // Initialisation des contrôles pour afficher le dialogue
+            // Initialisation des contrÃ´les pour afficher le dialogue
             dialoguesPanel = new Panel
             {
                 Dock = DockStyle.Fill,
@@ -337,22 +362,22 @@ namespace pac_interface
 
             AdjustSizesAndPositions();
 
-            // Afficher la première ligne de dialogue
+            // Afficher la premiÃ¨re ligne de dialogue
             ShowCurrentDialogueLine(numDialogue, isFirstTime);
 
             // Boucle pour attendre la fin du dialogue
             while (dialogueInProgress)
             {
-                Application.DoEvents(); // Permet à l'application de traiter les événements
-                // Vous pouvez aussi utiliser Thread.Sleep(100) pour réduire l'utilisation du CPU
+                Application.DoEvents(); // Permet Ã  l'application de traiter les Ã©vÃ©nements
+                // Vous pouvez aussi utiliser Thread.Sleep(100) pour rÃ©duire l'utilisation du CPU
             }
 
-            // Dialogue terminé, nettoyage ou actions après le dialogue
+            // Dialogue terminÃ©, nettoyage ou actions aprÃ¨s le dialogue
             Controls.Remove(dialoguesPanel);
             dialoguesPanel.Dispose();
         }
 
-        // Méthode pour afficher la ligne de dialogue courante
+        // MÃ©thode pour afficher la ligne de dialogue courante
         private void ShowCurrentDialogueLine(int numDialogue, bool isFirstTime)
         {
             var currentDialogue = dialogueManager.GetDialogueLine(numDialogue, isFirstTime, currentLineIndex);
@@ -367,25 +392,25 @@ namespace pac_interface
                 character.Image = Image.FromFile($"..\\..\\..\\Resources\\Entity\\{currentDialogue.Item2}");
             }
 
-            // Vérifier si c'est la dernière ligne de dialogue
+            // VÃ©rifier si c'est la derniÃ¨re ligne de dialogue
             if (currentLineIndex >= dialogueManager.GetDialogueLength(numDialogue, isFirstTime))
             {
                 dialogueInProgress = false; // Fin du dialogue
             }
         }
 
-        // Méthode appelée lorsqu'un clic sur le dialogue se produit
+        // MÃ©thode appelÃ©e lorsqu'un clic sur le dialogue se produit
         private void Dialogue_Click(object sender, EventArgs e)
         {
-            // Vérifier si le dialogue n'est pas terminé
+            // VÃ©rifier si le dialogue n'est pas terminÃ©
             if (dialogueInProgress && currentLineIndex < dialogueManager.GetDialogueLength(dialogueManager.dialogueIndex, dialogueManager.isFirstTime))
             {
-                currentLineIndex++; // Passer à la ligne suivante
+                currentLineIndex++; // Passer Ã  la ligne suivante
                 ShowCurrentDialogueLine(dialogueManager.dialogueIndex, dialogueManager.isFirstTime); // Afficher la nouvelle ligne
             }
         }
 
-        // Méthode pour ajuster les tailles et positions des contrôles de dialogue
+        // MÃ©thode pour ajuster les tailles et positions des contrÃ´les de dialogue
         private void AdjustSizesAndPositions()
         {
             boite.Size = new Size((int)(dialoguesPanel.ClientSize.Width * 0.8), (int)(dialoguesPanel.ClientSize.Height * 0.5));
@@ -398,7 +423,7 @@ namespace pac_interface
             dialogueText.Location = new Point((boite.Width - dialogueText.Width) / 2, (boite.Height - dialogueText.Height) / 2);
         }
 
-        // Méthode pour découper le texte en lignes avec un nombre maximal de caractères par ligne
+        // MÃ©thode pour dÃ©couper le texte en lignes avec un nombre maximal de caractÃ¨res par ligne
         private string WrapText(string text, int maxCharsPerLine)
         {
             StringBuilder sb = new StringBuilder();

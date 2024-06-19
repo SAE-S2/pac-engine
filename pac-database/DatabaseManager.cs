@@ -112,50 +112,6 @@ namespace PacDatabase
             }
         }
 
-        public static void UpdateUtilisateur(int uid, string login, string mdpUtilisateur)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string updateQuery = "UPDATE Utilisateur SET login = @login, MdpUtilisateur = @mdpUtilisateur WHERE UID = @uid";
-                    using (var command = new SQLiteCommand(updateQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@uid", uid);
-                        command.Parameters.AddWithValue("@login", login);
-                        command.Parameters.AddWithValue("@mdpUtilisateur", mdpUtilisateur);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-        }
-
-        public static void DeleteUtilisateur(int uid)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string deleteQuery = "DELETE FROM Utilisateur WHERE UID = @uid";
-                    using (var command = new SQLiteCommand(deleteQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@uid", uid);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-        }
-
         public static List<(int, string, string)> GetUtilisateurs()
         {
             var utilisateurs = new List<(int, string, string)>();
@@ -248,39 +204,6 @@ namespace PacDatabase
             return name;
         }
 
-        public static void UpdateProfil(int idProfil, int numProfil, string nomProfil, bool level10Played, bool dialogueGarde, bool dialoguePrison, bool dialogueDebut, bool dialogueInge, int totalPieces, int totalBoulons, int uid)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string updateQuery = @"UPDATE Profil 
-                                       SET NumProfil = @numProfil, NomProfil = @nomProfil, Level10Played = @level10Played, Dialogue_Garde = @dialogueGarde, Dialogue_Prison = @dialoguePrison, Dialogue_Debut = @dialogueDebut, Dialogue_Inge = @dialogueInge, TotalPieces = @totalPieces, TotalBoulons = @totalBoulons, UID = @uid
-                                       WHERE IDProfil = @idProfil";
-                    using (var command = new SQLiteCommand(updateQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@idProfil", idProfil);
-                        command.Parameters.AddWithValue("@numProfil", numProfil);
-                        command.Parameters.AddWithValue("@nomProfil", nomProfil);
-                        command.Parameters.AddWithValue("@level10Played", level10Played);
-                        command.Parameters.AddWithValue("@dialogueGarde", dialogueGarde);
-                        command.Parameters.AddWithValue("@dialoguePrison", dialoguePrison);
-                        command.Parameters.AddWithValue("@dialogueDebut", dialogueDebut);
-                        command.Parameters.AddWithValue("@dialogueInge", dialogueInge);
-                        command.Parameters.AddWithValue("@totalPieces", totalPieces);
-                        command.Parameters.AddWithValue("@totalBoulons", totalBoulons);
-                        command.Parameters.AddWithValue("@uid", uid);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-        }
-
         public static void DeleteProfil(int numProfil, int uid)
         {
             try
@@ -303,22 +226,32 @@ namespace PacDatabase
             }
         }
 
-        public static List<(int, int, string, bool, bool, bool, bool, bool, int, int, int)> GetProfils()
+        public static int GetIDProfil(int uid, int numProfil)
         {
-            var profils = new List<(int, int, string, bool, bool, bool, bool, bool, int, int, int)>();
+            int idProfil = -1;
 
             try
             {
                 using (var connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
-                    string selectQuery = "SELECT * FROM Profil";
-                    using (var command = new SQLiteCommand(selectQuery, connection))
-                    using (var reader = command.ExecuteReader())
+
+                    string query = @"
+                        SELECT IDProfil 
+                        FROM Profil 
+                        WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var command = new SQLiteCommand(query, connection))
                     {
-                        while (reader.Read())
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
                         {
-                            profils.Add((reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetBoolean(3), reader.GetBoolean(4), reader.GetBoolean(5), reader.GetBoolean(6), reader.GetBoolean(7), reader.GetInt32(8), reader.GetInt32(9), reader.GetInt32(10)));
+                            if (reader.Read())
+                            {
+                                idProfil = reader.GetInt32(0);
+                            }
                         }
                     }
                 }
@@ -328,7 +261,7 @@ namespace PacDatabase
                 Console.WriteLine($"SQLite error: {ex.Message}");
             }
 
-            return profils;
+            return idProfil;
         }
 
         public static int GetTotalPieces(int uid, int numProfil)
@@ -364,7 +297,6 @@ namespace PacDatabase
             return totalPieces;
         }
 
-
         public static int GetTotalBoulons(int uid, int numProfil)
         {
             int totalBoulons = 0;
@@ -396,6 +328,197 @@ namespace PacDatabase
             }
 
             return totalBoulons;
+        }
+
+        public static bool GetDialogueGarde(int uid, int numProfil)
+        {
+            bool dialogueGarde = false;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Requête pour obtenir la valeur de Dialogue_Garde
+                    string query = @"
+                SELECT Dialogue_Garde 
+                FROM Profil 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                dialogueGarde = reader.GetBoolean(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return dialogueGarde;
+        }
+
+        public static bool GetLevel10Played(int uid, int numProfil)
+        {
+            bool level10Played = false;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                SELECT Level10Played 
+                FROM Profil 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                level10Played = reader.GetBoolean(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return level10Played;
+        }
+
+        public static bool GetDialoguePrison(int uid, int numProfil)
+        {
+            bool dialoguePrison = false;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                SELECT Dialogue_Prison 
+                FROM Profil 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                dialoguePrison = reader.GetBoolean(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return dialoguePrison;
+        }
+
+        public static bool GetDialogueDebut(int uid, int numProfil)
+        {
+            bool dialogueDebut = false;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                SELECT Dialogue_Debut 
+                FROM Profil 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                dialogueDebut = reader.GetBoolean(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return dialogueDebut;
+        }
+
+        public static bool GetDialogueInge(int uid, int numProfil)
+        {
+            bool dialogueInge = false;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string query = @"
+                SELECT Dialogue_Inge 
+                FROM Profil 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@uid", uid);
+                        command.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                dialogueInge = reader.GetBoolean(0);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+
+            return dialogueInge;
         }
 
         public static void SetTotalBoulons(int uid, int numProfil, int totalBoulons)
@@ -436,98 +559,34 @@ namespace PacDatabase
             }
         }
 
-
-
-        // Méthodes pour la table Amelioration
-        public static void AddAmelioration(int rarete, string nomAmelioration, string description, bool estEquipable)
+        public static void SetTotalPieces(int uid, int numProfil, int totalPieces)
         {
             try
             {
                 using (var connection = new SQLiteConnection(connectionString))
                 {
                     connection.Open();
-                    string insertQuery = @"INSERT INTO Amelioration (Rarete, NomAmelioration, Description, EstEquipable)
-                                       VALUES (@rarete, @nomAmelioration, @description, @estEquipable)";
-                    using (var command = new SQLiteCommand(insertQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@rarete", rarete);
-                        command.Parameters.AddWithValue("@nomAmelioration", nomAmelioration);
-                        command.Parameters.AddWithValue("@description", description);
-                        command.Parameters.AddWithValue("@estEquipable", estEquipable);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-        }
 
-        public static void UpdateAmelioration(int numAmelioration, int rarete, string nomAmelioration, string description, bool estEquipable)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string updateQuery = @"UPDATE Amelioration 
-                                       SET Rarete = @rarete, NomAmelioration = @nomAmelioration, Description = @description, EstEquipable = @estEquipable
-                                       WHERE NumAmelioration = @numAmelioration";
-                    using (var command = new SQLiteCommand(updateQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@numAmelioration", numAmelioration);
-                        command.Parameters.AddWithValue("@rarete", rarete);
-                        command.Parameters.AddWithValue("@nomAmelioration", nomAmelioration);
-                        command.Parameters.AddWithValue("@description", description);
-                        command.Parameters.AddWithValue("@estEquipable", estEquipable);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-        }
+                    // Requête pour mettre à jour le nombre de boulons
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET TotalPieces = @totalPieces 
+                WHERE UID = @uid AND NumProfil = @numProfil";
 
-        public static void DeleteAmelioration(int numAmelioration)
-        {
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string deleteQuery = "DELETE FROM Amelioration WHERE NumAmelioration = @numAmelioration";
-                    using (var command = new SQLiteCommand(deleteQuery, connection))
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
                     {
-                        command.Parameters.AddWithValue("@numAmelioration", numAmelioration);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-        }
+                        updateCommand.Parameters.AddWithValue("@totalPieces", totalPieces);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
 
-        public static List<(int, int, string, string, bool)> GetAmeliorations()
-        {
-            var ameliorations = new List<(int, int, string, string, bool)>();
-
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string selectQuery = "SELECT * FROM Amelioration";
-                    using (var command = new SQLiteCommand(selectQuery, connection))
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
                         {
-                            ameliorations.Add((reader.GetInt32(0), reader.GetInt32(1), reader.GetString(2), reader.GetString(3), reader.GetBoolean(4)));
+                            Console.WriteLine("Total de pieces mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
                         }
                     }
                 }
@@ -536,57 +595,224 @@ namespace PacDatabase
             {
                 Console.WriteLine($"SQLite error: {ex.Message}");
             }
+        }
 
-            return ameliorations;
+        public static void SetDialogueGarde(int uid, int numProfil, bool dialogueGarde)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Requête pour mettre à jour la valeur de Dialogue_Garde
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET Dialogue_Garde = @dialogueGarde 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@dialogueGarde", dialogueGarde);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Dialogue_Garde mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
+        public static void SetLevel10Played(int uid, int numProfil, bool level10Played)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET Level10Played = @level10Played 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@level10Played", level10Played);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Level10Played mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
+        public static void SetDialoguePrison(int uid, int numProfil, bool dialoguePrison)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET Dialogue_Prison = @dialoguePrison 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@dialoguePrison", dialoguePrison);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Dialogue_Prison mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
+        public static void SetDialogueDebut(int uid, int numProfil, bool dialogueDebut)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET Dialogue_Debut = @dialogueDebut 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@dialogueDebut", dialogueDebut);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Dialogue_Debut mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
+        public static void SetDialogueInge(int uid, int numProfil, bool dialogueInge)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET Dialogue_Inge = @dialogueInge 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@dialogueInge", dialogueInge);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Dialogue_Inge mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
         }
 
         // Méthodes pour la table Equipement_Possede
-        public static void AddEquipementPossede(int idProfil, int numAmelioration, int niveauAmelioration)
+
+        public static void InitializeEquipementPossede(int idProfil)
         {
-            try
+            for (int i = 1; i <= 8; i++)
+                AddEquipementPossede(idProfil, i, 0);
+        }
+
+        public static void DeleteStuff(int idProfil) 
+        {
+            for(int i = 1;i <= 8; i++)
             {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string insertQuery = @"INSERT INTO Equipement_Possede (IDProfil, NumAmelioration, NiveauAmelioration)
-                                       VALUES (@idProfil, @numAmelioration, @niveauAmelioration)";
-                    using (var command = new SQLiteCommand(insertQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@idProfil", idProfil);
-                        command.Parameters.AddWithValue("@numAmelioration", numAmelioration);
-                        command.Parameters.AddWithValue("@niveauAmelioration", niveauAmelioration);
-                        command.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
+                DeleteEquipementPossede(idProfil, i);
             }
         }
 
-        public static void UpdateEquipementPossede(int idProfil, int numAmelioration, int niveauAmelioration)
+        public static void AddEquipementPossede(int idProfil, int numAmelioration, int niveauAmelioration)
         {
-            try
+            using (var connection = new SQLiteConnection(connectionString))
             {
-                using (var connection = new SQLiteConnection(connectionString))
+                connection.Open();
+                string insertQuery = @"INSERT INTO Equipement_Possede (IDProfil, NumAmelioration, NiveauAmelioration)
+                               VALUES (@idProfil, @numAmelioration, @niveauAmelioration)";
+                using (var command = new SQLiteCommand(insertQuery, connection))
                 {
-                    connection.Open();
-                    string updateQuery = @"UPDATE Equipement_Possede 
-                                       SET NiveauAmelioration = @niveauAmelioration
-                                       WHERE IDProfil = @idProfil AND NumAmelioration = @numAmelioration";
-                    using (var command = new SQLiteCommand(updateQuery, connection))
-                    {
-                        command.Parameters.AddWithValue("@idProfil", idProfil);
-                        command.Parameters.AddWithValue("@numAmelioration", numAmelioration);
-                        command.Parameters.AddWithValue("@niveauAmelioration", niveauAmelioration);
-                        command.ExecuteNonQuery();
-                    }
+                    command.Parameters.AddWithValue("@idProfil", idProfil);
+                    command.Parameters.AddWithValue("@numAmelioration", numAmelioration);
+                    command.Parameters.AddWithValue("@niveauAmelioration", niveauAmelioration);
+                    command.ExecuteNonQuery();
                 }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
             }
         }
 
@@ -610,34 +836,6 @@ namespace PacDatabase
             {
                 Console.WriteLine($"SQLite error: {ex.Message}");
             }
-        }
-
-        public static List<(int, int, int)> GetEquipementsPossedes()
-        {
-            var equipements = new List<(int, int, int)>();
-
-            try
-            {
-                using (var connection = new SQLiteConnection(connectionString))
-                {
-                    connection.Open();
-                    string selectQuery = "SELECT * FROM Equipement_Possede";
-                    using (var command = new SQLiteCommand(selectQuery, connection))
-                    using (var reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            equipements.Add((reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
-                        }
-                    }
-                }
-            }
-            catch (SQLiteException ex)
-            {
-                Console.WriteLine($"SQLite error: {ex.Message}");
-            }
-
-            return equipements;
         }
 
         public static int GetNiveauAmelioration(int uid, int numProfil, int numAmelioration)
@@ -683,7 +881,6 @@ namespace PacDatabase
             return niveauAmelioration;
         }
 
-
         public static void IncrementNiveauAmelioration(int uid, int numProfil, int numAmelioration)
         {
             try
@@ -725,8 +922,6 @@ namespace PacDatabase
                 Console.WriteLine($"SQLite error: {ex.Message}");
             }
         }
-
-
 
         // Méthodes pour la table Evasion
         public static void AddEvasion(int utilisationPouvoirs, int hpPerdus, int ennemisTues, int nbPiece, int niveauEvasion, int nbBoulon, int numAmelioration, int idProfil)

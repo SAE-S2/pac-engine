@@ -41,10 +41,10 @@ namespace pac_engine
             player = new Player();
         }
 
-        public void initializeGame()
+        public void initializeGame(int level)
         {
             price = 0;
-            bool win = StartGame(1);
+            bool win = StartGame(level);
         }
 
         static void Main()
