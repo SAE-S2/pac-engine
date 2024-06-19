@@ -65,7 +65,7 @@ namespace pac_interface
                 // Dialogue guarde et non première fois (6)
                 new Tuple<string, string>[] {
                     Tuple.Create("Ah, vous vous êtes fait attraper Général !", "Guard1.png"),
-                    Tuple.Create("Les hauts-dirigeants ont renforcé la surveillance de la prison, je vais devoir augmenter votre contribution, disons que c’est ma prime de risque. Ça vous coûtera <X> pièces. Ça vous dit ?", "Guard1.png"),
+                    Tuple.Create("Les hauts-dirigeants ont renforcé la surveillance de la prison, Prenez garde !", "Guard1.png"),
                     Tuple.Create("","Voix off")
                 }
             };

@@ -559,6 +559,44 @@ namespace PacDatabase
             }
         }
 
+        public static void SetTotalPieces(int uid, int numProfil, int totalPieces)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // Requête pour mettre à jour le nombre de boulons
+                    string updateQuery = @"
+                UPDATE Profil 
+                SET TotalPieces = @totalPieces 
+                WHERE UID = @uid AND NumProfil = @numProfil";
+
+                    using (var updateCommand = new SQLiteCommand(updateQuery, connection))
+                    {
+                        updateCommand.Parameters.AddWithValue("@totalPieces", totalPieces);
+                        updateCommand.Parameters.AddWithValue("@uid", uid);
+                        updateCommand.Parameters.AddWithValue("@numProfil", numProfil);
+
+                        int rowsAffected = updateCommand.ExecuteNonQuery();
+                        if (rowsAffected > 0)
+                        {
+                            Console.WriteLine("Total de pieces mis à jour avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Aucune mise à jour effectuée. Vérifiez les paramètres.");
+                        }
+                    }
+                }
+            }
+            catch (SQLiteException ex)
+            {
+                Console.WriteLine($"SQLite error: {ex.Message}");
+            }
+        }
+
         public static void SetDialogueGarde(int uid, int numProfil, bool dialogueGarde)
         {
             try
@@ -744,8 +782,6 @@ namespace PacDatabase
                 Console.WriteLine($"SQLite error: {ex.Message}");
             }
         }
-
-        // Méthodes pour la table Amelioration
 
         // Méthodes pour la table Equipement_Possede
 

@@ -37,6 +37,7 @@
             BackColor = Color.Black;
             ClientSize = new Size(700, 338);
             Margin = new Padding(3, 2, 3, 2);
+            MaximizeBox = false;
             Name = "Game";
             Text = "Game";
             FormClosed += Game_FormClosed;
