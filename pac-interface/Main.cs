@@ -297,17 +297,11 @@ namespace pac_interface
                 this.Visible = false;
                 hub.Show();
                 hub.WindowState = FormWindowState.Maximized;
-                hub.FormClosed += Hub_FormClosed;
             }
         }
-
-        private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
-        {
-            hub = null;
-            this.Show();
-        }
-
-        private void StartDialogue(int numDialogue, bool isFirstTime)// Methode pour lancer un dialogue
+        
+        // MÃ©thode pour dÃ©marrer le dialogue
+        private void StartDialogue(int numDialogue, bool isFirstTime)
         {
             dialogueInProgress = true; // Indicateur pour savoir si le dialogue est en cours
             currentLineIndex = 0;

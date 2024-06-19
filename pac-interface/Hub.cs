@@ -24,7 +24,7 @@ namespace pac_interface
         private PictureBox boite;
         private PictureBox character;
         private Label dialogueText;
-        private int prixEvasion = 5;
+        private int prixEvasion = 0;
 
         public Hub(PacBot? game)
         {
@@ -35,7 +35,6 @@ namespace pac_interface
                 this.actualGame = new PacBot("test", 1280, 720);
                 this.actualGame.LoadWithProfil(1);
             }
-
             InitializeComponent();
             SetupControls(); // Call the method to add custom controls
         }
@@ -462,7 +461,6 @@ namespace pac_interface
         Game game;
         private void Launch_Click(object sender, EventArgs e)
         {
-            prixEvasion = prixEvasion * 2;
             // Affichage du dialogue du garde
             StartDialogue(3, !DatabaseManager.GetDialogueGarde(Globals.UID, Globals.NumProfil));
             DialogResult rep = MessageBox.Show($"Vous avez {actualGame.player.money} pièces. Voulez-vous dépenser {prixEvasion} pièces pour vous évader ?", "S'évader", MessageBoxButtons.YesNo);
@@ -479,6 +477,7 @@ namespace pac_interface
                 {
                     actualGame.player.money -= prixEvasion;
                     DatabaseManager.SetTotalPieces(Globals.UID, Globals.NumProfil, actualGame.player.money);
+                    prixEvasion = (prixEvasion + 1) * 3;
                     actualGame.initializeGame(1);
                     game = new Game(this, actualGame);
                     this.Visible = false;
@@ -698,6 +697,7 @@ namespace pac_interface
         private void Hub_FormClosed(object? sender, FormClosedEventArgs e)
         {
             actualGame = null;
+            Application.OpenForms[0].Show();
             // Forcer le garbage collector pour libérer la mémoire
             GC.Collect();
             GC.WaitForPendingFinalizers();
