@@ -5,11 +5,11 @@ namespace pac_engine.Core
 {
     public class Map
     {
-        public Vector2 spawn;
+        public Vector2 spawn; //Point d'apparition du joueur
         public int[,] map;
         private int coinsNumber = 0;
         private int coinsEarn = 0;
-        public Vector2 door;
+        public Vector2 door; //Point de sortie du labyrinthe
         public event EventHandler<EarnCoinEventArgs> CoinEarn;
         public event EventHandler<DoorOpenEventArgs> DoorOpen;
 
@@ -23,8 +23,18 @@ namespace pac_engine.Core
             DoorOpen?.Invoke(this, new DoorOpenEventArgs { DoorPos = pos });
         }
 
+        // Constructeur d'objet Map
         public Map(int[,] mapToLoad, Game game)
         {
+            //Valeurs possibles :
+            //      0 -> Vide
+            //      1 -> Mur
+            //      2 -> Pièce
+            //      3 -> Boulon
+            //      4 -> Porte
+            //      5 -> Guard
+            //      6 -> Spawn Joueur
+            //      7 -> ChiefGuard
             map = mapToLoad;
             Random random = new Random();
             int BoltCount = 0;

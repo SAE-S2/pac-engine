@@ -27,7 +27,7 @@ public class Game
         return enemies;
     }
 
-    //Chargement du niveau passé en paramère (de 1 à 10)
+    //Chargement du niveau passé en paramètre (de 1 à 10)
     public bool Start(int level)
     {
         this.level = level;
@@ -163,6 +163,8 @@ public class Game
         return (map.map, player.Health, player.absorption, player.bolts, player.money);
     }
 
+    //Vérifie si la position d'un ennemi est identique au joueur
+    //Renvoie l'ennemi en question
     public Entity EnemyAtPos(Vector2 pos)
     {
         Entity enemy = player;
@@ -188,7 +190,6 @@ public class Game
             map.GenerateGuard();
         }
 	      map.RemoveDeadEnds();
-	      map.Print();
 	      return map.getMaze();
     }
 
